@@ -1,60 +1,92 @@
 <script context="module">
-        export const load = async ({ params }) => {
-            console.log('>>> params:', params);
+        export const load = async ({ url }) => {
+            console.log('>>> searchParams:', url.searchParams);
             return {
-                props: params.get('redirectedFrom'),
+                props: url.searchParams.get('redirectedFrom'),
             }
         };
 </script>
-<script>
+
+<script lang="ts">
     import signIn from '$lib/auth/supabase'
+    import SocialLogin from '$lib/components/SocialLogin.svelte';
+    import Header from '$lib/components/Header.svelte';
+
+    
     let email;
     let password;
-    let error;
     let redirectedFrom;
 
     let loading = false
 
 
   const handleLogin = async () => {
-    try {
+      console.log('>>> login.handleLogin');
       loading = true
-      const { error } = await signIn({ email, password, redirectedFrom})
-      if (error) throw error
-    } catch (error) {
-      alert(error.error_description || error.message)
-    } finally {
+      await signIn( email, password, redirectedFrom)
       loading = false
-    }
   }
+
 </script>
 
 <svelte:head>
     <title>Login | {import.meta.env.VITE_APP_TITLE}</title>
 </svelte:head>
 
-<section
-    class="container">
-    <h1>Login</h1>
-    {#if error}
-        <p class="center error">{error}</p>
-    {/if}
-    <form class="form" on:submit|preventDefault={handleLogin}>
-        <input
-            bind:value={email}
-            name="email"
-            type="email"
-            aria-label="Email address"
-            placeholder="Email address"
-        />
-        <input
-            bind:value={password}
-            name="password"
-            type="password"
-            aria-label="password"
-            placeholder="password"
-        />
-        <button class="btn" type="submit">Login</button>
-        <p class="center">No account yet? <a href="/account/register">Get started</a>.</p>
-    </form>
-</section>
+<div class="content">
+  <h1>Login</h1>
+
+  <SocialLogin />
+
+  <form on:submit|preventDefault={handleLogin}>
+    <div>
+      <input
+        id="email"
+        type="email"
+        autocomplete="email"
+        placeholder="Email"
+        required
+        bind:value={email}
+      />
+    </div>
+    <div>
+      <input
+        id="password"
+        type="password"
+        placeholder="Password (optional)"
+        bind:value={password}
+      />
+    </div>
+
+    <div>
+      <button type="submit" class="submit" disabled={loading}>
+        {loading ? 'Loading ...' : 'Log In'}
+      </button>
+    </div>
+
+    <div>
+      <a sveltekit:prefetch href="/register">No account? Register here</a>
+    </div>
+  </form>
+</div>
+
+<style>
+  .content {
+    width: 100%;
+    max-width: var(--column-width);
+    margin: var(--column-margin-top) auto 0 auto;
+  }
+  .submit {
+    border-radius: 20px;
+    border: 1px solid var(--accent-color);
+    background-color: var(--accent-color);
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 12px 45px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 80ms ease-in;
+    cursor: pointer;
+  }
+</style>

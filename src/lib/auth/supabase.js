@@ -5,8 +5,6 @@ import * as cookie from 'cookie';
 
 dotenv.config();
 
-console.log('process.env.SUPABASE_URL:', process.env.SUPABASE_URL);
-console.log('process.env.SUPABASE_ANON_KEY:', process.env.SUPABASE_ANON_KEY);
 const db = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
 console.log('db:', db);
@@ -25,10 +23,6 @@ const constructCookies = (session) => {
 
 export const signIn = async (email, password, redirectedFrom) => {
     console.log('>>> supabase.login');
-    await auth.signOut();
-    await unsetAuthCookie();
-    goto('/');
-
     let { user, session, error } = await auth.signIn({ email, password });
     console.log(session);
 
@@ -38,7 +32,12 @@ export const signIn = async (email, password, redirectedFrom) => {
             body: "Login failed",
         };
     }
+
     let { refresh_token, access_token, expires_at } = constructCookies(session);
+
+    if (!password) {
+        redirectedFrom = `${redirectedFrom}?magic_link=true`;
+    }
 
     return {
         status: 302,
@@ -95,6 +94,7 @@ export const getCookie = (name, token, extra) => {
 export const blankCookies = () => {
     return [getCookie('refresh_token', null), getCookie('access_token', null), getCookie('expires_at', null)];
 };
+
 
 const setServerSession = async (event, session) => {
     console.log('Setting Server Session >>>', event, session);
