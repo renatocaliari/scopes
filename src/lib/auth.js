@@ -1,81 +1,16 @@
-import dotenv from 'dotenv';
-import { createClient } from '@supabase/supabase-js';
+import { get } from 'svelte/store'
 import { goto } from '$app/navigation';
+import { dev } from '$app/env';
 import * as cookie from 'cookie';
 
-dotenv.config();
+import { createClient } from '@supabase/supabase-js'
 
-const db = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+console.log('>>>> supabase');
+const SUPABASE_URL = "https://mhojguuespijjibpuikv.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ob2pndXVlc3BpamppYnB1aWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NDczNDI3MDIsImV4cCI6MTk2MjkxODcwMn0.LuV6RVNbeGgM3UuxyV_v8fnp7RA6zhkQQeb3E6CM_DU";
 
-console.log('db:', db);
-
-export default db;
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 export const auth = db.auth;
-
-const constructCookies = (session) => {
-    return {
-        refresh_token: `refresh_token=${session.refresh_token};Path=/;HttpOnly;Secure;SameSite=Strict;Max-Age=${60 * 60 * 24 * 180};`,
-        access_token: `access_token=${session.access_token};Path=/;HttpOnly;Secure;SameSite=Strict;Max-Age=${session.expires_in};`,
-        expires_at: `expires_at=${session.expires_at};Path=/;HttpOnly;Secure;SameSite=Strict;Max-Age=${60 * 60 * 24 * 180};`,
-    };
-};
-
-
-export const signIn = async (email, password, redirectedFrom) => {
-    console.log('>>> supabase.login');
-    let { user, session, error } = await auth.signIn({ email, password });
-    console.log(session);
-
-    if (error) {
-        return {
-            status: 405,
-            body: "Login failed",
-        };
-    }
-
-    let { refresh_token, access_token, expires_at } = constructCookies(session);
-
-    if (!password) {
-        redirectedFrom = `${redirectedFrom}?magic_link=true`;
-    }
-
-    return {
-        status: 302,
-        body: { redirectedFrom: redirectedFrom ? redirectedFrom : "/" },
-        headers: {
-            "set-cookie": [refresh_token, access_token, expires_at],
-            location: redirectedFrom ? redirectedFrom : "/",
-        },
-    };
-};
-
-export const signOut = async () => {
-    await auth.signOut();
-    await unsetAuthCookie();
-    goto('/');
-};
-
-export async function signUp(email, password) {
-    console.log('>>> signup');
-
-    let { user, error, session } = await auth.signUp({
-        email,
-        password
-    });
-
-    if (error) {
-        return {
-            status: 405,
-            body: "SignUp failed",
-        };
-    }
-
-
-    notificationData.set('Registration successful. Login now.');
-    goto('/accounts/login');
-}
-
-
 
 export const getCookie = (name, token, extra) => {
     const Blank = { path: '/', expires: new Date(0) };
@@ -98,7 +33,8 @@ export const blankCookies = () => {
 
 const setServerSession = async (event, session) => {
     console.log('Setting Server Session >>>', event, session);
-    await fetch('/api/auth.json', {
+    const BASE_API_URL = dev ? import.meta.env.VITE_BASE_API_URI_DEV : import.meta.env.VITE_BASE_API_URI_PROD;
+    await fetch(BASE_API_URL + '/api/auth.json', {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json' }),
         credentials: 'same-origin',

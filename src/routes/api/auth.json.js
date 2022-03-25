@@ -1,4 +1,4 @@
-import { getCookie, blankCookies } from '$lib/auth/supabase';
+import { getCookie, blankCookies } from '$lib/auth';
 
 export async function post({ request }) {
   let body = await request.json();

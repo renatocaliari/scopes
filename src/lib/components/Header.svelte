@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { page } from '$app/stores';
-    import { userData } from '$lib/stores/userStore';
-    import { logOutUser } from '$lib/utils/requestUtils';
+
+    import { page, session } from '$app/stores';
+
 </script>
 
 <header>
@@ -11,7 +11,7 @@
             <li class:active={$page.url.pathname === '/'}>
                 <a sveltekit:prefetch href="/">Home</a>
             </li>
-            {#if !$userData.username}
+            {#if (!$session || !$session.authenticated)}
                 <li class:active={$page.url.pathname === '/accounts/login'}>
                     <a sveltekit:prefetch href="/account/login">Login</a>
                 </li>
@@ -20,10 +20,10 @@
                 </li>
             {:else}
                 <li>
-                    Welcome, <a sveltekit:prefetch href="/account/user/">{$userData.username}</a>
+                    Welcome, <a sveltekit:prefetch href="/account/user/">{$session.user.email}</a>
                 </li>
                 <li>
-                    <a href={null} on:click={logOutUser} style="cursor: pointer;">Logout</a>
+                    <a href="/account/logout" style="cursor: pointer;">Logout</a>
                 </li>
             {/if}
         </ul>

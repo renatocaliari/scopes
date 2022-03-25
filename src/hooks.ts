@@ -1,12 +1,20 @@
-import { refreshAccessToken, auth, getCookie, blankCookies } from '$lib/auth/supabase';
+import dotenv from 'dotenv'
+dotenv.config()
+export let env = process.env;
+
+import { auth, setAuthCookie, unsetAuthCookie, refreshAccessToken, getCookie, blankCookies } from '$lib/auth';
+import { page, session, navigating } from '$app/stores'
+
 import * as cookie from 'cookie';
 import jwt from 'jsonwebtoken';
+import { browser } from '$app/env';
 
 const ExpiryMargin = 1000;
 
 
 export function getSession(event) {
-  console.log(">>>> getSession");
+  console.log(">>>> getSession:", event.locals);
+  console.log(">>>> getSession:", JSON.stringify(event));
 
   const { user, authenticated } = event.locals;
 
@@ -34,6 +42,8 @@ export async function externalFetch(request) {
 }
 
 export const handle = async ({ event, resolve }) => {
+  console.log('>>> handle');
+
   let cookies = cookie.parse(event.request.headers.get('cookie') || '');
   let setCookies = [];
 
@@ -47,10 +57,17 @@ export const handle = async ({ event, resolve }) => {
         setCookies = blankCookies();
       }
     }
+    if (cookies.userid) {
+      console.log('>>> cookies.userid:', cookies.userid);
+    } else {
+      console.log('>>> cookies.userid: NULL');
+    }
 
+    console.log('>>> cookies.access_token:', cookies.access_token);
     const jwtPayload = cookies.access_token ? jwt.decode(cookies.access_token) : false;
     event.locals.authenticated = !!jwtPayload;
     event.locals.user = { email: jwtPayload?.email };
+
   }
 
   let response = await resolve(event);

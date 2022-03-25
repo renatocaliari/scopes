@@ -1,58 +1,13 @@
-<script context="module" lang="ts">
-    import { BASE_API_URI, getCurrentUser } from '$lib/utils/requestUtils';
-    import type { Load } from '@sveltejs/kit';
-    import type { User } from '$lib/interfaces/userInterface';
-
-    export const load: Load = async ({ fetch }) => {
-        const [userRes, errs] = await getCurrentUser(
-            fetch,
-            `${BASE_API_URI}/token/refresh/`,
-            `${BASE_API_URI}/user/`
-        );
-
-        const userResponse: User = userRes;
-
-        if (errs.length > 0 && !userResponse.id) {
-            return {
-                status: 302,
-                redirect: '/accounts/login'
-            };
-        }
-
-        return {
-            props: { userResponse }
-        };
-    };
-</script>
-
 <script lang="ts">
     import { notificationData } from '$lib/stores/notificationStore';
-
     import { scale } from 'svelte/transition';
-    import { UpdateField } from '$lib/utils/requestUtils';
-
     import { onMount } from 'svelte';
-    export let userResponse: User;
-
-    const url = `${BASE_API_URI}/user/`;
-
-    onMount(() => {
-        const notifyEl = document.getElementById('notification') as HTMLElement;
-
-        if (notifyEl && $notificationData !== '') {
-            setTimeout(() => {
-                notifyEl.classList.add('disappear');
-                notificationData.update(() => '');
-            }, 3000);
-        }
-    });
-
 </script>
 
 <div class="container" transition:scale|local={{ start: 0.7, delay: 500 }}>
-    {#if userResponse.id}
+    {#if user.id}
         <h1>
-            {userResponse.full_name ? userResponse.full_name : userResponse.username} profile
+            {user.full_name ? user.full_name : user.username} profile
         </h1>
     {/if}
 
@@ -63,7 +18,7 @@
                 type="text"
                 placeholder="User's full name"
                 name="full_name"
-                value={userResponse.full_name}
+                value={user.full_name}
             />
             <button class="save" aria-label="Save user's full name" on:click={(e) => triggerUpdate(e)} />
         </div>
@@ -75,7 +30,7 @@
                 type="text"
                 placeholder="User's username"
                 name="username"
-                value={userResponse.username}
+                value={user.username}
             />
             <button class="save" aria-label="Save user's username" on:click={(e) => triggerUpdate(e)} />
         </div>
@@ -87,7 +42,7 @@
                 placeholder="User's email"
                 type="email"
                 name="email"
-                value={userResponse.email}
+                value={user.email}
             />
             <button class="save" aria-label="Save user's email" on:click={(e) => triggerUpdate(e)} />
         </div>
@@ -99,7 +54,7 @@
                 placeholder="User's bio"
                 type="text"
                 name="bio"
-                value={userResponse.bio}
+                value={user.bio}
             />
             <button class="save" aria-label="Save user's bio" on:click={(e) => triggerUpdate(e)} />
         </div>
@@ -111,7 +66,7 @@
                 type="date"
                 name="birth_date"
                 placeholder="User's date of birth"
-                value={userResponse.birth_date}
+                value={user.birth_date}
             />
             <button
                 class="save"

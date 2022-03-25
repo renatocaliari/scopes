@@ -1,5 +1,6 @@
 <script>
-  import { auth } from '$lib/auth/supabase';
+  import {auth} from '$lib/auth';
+  
   async function socialLogin(provider) {
     await auth.signIn({
       provider

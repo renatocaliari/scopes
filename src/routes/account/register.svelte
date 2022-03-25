@@ -1,9 +1,7 @@
-<script>
-    import { fly } from 'svelte/transition';
+<script lang="ts">
     import { goto } from '$app/navigation';
-    import { BASE_API_URI } from '$lib/utils/requestUtils';
     import { notificationData } from '$lib/stores/notificationStore';
-    import { dbConnection } from '$lib/stores/dbConnection'
+
 
     let email;
     let username;
@@ -11,24 +9,44 @@
     let bio;
     let password;
     let confirmPassword;
+
+    let loading = false;
+    let validationErrors;
+
+    async function registerUser(event) {
+        const formData = new FormData(event.target);
+        
+        loading = true;
+        const res = await fetch("/api/account/register.json", {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (res.status === 200) {
+            $notificationData = 'Registration successful. Login now.';
+            goto('/account/login');
+        }
+
+        const {message, errors} = await res.json();
+        validationErrors = errors;
+        console.log('msg de erro:', message);
+        alert(message);
+
+        loading = false;
+    }
 </script>
 
 <svelte:head>
     <title>Register | {import.meta.env.VITE_APP_TITLE}</title>
 </svelte:head>
 
-<section
-    class="container"
-    in:fly={{ y: 100, duration: 500, delay: 500 }}
-    out:fly={{ duration: 500 }}
->
-    <h1>Register</h1>
-    {#if error}
-        <p class="center error">{error}</p>
-    {/if}
-    <form class="form" method="post">>
+<div class="content">
+  <h1>Register</h1>
+    <form class="form" on:submit|preventDefault={registerUser}>
         <input
             bind:value={email}
+            name="email"
+            id="email"
             type="email"
             aria-label="Email address"
             placeholder="Email address"
@@ -36,29 +54,36 @@
         />
         <input
             bind:value={username}
+            name="username"
+            id="username"
             type="text"
             aria-label="Username"
             placeholder="Username"
-            required
+            
         />
         <input
             bind:value={fullName}
+            name="fullName"
+            id="fullName"
             type="text"
             aria-label="Full name"
             placeholder="Full name"
-            required
+            
         />
         <input
             bind:value={bio}
+            name="bio"
+            id="bio"
             type="text"
             aria-label="Brief bio"
             placeholder="Tell us about yourself..."
-            required
+            
         />
         <input
             bind:value={password}
             type="password"
             name="password"
+            id="password"
             aria-label="password"
             placeholder="password"
             required
@@ -67,14 +92,18 @@
             bind:value={confirmPassword}
             type="password"
             name="confirmPassword"
+            id="confirmPassword"
             aria-label="Confirm password"
             placeholder="Confirm password"
             required
         />
+        {#if validationErrors && validationErrors.password}
+            <div>{validationErrors.password}</div>
+        {/if}
         {#if confirmPassword}
             <button class="btn" type="submit">Register</button>
         {:else}
             <button class="btn" type="submit" disabled>Register</button>
         {/if}
     </form>
-</section>
+</div>
