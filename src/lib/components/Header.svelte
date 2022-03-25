@@ -1,41 +1,55 @@
 <script lang="ts">
-
-    import { page, session } from '$app/stores';
-
+	import { page, session } from '$app/stores';
 </script>
 
 <header>
+	<div class="navbar bg-base-100">
+		<div class="flex-1">
+			<a class="btn btn-ghost normal-case text-xl" sveltekit:prefetch href="/">Home</a>
+		</div>
+		<div class="flex-none" />
+		<ul class="menu menu-horizontal p-0">
+			<li><a href="/test/alopage1">Alo Page 1 (fetch manually)</a></li>
+			<li><a sveltekit:prefetch href="/test/alopage2">Alo Page 2 (load auto)</a></li>
+			<li><a href="/test/aloendpoint">Alo endpoint</a></li>
+			<li><a href="/app">App Restricted</a></li>
+			<li><a href="/app/externalPage">App External Page</a></li>
+		</ul>
 
-    <nav>
-        <ul>
-            <li class:active={$page.url.pathname === '/'}>
-                <a sveltekit:prefetch href="/">Home</a>
-            </li>
-            {#if (!$session || !$session.authenticated)}
-                <li class:active={$page.url.pathname === '/accounts/login'}>
-                    <a sveltekit:prefetch href="/account/login">Login</a>
-                </li>
-                <li class:active={$page.url.pathname === '/accounts/register'}>
-                    <a sveltekit:prefetch href="/account/register">Register</a>
-                </li>
-            {:else}
-                <li>
-                    Welcome, <a sveltekit:prefetch href="/account/user/">{$session.user.email}</a>
-                </li>
-                <li>
-                    <a href="/account/logout" style="cursor: pointer;">Logout</a>
-                </li>
-            {/if}
-        </ul>
-    </nav>
+		{#if !$session || !$session.authenticated}
+			<ul class="menu menu-horizontal p-0">
+				<li class:active={$page.url.pathname === '/accounts/login'}>
+					<a sveltekit:prefetch href="/account/login">Login</a>
+				</li>
+				<li class:active={$page.url.pathname === '/accounts/register'}>
+					<a sveltekit:prefetch href="/account/register">Register</a>
+				</li>
+			</ul>
+		{:else}
+			<div class="dropdown dropdown-end">
+				<label tabindex="0" class="btn btn-ghost btn-circle avatar">
+					<div class="w-10 rounded-full">
+						<img
+							class="tooltip tooltip-bottom"
+							src="https://api.lorem.space/image/face?hash=33791"
+						/>
+					</div>
+				</label>
+
+				<ul
+					tabindex="0"
+					class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+				>
+					<li>
+						<a class="justify-between">
+							<a sveltekit:prefetch href="/account/user/">Profile</a>
+							<span class="badge">New</span>
+						</a>
+					</li>
+					<li><a>Settings</a></li>
+					<li><a href="/account/logout">Logout</a></li>
+				</ul>
+			</div>
+		{/if}
+	</div>
 </header>
-
-
-<nav>
-  <a href="/test/alopage1">Alo Page 1 (fetch manually)</a>
-  <a sveltekit:prefetch href="/test/alopage2">Alo Page 2 (load auto)</a>
-  <a href="/test/aloendpoint">Alo endpoint</a>
-  <a href="/app">App Restricted</a>
-  <a href="/app/externalPage">App External Page</a>
-</nav>
-
