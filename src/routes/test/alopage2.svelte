@@ -1,11 +1,11 @@
 <script context="module">
-    export async function load({ params, fetch, session, stuff }) {
+	export async function load({ params, fetch, session, stuff }) {
 		const response = await fetch('/test/aloendpoint.json');
-        let user = (await response.json()).user;
+		let user = (await response.json()).user;
 
-        return {
+		return {
 			props: {
-                user
+				user
 			}
 		};
 	}
@@ -13,9 +13,6 @@
 
 <script>
 	export let user;
-
-
 </script>
 
-
-Page2: {user.name}
+Page2 loaded from server: {user.name}

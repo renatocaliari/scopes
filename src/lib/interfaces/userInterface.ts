@@ -1,21 +1,18 @@
 export interface Token {
 	refresh?: string;
 	access?: string;
+	expires_at?: number;
 }
 
 export interface User {
-	id?: string;
+	id: string;
 	email?: string;
-	username?: string;
+	username: string;
 	website?: string;
 	avatar_url?: string;
 	password?: string;
 	tokens?: Token;
-	bio?: string;
-	full_name?: string;
-	birth_date?: string;
+	fullname?: string;
+	birthdate?: string;
 }
 
-export interface UserResponse {
-	user?: User;
-}

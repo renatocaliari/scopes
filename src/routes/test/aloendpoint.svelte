@@ -1,5 +1,5 @@
 <script>
-    export let user;
+	export let user;
 </script>
 
-Page do endpoint: {user.name}
+Page from automatic endpoint: {user.name}

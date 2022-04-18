@@ -1,7 +1,4 @@
 import { auth } from '$lib/auth';
-import { notificationData } from '$lib/stores/notificationStore';
-import { session } from '$app/stores';
-
 
 const constructCookies = (session) => {
     return {
@@ -15,9 +12,7 @@ export async function post({ request }) {
     const body = await request.formData();
 
     const email = body.get("email");
-    const password = body.get("password");
-
-    console.log('TODO encrypt password:', password);
+    const password = await body.get("password");
 
     let { user, session, error } = await auth.signIn({ email, password });
 
@@ -31,6 +26,8 @@ export async function post({ request }) {
         };
     }
 
+    console.log(">>> user:", user);
+
     let { refresh_token, access_token, expires_at } = constructCookies(session);
     console.log('access_token', access_token);
     return {
@@ -42,5 +39,4 @@ export async function post({ request }) {
             user: user
         }
     };
-
 }

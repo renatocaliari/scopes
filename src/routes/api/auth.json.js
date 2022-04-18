@@ -12,6 +12,8 @@ export async function post({ request }) {
     ]
     : blankCookies();
 
+  console.log('>>> auth.json setCookie:', setCookie);
+
   return {
     status: 200,
     body: null,
