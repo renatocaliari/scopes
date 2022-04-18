@@ -3,9 +3,43 @@
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
 	import { scopesStore } from '$lib/stores/scopesStore';
-	import { SvelteComponentDev } from 'svelte/internal';
+	import Scope from '$lib/components/Scopes/Scope.svelte';
+	import Items from '$lib/components/Scopes/Items.svelte';
+	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 
 	const flipDurationMs = 300;
+
+	let cols = [
+		{
+			title: "Do only the essential to focus on Risky and Unknowns (mock if it's necessary)",
+			filter: function (s) {
+				return s.id !== 'bucket' && s.items.length > 0 && s.dependents.length > 0 && !s.risky;
+			},
+			sort: sort
+		},
+		{
+			title: 'Focus on Risky & Unknowns',
+			filter: function (s) {
+				return s.id !== 'bucket' && s.items.length > 0 && s.risky;
+			},
+			sort: sort
+		},
+		{
+			title: 'Develop what was missing',
+			filter: function (s) {
+				return s.id !== 'bucket' && s.items.length > 0 && s.dependents.length > 0 && !s.risky;
+			},
+			sort: sort
+		},
+		{
+			title: 'Remaining scopes',
+			filter: function (s) {
+				return s.id !== 'bucket' && s.items.length > 0 && !s.risky && s.dependents == 0;
+			},
+			sort: sort
+		}
+	];
+
 	function handleDndConsider(e) {
 		$scopesStore = e.detail.items;
 	}
@@ -22,6 +56,30 @@
 	function percentageToHsl(percentage, hue0, hue1) {
 		var hue = percentage * (hue1 - hue0) + hue0;
 		return 'hsl(' + hue + ', 100%, 90%)';
+	}
+
+	function updateRisky(scope, checked) {
+		scope.risky = checked;
+		$scopesStore = $scopesStore; // force reactivity
+	}
+
+	function sort(first, second) {
+		if (second.risky) {
+			return -1;
+		}
+		if (first.dependents.length > second.dependents.length) {
+			return -1;
+		}
+		if (first.dependents.length < second.dependents.length) {
+			return 1;
+		}
+		if (first.dependencies.length > second.dependencies.length) {
+			return -1;
+		}
+		if (first.dependencies.length < second.dependencies.length) {
+			return 1;
+		}
+		return 0;
 	}
 </script>
 
@@ -65,199 +123,63 @@
 <button class="btn mb-4">Reset order</button>
 
 <div class={'grid  grid-cols-4 grid-flow-col gap-4 place-content-around'}>
-	<div>
-		<div class="h-24">
-			<h3>Do only the essential to focus on Risky and Unknowns (mock if it's necessary)</h3>
+	{#each cols as col}
+		<div>
+			<div class="h-24"><h3>{col.title}</h3></div>
+
+			<section
+				class={'grid grid-rows-6 grid-cols-1 grid-flow-col gap-4 place-content-around'}
+				use:dndzone={{
+					items: $scopesStore,
+					flipDurationMs,
+					type: 'scopeSequence',
+					dropTargetClasses: ['bg-green-50']
+				}}
+				on:consider={handleDndConsider}
+				on:finalize={handleDndFinalize}
+			>
+				{#each $scopesStore.filter(col.filter).sort(col.sort) as scope}
+					<div>
+						<Scope
+							bind:parent={scope}
+							editTitle={false}
+							itemsModal={scope.items}
+							checkbox
+							checked={scope.risky}
+							on:checkItem={(e) => {
+								updateRisky(e.detail.item, e.detail.checked);
+							}}
+						>
+							<div slot="header">
+								<BadgeDependencies bind:scope />
+							</div>
+							<div slot="subTitle">Depends on:</div>
+							<div
+								slot="body"
+								style:background-color={percentageToHsl(
+									isNaN(scope.dependents.length / maxDependents)
+										? 0
+										: scope.dependents.length / maxDependents,
+									120,
+									0
+								)}
+							>
+								<Items
+									bind:items={$scopesStore}
+									fnFilter={(items) => {
+										return items.filter(
+											(s) => s.id !== 'bucket' && s.id !== scope.id && s.items.length > 0
+										);
+									}}
+								/>
+							</div>
+							<div slot="headerModal">Items of {scope.name}</div>
+						</Scope>
+					</div>
+				{/each}
+			</section>
 		</div>
-
-		<section
-			class={'grid grid-rows-6 grid-cols-1 grid-flow-col gap-4 place-content-around'}
-			use:dndzone={{
-				items: $scopesStore,
-				flipDurationMs,
-				type: 'scopeSequence',
-				dropTargetClasses: ['bg-green-50']
-			}}
-			on:consider={handleDndConsider}
-			on:finalize={handleDndFinalize}
-		>
-			<!-- fazer essa condição no filtro: os arriscados estão na lista de dependentes -->
-			{#each $scopesStore
-				.filter((s) => s.id !== 'bucket' && s.items.length > 0 && s.dependents.length > 0 && !s.risky)
-				.sort(function (first, second) {
-					if (second.risky) {
-						return -1;
-					}
-					if (first.dependents.length > second.dependents.length) {
-						return -1;
-					}
-					if (first.dependents.length < second.dependents.length) {
-						return 1;
-					}
-					if (first.dependencies.length > second.dependencies.length) {
-						return -1;
-					}
-					if (first.dependencies.length < second.dependencies.length) {
-						return 1;
-					}
-					return 0;
-				}) as scope (scope.id)}
-				<div
-					animate:flip={{ duration: flipDurationMs }}
-					style:background-color={percentageToHsl(
-						isNaN(scope.dependents.length / maxDependents)
-							? 0
-							: scope.dependents.length / maxDependents,
-						120,
-						0
-					)}
-				>
-					<ScopeSequence bind:scope />
-				</div>
-			{/each}
-		</section>
-	</div>
-	<div>
-		<div class="h-24"><h3>Focus on Risky & Unknowns</h3></div>
-
-		<section
-			class={'grid grid-rows-6 grid-cols-1 grid-flow-col gap-4 place-content-around'}
-			use:dndzone={{
-				items: $scopesStore,
-				flipDurationMs,
-				type: 'scopeSequence',
-				dropTargetClasses: ['bg-green-50']
-			}}
-			on:consider={handleDndConsider}
-			on:finalize={handleDndFinalize}
-		>
-			{#each $scopesStore
-				.filter((s) => s.id !== 'bucket' && s.items.length > 0 && s.risky)
-				.sort(function (first, second) {
-					if (first.dependents.length > second.dependents.length) {
-						return -1;
-					}
-					if (first.dependents.length < second.dependents.length) {
-						return 1;
-					}
-					if (first.dependencies.length > second.dependencies.length) {
-						return -1;
-					}
-					if (first.dependencies.length < second.dependencies.length) {
-						return 1;
-					}
-					return 0;
-				}) as scope (scope.id)}
-				<div
-					animate:flip={{ duration: flipDurationMs }}
-					style:background-color={percentageToHsl(
-						isNaN(scope.dependents.length / maxDependents)
-							? 0
-							: scope.dependents.length / maxDependents,
-						120,
-						0
-					)}
-				>
-					<ScopeSequence bind:scope />
-				</div>
-			{/each}
-		</section>
-	</div>
-	<div>
-		<div class="h-24"><h3>Develop what is missing</h3></div>
-
-		<section
-			class={'grid grid-rows-6 grid-cols-1 grid-flow-col gap-4 place-content-around'}
-			use:dndzone={{
-				items: $scopesStore,
-				flipDurationMs,
-				type: 'scopeSequence',
-				dropTargetClasses: ['bg-green-50']
-			}}
-			on:consider={handleDndConsider}
-			on:finalize={handleDndFinalize}
-		>
-			{#each $scopesStore
-				.filter((s) => s.id !== 'bucket' && s.items.length > 0 && s.dependents.length > 0 && !s.risky)
-				.sort(function (first, second) {
-					if (second.risky) {
-						return -1;
-					}
-					if (first.dependents.length > second.dependents.length) {
-						return -1;
-					}
-					if (first.dependents.length < second.dependents.length) {
-						return 1;
-					}
-					if (first.dependencies.length > second.dependencies.length) {
-						return -1;
-					}
-					if (first.dependencies.length < second.dependencies.length) {
-						return 1;
-					}
-					return 0;
-				}) as scope (scope.id)}
-				<div
-					animate:flip={{ duration: flipDurationMs }}
-					style:background-color={percentageToHsl(
-						isNaN(scope.dependents.length / maxDependents)
-							? 0
-							: scope.dependents.length / maxDependents,
-						120,
-						0
-					)}
-				>
-					<ScopeSequence bind:scope />
-				</div>
-			{/each}
-		</section>
-	</div>
-	<div>
-		<div class="h-24"><h3>Remaining scopes</h3></div>
-
-		<section
-			class={'grid grid-rows-6 grid-cols-1 grid-flow-col gap-4 place-content-around'}
-			use:dndzone={{
-				items: $scopesStore,
-				flipDurationMs,
-				type: 'scopeSequence',
-				dropTargetClasses: ['bg-green-50']
-			}}
-			on:consider={handleDndConsider}
-			on:finalize={handleDndFinalize}
-		>
-			{#each $scopesStore
-				.filter((s) => s.id !== 'bucket' && s.items.length > 0 && !s.risky && s.dependents == 0)
-				.sort(function (first, second) {
-					if (first.dependents.length > second.dependents.length) {
-						return -1;
-					}
-					if (first.dependents.length < second.dependents.length) {
-						return 1;
-					}
-					if (first.dependencies.length > second.dependencies.length) {
-						return -1;
-					}
-					if (first.dependencies.length < second.dependencies.length) {
-						return 1;
-					}
-					return 0;
-				}) as scope (scope.id)}
-				<div
-					animate:flip={{ duration: flipDurationMs }}
-					style:background-color={percentageToHsl(
-						isNaN(scope.dependents.length / maxDependents)
-							? 0
-							: scope.dependents.length / maxDependents,
-						120,
-						0
-					)}
-				>
-					<ScopeSequence bind:scope />
-				</div>
-			{/each}
-		</section>
-	</div>
+	{/each}
 </div>
 
 <style>

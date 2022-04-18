@@ -1,6 +1,8 @@
 <script>
 	import Scope from '$lib/components/Scopes/Scope.svelte';
+	import Items from '$lib/components/Scopes/Items.svelte';
 	import { scopesStore } from '$lib/stores/scopesStore';
+	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
 </script>
 
 <div class="text-sm breadcrumbs">
@@ -34,15 +36,42 @@
 
 <div class={'grid grid-rows-3 grid-cols-4 grid-flow-row gap-4 place-content-around'}>
 	{#each $scopesStore as scope}
-		{#if scope.id === 'bucket'}
-			<div class="row-span-3">
-				<Scope allowAdd editTitle={false} bind:scope />
-			</div>
-		{:else}
-			<div>
-				<Scope allowAdd bind:scope />
-			</div>
-		{/if}
+		<div class:row-span-3={scope.id === 'bucket'}>
+			<Scope editTitle={scope.id !== 'bucket'} bind:parent={scope}>
+				<div slot="body">
+					<Items
+						allowAddItem
+						bind:items={scope.items}
+						dragAndDrop
+						allowRemoveItem
+						checkbox={true}
+						fnCheckSet={(item) => {
+							return item.niceToHave;
+						}}
+						fnCheckItem={(i, checked) => {
+							i.niceToHave = checked;
+							$scopesStore = $scopesStore;
+							$scopesStore = $scopesStore; // force reactivity
+						}}
+					/>
+					<div>Nice to have:</div>
+					<Items
+						bind:items={scope.items}
+						dragAndDrop
+						allowRemoveItem
+						allowEditItem
+						checkbox={true}
+						fnCheckSet={(item) => {
+							return item.niceToHave;
+						}}
+						fnCheckItem={(i, checked) => {
+							i.niceToHave = checked;
+							$scopesStore = $scopesStore; // force reactivity
+						}}
+					/>
+				</div>
+			</Scope>
+		</div>
 	{/each}
 </div>
 

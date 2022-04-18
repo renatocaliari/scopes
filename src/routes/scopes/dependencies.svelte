@@ -1,7 +1,20 @@
 <script>
 	import Scope from '$lib/components/Scopes/Scope.svelte';
-	import ScopeDependencies from '$lib/components/Scopes/ScopeDependencies.svelte';
+	import Items from '$lib/components/Scopes/Items.svelte';
+	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 	import { scopesStore } from '$lib/stores/scopesStore';
+	import { log } from 'fractils';
+
+	function updateDependencies(scope, dependentScope, checked) {
+		if (checked) {
+			scope.dependencies = [...scope.dependencies, dependentScope.id];
+			dependentScope.dependents = [...dependentScope.dependents, scope.id];
+		} else {
+			scope.dependencies = scope.dependencies.filter((node) => node !== dependentScope.id);
+			dependentScope.dependents = dependentScope.dependents.filter((node) => node !== scope.id);
+		}
+		$scopesStore = $scopesStore; // force reactivity
+	}
 </script>
 
 <div class="text-sm breadcrumbs">
@@ -49,9 +62,37 @@
 
 <div class={'grid grid-rows-2 grid-cols-3 grid-flow-row gap-4 place-content-around'}>
 	{#each $scopesStore.filter((scope) => scope.id !== 'bucket' && scope.items.length > 0) as scope}
-		<!-- {#each $scopesStore as scope} -->
 		<div>
-			<ScopeDependencies bind:scope />
+			<Scope bind:parent={scope} editTitle={false} itemsScopeModal={scope.items}>
+				<div slot="header">
+					<BadgeDependencies bind:scope />
+				</div>
+				<div slot="subTitle">Depends on:</div>
+				<div slot="body">
+					<Items
+						bind:items={$scopesStore}
+						checkbox={true}
+						fnCheckSet={(item) => {
+							return scope.dependencies.includes(item.id);
+						}}
+						fnCheckItem={(dependentScope, checked) => {
+							updateDependencies(scope, dependentScope, checked);
+						}}
+						fnFilter={(items) => {
+							return items.filter(
+								(s) => s.id !== 'bucket' && s.id !== scope.id && s.items.length > 0
+							);
+						}}
+						fnItemsModal={(scope) => {
+							console.log('scope', scope);
+							return scope.items;
+						}}
+					>
+						<div slot="headerModal">Items</div>
+					</Items>
+				</div>
+				<div slot="headerScopeModal">Items of {scope.name}</div>
+			</Scope>
 		</div>
 	{/each}
 </div>

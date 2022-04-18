@@ -6,7 +6,7 @@ let scopes = [];
 
 let scope = {
     id: 'bucket',
-    name: 'Bucket List',
+    name: 'Bucket',
     order: 0,
     items: [],
     dependencies: [],
@@ -33,16 +33,8 @@ export let scopesStore = localStorageStore('scopesStore', scopes);
 
 export function getScope(idScope) {
     let $scopesStore = get(scopesStore);
-    let scopesFiltered = $scopesStore.filter((scope) => scope.id === idScope);
-    if (scopesFiltered) {
-        return scopesFiltered[0];
-    }
-    return {};
+    return $scopesStore.find((scope) => scope.id === idScope);
 }
 
 
 
-// export function getScope(idScope) {
-//     let $scopesStore = get(scopesStore);
-//     return $scopesStore.filter((scope) => scope.id === idScope) ? $scopesStore.filter((scope) => scope.id === idScope)[0] : {};
-// }

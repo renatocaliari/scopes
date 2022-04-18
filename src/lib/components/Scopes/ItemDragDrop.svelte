@@ -3,36 +3,98 @@
 	const dispatch = createEventDispatcher();
 
 	export let item;
+	export let itemsModal = [];
 	export let readOnly = false;
+	export let dragAndDrop = false;
+	export let checkbox = false;
+	export let checked = false;
+	export let allowRemoveItem = false;
+	export let allowEditItem = false;
 
-	function remove(item) {
+	function checkItem(checked) {
+		dispatch('checkItem', {
+			item: item,
+			checked: checked
+		});
+	}
+
+	function removeItem(item) {
 		dispatch('removeItem', {
 			item: item
 		});
 	}
 </script>
 
-<div class="task inline-flex items-center w-full">
+<div class="task inline-flex items-center w-full min-h-8">
 	{#if readOnly}
 		<div class="w-full">{item.name}</div>
 	{:else}
-		<div class="w-full" contenteditable bind:textContent={item.name}>{item.name}</div>
-		<div class="move-handle">
-			<div class="dot" />
-			<div class="dot" />
-			<div class="dot" />
-			<div class="dot" />
-		</div>
-		<button class="remove" on:click={() => remove(item)}>
-			<svg xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 20 20" fill="currentColor">
-				<path
-					fill-rule="evenodd"
-					d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-					clip-rule="evenodd"
-				/>
-			</svg>
-		</button>
+		{#if checkbox}
+			<input
+				on:change={(e) => checkItem(e.target.checked)}
+				type="checkbox"
+				class="checkbox mr-2"
+				aria-label="Set item as nice to have"
+				{checked}
+			/>
+		{/if}
+		{#if allowEditItem}
+			<div class="w-full mr-2 items-center" contenteditable bind:textContent={item.name}>
+				<label for="modal-item-{item.id}" class="mr-2 w-full link link-hover prose"
+					>{item.name}</label
+				>
+			</div>
+		{:else}
+			<div class="w-full mr-2 items-center">
+				<label for="modal-item-{item.id}" class="mr-2 w-full link link-hover prose"
+					>{item.name}</label
+				>
+			</div>
+		{/if}
+		{#if dragAndDrop}
+			<div class="move-handle mr-2">
+				<div class="dot" />
+				<div class="dot" />
+				<div class="dot" />
+				<div class="dot" />
+			</div>
+		{/if}
+		{#if allowRemoveItem}
+			<button class="remove" on:click={() => removeItem(item)}>
+				<svg xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 20 20" fill="currentColor">
+					<path
+						fill-rule="evenodd"
+						d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+						clip-rule="evenodd"
+					/>
+				</svg>
+			</button>
+		{/if}
 	{/if}
+
+	<input type="checkbox" id="modal-item-{item.id}" class="modal-toggle" />
+	<div class="modal">
+		<div class="modal-box relative">
+			<label for="modal-item-{item.id}" class="btn btn-sm btn-circle absolute right-2 top-2"
+				>✕</label
+			>
+			{#if $$slots.headerModal}
+				<h3 class="text-lg font-bold"><slot name="headerModal" /></h3>
+			{/if}
+			{#if $$slots.bodyModal}
+				<slot name="bodyModal" />
+			{/if}
+			{#if itemsModal}
+				{#each itemsModal as itemModal}
+					{#if itemModal['name']}
+						<ul>
+							<li>{itemModal.name}</li>
+						</ul>
+					{/if}
+				{/each}
+			{/if}
+		</div>
+	</div>
 </div>
 
 <style>
