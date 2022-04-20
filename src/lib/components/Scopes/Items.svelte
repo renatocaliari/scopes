@@ -1,56 +1,58 @@
 <script>
-	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
-	import { v4 as uuidv4 } from 'uuid';
 	import { createEventDispatcher } from 'svelte';
+	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
 
-	export let items;
+	export let scope;
+	export let items = scope.items;
 	export let dragAndDrop = false;
-
-	export let fnItemsModal = (item) => {
-		return [];
-	};
 	export let allowRemoveItem = false;
 	export let allowAddItem = false;
 	export let allowEditItem = false;
 	export let checkbox = false;
-	export let fnCheckSet = (item) => {
+	export let emptyState = 'No items';
+	export let fnItemsModal = (item) => {
+		return [];
+	};
+	export let fnSetChecked = (item) => {
 		return true;
 	};
-
-	export let fnCheckItem = (item, checked) => {};
-	export let fnFilter = (items) => {
-		return items;
-	};
+	export let fnOnCheckItem = (scope, item, checked) => {};
+	// export let fnFilter = (items) => {
+	// 	return items;
+	// };
 
 	let submit = false;
 	let value;
 
 	const dispatch = createEventDispatcher();
 
-	function callFilter(items) {
-		return fnFilter(items);
-	}
+	// function callFilter(items) {
+	// 	let filteredItems = fnFilter(items);
+
+	// 	// console.log('callfilter filteredItems:', filteredItems);
+	// 	// $projectStore = $projectStore;
+	// 	return filteredItems;
+	// }
+
+	// $: filteredItems = callFilter(items);
 
 	const flipDurationMs = 300;
 
 	function handleDndConsider(e) {
-		items = e.detail.items;
+		scope.items = e.detail.items;
 	}
 	function handleDndFinalize(e) {
-		items = e.detail.items;
+		scope.items = e.detail.items;
 	}
 
-	function checkItem(itemId, checked) {
-		fnCheckItem(
-			items.find((node) => node.id == itemId),
-			checked
-		);
+	function checkItem(scope, item, checked) {
+		fnOnCheckItem(scope, item, checked);
 	}
 
 	function removeItem(itemId) {
-		items = items.filter((node) => node.id != itemId);
+		scope.items = scope.items.filter((node) => node.id != itemId);
 	}
 
 	const handleSubmit = (event) => {
@@ -59,8 +61,8 @@
 
 	function addItem(event) {
 		if (event.target.value.trim() !== '') {
-			let item = { id: uuidv4(), name: event.target.value, niceToHave: false };
-			items = [item, ...items];
+			// let item = new ScopeItem(event.target.value);
+			// items = [item, ...items];
 
 			dispatch('addItem', {
 				value: event.target.value
@@ -84,6 +86,12 @@
 	function autoFocus(node) {
 		node.focus();
 	}
+
+	function proxyDndzone() {
+		if (dragAndDrop) {
+			return dndzone.apply(null, arguments);
+		}
+	}
 </script>
 
 {#if allowAddItem}
@@ -99,19 +107,21 @@
 	</form>
 {/if}
 
-{#if dragAndDrop}
-	<section
-		class="p-2 border-2 overflow-scroll h-52"
-		use:dndzone={{
-			items: items,
-			flipDurationMs,
-			type: 'Scope',
-			dropTargetClasses: ['bg-green-50']
-		}}
-		on:consider={handleDndConsider}
-		on:finalize={handleDndFinalize}
-	>
-		{#each callFilter(items) as item (item.id)}
+<section
+	class="p-2 border-2 overflow-scroll h-52"
+	use:proxyDndzone={{
+		items: items,
+		flipDurationMs,
+		type: 'items',
+		dropTargetClasses: ['bg-green-50']
+	}}
+	on:consider={handleDndConsider}
+	on:finalize={handleDndFinalize}
+>
+	{#if items.length == 0}
+		{emptyState}
+	{:else}
+		{#each items as item (item.id)}
 			<div
 				class="m-2 p-2 w-auto border-gray-400  input input-bordered "
 				animate:flip={{ duration: flipDurationMs }}
@@ -120,11 +130,12 @@
 					bind:item
 					{dragAndDrop}
 					{checkbox}
-					checked={fnCheckSet(item)}
+					checked={fnSetChecked(item)}
 					{allowRemoveItem}
 					itemsModal={fnItemsModal(item)}
+					{allowEditItem}
 					on:checkItem={(event) => {
-						checkItem(event.detail.item.id, event.detail.checked);
+						checkItem(scope, event.detail.item, event.detail.checked);
 					}}
 					on:removeItem={(event) => removeItem(event.detail.item.id)}
 				>
@@ -132,25 +143,5 @@
 				</ItemDragDrop>
 			</div>
 		{/each}
-	</section>
-{:else}
-	<section class="p-2 border-2 overflow-scroll h-52">
-		{#each callFilter(items) as item (item.id)}
-			<div class="m-2 p-2 w-auto border-gray-400 input input-bordered ">
-				<ItemDragDrop
-					bind:item
-					{dragAndDrop}
-					{checkbox}
-					checked={fnCheckSet(item)}
-					{allowRemoveItem}
-					{allowEditItem}
-					itemsModal={fnItemsModal(item)}
-					on:checkItem={(event) => checkItem(event.detail.item.id, event.detail.checked)}
-					on:removeItem={(event) => removeItem(event.detail.item.id)}
-				>
-					<div slot="headerModal">Items of {item.name}</div>
-				</ItemDragDrop>
-			</div>
-		{/each}
-	</section>
-{/if}
+	{/if}
+</section>
