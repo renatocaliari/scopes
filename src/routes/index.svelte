@@ -8,7 +8,7 @@
 </script>
 
 <svelte:head>
-	<title>Auth | {import.meta.env.VITE_APP_TITLE}</title>
+	<title>Scope Funnel | {import.meta.env.VITE_APP_TITLE}</title>
 </svelte:head>
 
 This template uses and has:

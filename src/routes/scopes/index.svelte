@@ -1,8 +1,20 @@
 <script>
+	import Project from '$lib/classes/Project';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import Items from '$lib/components/Scopes/Items.svelte';
-	import { scopesStore } from '$lib/stores/scopesStore';
-	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
+	import { projectStore } from '$lib/stores/projectStore';
+
+	let project;
+	$: {
+		console.log('atualizou o projeto - antes:', project);
+		project = Project.fromObject($projectStore);
+		console.log('atualizou o projeto - depois:', project);
+	}
+
+	function addItem(scope, value) {
+		scope.addItem(value);
+		$projectStore = $projectStore; // force reactivity
+	}
 </script>
 
 <div class="text-sm breadcrumbs">
@@ -16,6 +28,7 @@
 	<div />
 	<div>
 		<a
+			sveltekit:prefetch
 			href="/scopes/dependencies"
 			class="link-hover btn btn-sm md:btn-md gap-2 normal-case lg:gap-3"
 			><div class="flex flex-col items-end">
@@ -35,40 +48,55 @@
 </div>
 
 <div class={'grid grid-rows-3 grid-cols-4 grid-flow-row gap-4 place-content-around'}>
-	{#each $scopesStore as scope}
+	<!-- {#each project.sortScopes() as scope} -->
+	{#each project.sortScopes() as scope}
 		<div class:row-span-3={scope.id === 'bucket'}>
-			<Scope editTitle={scope.id !== 'bucket'} bind:parent={scope}>
+			<Scope editTitle={scope.id !== 'bucket'} bind:scope>
 				<div slot="body">
+					<div>Indispensable:</div>
 					<Items
+						{scope}
+						items={scope.filterItemsIndispensable()}
+						on:addItem={(e) => {
+							addItem(scope, e.detail.value);
+						}}
 						allowAddItem
-						bind:items={scope.items}
-						dragAndDrop
-						allowRemoveItem
-						checkbox={true}
-						fnCheckSet={(item) => {
-							return item.niceToHave;
-						}}
-						fnCheckItem={(i, checked) => {
-							i.niceToHave = checked;
-							$scopesStore = $scopesStore;
-							$scopesStore = $scopesStore; // force reactivity
-						}}
-					/>
-					<div>Nice to have:</div>
-					<Items
-						bind:items={scope.items}
-						dragAndDrop
-						allowRemoveItem
 						allowEditItem
-						checkbox={true}
-						fnCheckSet={(item) => {
+						allowRemoveItem
+						dragAndDrop
+						checkbox
+						fnSetChecked={(item) => {
 							return item.niceToHave;
 						}}
-						fnCheckItem={(i, checked) => {
+						fnOnCheckItem={(scope, i, checked) => {
 							i.niceToHave = checked;
-							$scopesStore = $scopesStore; // force reactivity
+							$projectStore = $projectStore; // force reactivity
 						}}
 					/>
+					<!-- fnFilter={(items) => {
+							return items.filter((item) => !item.niceToHave);
+						}} -->
+
+					{#if scope.id !== 'bucket'}
+						<div>Nice to have:</div>
+						<Items
+							{scope}
+							items={scope.filterItemsNiceToHave()}
+							allowEditItem
+							allowRemoveItem
+							checkbox
+							fnSetChecked={(item) => {
+								return item.niceToHave;
+							}}
+							fnOnCheckItem={(scope, i, checked) => {
+								i.niceToHave = checked;
+								$projectStore = $projectStore; // force reactivity
+							}}
+						/>
+						<!-- fnFilter={(items) => {
+								return items.filter((item) => item.niceToHave);
+							}} -->
+					{/if}
 				</div>
 			</Scope>
 		</div>

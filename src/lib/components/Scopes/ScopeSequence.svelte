@@ -1,5 +1,5 @@
 <script>
-	import { scopesStore } from '$lib/stores/scopesStore';
+	import { projectStore } from '$lib/stores/projectStore';
 	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 

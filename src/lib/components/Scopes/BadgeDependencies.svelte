@@ -1,5 +1,5 @@
 <script>
-	import { scopesStore } from '$lib/stores/scopesStore';
+	import { projectStore } from '$lib/stores/projectStore';
 	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
 
 	export let scope;
@@ -7,13 +7,13 @@
 
 <label for="scope-dependents-{scope.id}" class="link link-hover">
 	<div data-tip="# scopes dependents from this one" class="tooltip badge badge-info mr-2">
-		{scope.dependents.length}
+		{scope.dependents.filter((item) => item != null).length}
 	</div>
 </label>
 
 <label for="scope-dependencies-{scope.id}" class="link link-hover">
 	<div data-tip="# dependencies on other scopes" class="tooltip badge badge-error">
-		{scope.dependencies.length}
+		{scope.dependencies.filter((item) => item != null).length}
 	</div>
 </label>
 
@@ -24,7 +24,7 @@
 			>✕</label
 		>
 		<h3 class="text-lg font-bold">Dependencies of {scope.name}</h3>
-		{#each $scopesStore.filter((s) => s.dependents.includes(scope.id)) as scope (scope.id)}
+		{#each $projectStore.filter((s) => s.dependents.includes(scope.id)) as scope (scope.id)}
 			<div class="m-2 p-2 w-auto border-gray-400 input input-bordered">
 				<ItemDragDrop bind:item={scope} readOnly={true} />
 			</div>
@@ -39,7 +39,7 @@
 			>✕</label
 		>
 		<h3 class="text-lg font-bold">Dependents on {scope.name}</h3>
-		{#each $scopesStore.filter((s) => s.dependencies.includes(scope.id)) as scope (scope.id)}
+		{#each $projectStore.filter((s) => s.dependencies.includes(scope.id)) as scope (scope.id)}
 			<div class="m-2 p-2 w-auto border-gray-400 input input-bordered">
 				<ItemDragDrop bind:item={scope} readOnly={true} />
 			</div>

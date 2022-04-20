@@ -1,19 +1,37 @@
 <script>
+	import Project from '$lib/classes/Project';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import Items from '$lib/components/Scopes/Items.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
-	import { scopesStore } from '$lib/stores/scopesStore';
-	import { log } from 'fractils';
+	import { project } from '$lib/stores/projectStore';
+
+	// let project;
+	$: {
+		console.log('project:', project);
+		// $projectStore = $projectStore;
+		// // console.log('atualizou o projeto - antes:', project);
+		// project = Project.fromObject($projectStore);
+		// console.log('atualizou o projeto - depois:', project);
+	}
 
 	function updateDependencies(scope, dependentScope, checked) {
+		console.log(arguments);
 		if (checked) {
-			scope.dependencies = [...scope.dependencies, dependentScope.id];
-			dependentScope.dependents = [...dependentScope.dependents, scope.id];
+			scope.dependencies = scope.dependencies || [];
+			if (dependentScope?.id) {
+				scope.dependencies = [...new Set([...scope.dependencies, dependentScope.id])];
+			}
+
+			dependentScope.dependents = dependentScope.dependents || [];
+			if (scope.id) {
+				dependentScope.dependents = [...new Set([...dependentScope.dependents, scope.id])];
+			}
 		} else {
 			scope.dependencies = scope.dependencies.filter((node) => node !== dependentScope.id);
 			dependentScope.dependents = dependentScope.dependents.filter((node) => node !== scope.id);
 		}
-		$scopesStore = $scopesStore; // force reactivity
+		console.log('updade dependencies');
+		// $projectStore = $projectStore; // force reactivity
 	}
 </script>
 
@@ -43,7 +61,10 @@
 		>
 	</div>
 	<div>
-		<a href="/scopes/sequence" class="link-hover btn btn-sm md:btn-md gap-2 normal-case lg:gap-3"
+		<a
+			sveltekit:prefetch
+			href="/scopes/sequence"
+			class="link-hover btn btn-sm md:btn-md gap-2 normal-case lg:gap-3"
 			><div class="flex flex-col items-end">
 				<span class="text-neutral-content/50 hidden text-xs font-normal md:block">Next</span>
 				<span>Sequence</span>
@@ -60,36 +81,36 @@
 	</div>
 </div>
 
+<!-- fnFilter={(items) => {
+							return items.filter(
+								(s) => s.id !== 'bucket' && s.id !== scope.id && s.items.length > 0
+							);
+						}} -->
+
 <div class={'grid grid-rows-2 grid-cols-3 grid-flow-row gap-4 place-content-around'}>
-	{#each $scopesStore.filter((scope) => scope.id !== 'bucket' && scope.items.length > 0) as scope}
+	{#each project.$scopes as scope}
+		<!-- {#each $projectStore.filter((scope) => scope.id !== 'bucket' && scope.items.length > 0) as scope} -->
 		<div>
-			<Scope bind:parent={scope} editTitle={false} itemsScopeModal={scope.items}>
+			<Scope {scope} itemsScopeModal={scope.items}>
 				<div slot="header">
-					<BadgeDependencies bind:scope />
+					<BadgeDependencies {scope} />
 				</div>
 				<div slot="subTitle">Depends on:</div>
 				<div slot="body">
 					<Items
-						bind:items={$scopesStore}
-						checkbox={true}
-						fnCheckSet={(item) => {
-							return scope.dependencies.includes(item.id);
+						{scope}
+						items={project.$scopes.filter((s) => s.id !== scope.id && s.id !== 'bucket')}
+						checkbox
+						fnSetChecked={(s) => {
+							return scope.dependencies.includes(s.id);
 						}}
-						fnCheckItem={(dependentScope, checked) => {
-							updateDependencies(scope, dependentScope, checked);
-						}}
-						fnFilter={(items) => {
-							return items.filter(
-								(s) => s.id !== 'bucket' && s.id !== scope.id && s.items.length > 0
-							);
+						fnOnCheckItem={(s, item, checked) => {
+							updateDependencies(s, item, checked);
 						}}
 						fnItemsModal={(scope) => {
-							console.log('scope', scope);
 							return scope.items;
 						}}
-					>
-						<div slot="headerModal">Items</div>
-					</Items>
+					/>
 				</div>
 				<div slot="headerScopeModal">Items of {scope.name}</div>
 			</Scope>

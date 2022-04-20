@@ -1,4 +1,10 @@
 <script context="module">
+	import '../app.css';
+	import { fly } from 'svelte/transition';
+	import { page, session, navigating } from '$app/stores';
+
+	import LoadingPageProgressBar from '$lib/components/LoadingPageProgressBar.svelte';
+	import Header from '$lib/components/Header.svelte';
 	import { notificationData } from '$lib/stores/notificationStore';
 
 	export const load = async ({ url }) => {
@@ -9,12 +15,7 @@
 </script>
 
 <script>
-	import '../app.css';
-	import { fly } from 'svelte/transition';
-	import { page, session, navigating } from '$app/stores';
-
-	import LoadingPageProgressBar from '$lib/components/LoadingPageProgressBar.svelte';
-	import Header from '$lib/components/Header.svelte';
+	export let loggedOut;
 </script>
 
 <LoadingPageProgressBar />

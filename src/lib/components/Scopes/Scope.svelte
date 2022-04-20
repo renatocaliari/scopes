@@ -1,9 +1,8 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
-
-	export let parent;
+	export let scope;
 	export let itemsScopeModal = [];
-	export let editTitle = true;
+	export let editTitle = false;
 	export let checkbox = false;
 	export let checked = false;
 
@@ -17,7 +16,7 @@
 	}
 </script>
 
-<div name="scope-{parent.id}" class="p-2 border-2">
+<div name="scope-{scope.id}" class="p-2 border-2">
 	<div name="title" class="mb-2">
 		<div class="inline-flex items-center w-full">
 			{#if checkbox}
@@ -25,22 +24,22 @@
 					type="checkbox"
 					class="checkbox mr-2"
 					{checked}
-					on:change={(e) => checkItem(parent, e.target.checked)}
+					on:change={(e) => checkItem(scope, e.target.checked)}
 				/>
 			{/if}
 			{#if editTitle}
 				<svelte:element
 					this="h3"
 					contenteditable
-					bind:innerHTML={parent.name}
+					bind:innerHTML={scope.name}
 					class="mr-2 mt-0 mb-0"
 				/>
 				{#if $$slots.header}
 					<slot name="header" />
 				{/if}
 			{:else}
-				<label for="modal-{parent.id}" class="mr-2 w-full link link-hover prose"
-					><h3>{parent.name}</h3></label
+				<label for="modal-{scope.id}" class="mr-2 w-full link link-hover prose"
+					><h3>{scope.name}</h3></label
 				>
 				{#if $$slots.header}
 					<slot name="header" />
@@ -55,10 +54,10 @@
 		<slot name="body" />
 	{/if}
 
-	<input type="checkbox" id="modal-{parent.id}" class="modal-toggle" />
+	<input type="checkbox" id="modal-{scope.id}" class="modal-toggle" />
 	<div class="modal">
 		<div class="modal-box relative">
-			<label for="modal-{parent.id}" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+			<label for="modal-{scope.id}" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
 			{#if $$slots.headerScopeModal}
 				<h3 class="text-lg font-bold"><slot name="headerScopeModal" /></h3>
 			{/if}
