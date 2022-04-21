@@ -24,16 +24,18 @@ function ProjectStore(hasBucket, totalScopes, sampleData) {
         let dependsOn = [];
         let risky = false;
         if (sampleData) {
+            console.log('sample data');
+
             items = [ScopeItem.createItem("item1"), ScopeItem.createItem("item2")];
             switch (i) {
                 case 1:
                     dependsOn = ['scope-3'];
                     break;
                 case 2:
-                    dependsOn = ['scope-6'];
-                    risky = true;
+                    dependsOn = ['scope-6', 'scope-1', 'scope-3'];
                     break;
                 case 3:
+                    risky = true;
                     break;
                 case 4:
                     dependsOn = ['scope-5'];
@@ -42,13 +44,10 @@ function ProjectStore(hasBucket, totalScopes, sampleData) {
                     break;
                 case 6:
                     dependsOn = ['scope-1'];
-
                     break;
-
                 default:
                     break;
             }
-
         }
         addScopeAutoId('Change: Scope ' + i, 0, items, dependsOn, risky);
     }
@@ -113,7 +112,6 @@ function ProjectStore(hasBucket, totalScopes, sampleData) {
                     s.dependsOn = s.dependsOn.filter((id) => id !== checkedScope.id);
                 }
             }
-
             return s;
         }));
     }
@@ -163,11 +161,21 @@ function ProjectStore(hasBucket, totalScopes, sampleData) {
 
 
     function sortScopesByPriority() {
-        const scopesSorted = derived(store, ($store) =>
-            get(store).filter((scope) => scope.id !== 'bucket').sort(compare)
-        );
-        console.log('priority:', scopesSorted);
-        return get(scopesSorted);
+        // it needed to copy elements from store instead of assign directly
+        // based on this idea: https://svelte.dev/repl/44f170d0cd43440ca8dd8e2bff341bda?version=3.17.1
+
+        // another idea with slice: https://github.com/sveltejs/svelte/issues/6071
+
+        // const scopesSorted = derived(store, (s) =>
+        //     [...s].filter((scope) => scope.id !== 'bucket').sort(compare)
+        // );
+
+        const scopesSorted = [...get(store)].slice().filter((scope) => scope.id !== 'bucket').sort(compare)
+        console.log('ordenou');
+
+        return scopesSorted;
+        // return [...get(store)].sort(compare)
+
     }
 
 
@@ -194,147 +202,12 @@ function ProjectStore(hasBucket, totalScopes, sampleData) {
     }
 };
 
-// export default class Project {
-//     #idxScope = 0;
-//     scopes = writable([]);
-//     constructor(hasBucket, totalScopes) {
-//         this.#idxScope = 0;
-//         // this.scopes = localStorageStore('projectStore', writable([]));
-//         this.scopes = writable([]);
-//         if (hasBucket) {
-//             console.log('vai criar bucket');
-//             this.addBucketScope('Bucket');
-//         }
-//         for (let i = 1; i <= totalScopes; i++) {
-//             this.addScopeAutoId('Change: Scope ' + i);
-//         }
-//         this.#idxScope = this.getScopes().length;
-//         console.log('this.#idxScope:', this.#idxScope);
-//     }
-
-//     getScopes() {
-//         return get(this.scopes);
-//     }
-
-//     scopeUnlocksDependencies = ((scope) => {
-//         let result = this.getScopes().filter((s) => s.dependsOn.includes(scope.id)).map((s) => s.id);
-//         return result;
-//     });
-
-
-//     deleteAllScopes() {
-//         this.scopes = writable([]);
-//     }
-
-//     addBucketScope(name, order = 0, items = [], dependsOn = [], risky = false) {
-//         // this.scopes = [...this._scopes, new Scope('bucket', name, order, items, dependencies, dependents, risky)]
-//         this.addScope("bucket", name, order, items, dependsOn, risky);
-//     }
-
-//     addScopeAutoId(name, order = 0, items = [], dependsOn = [], risky = false) {
-//         this.addScope('scope-' + this.#idxScope, name, order, items, dependsOn, risky)
-//         // this.scopes.update(v => [...v, new Scope('scope-' + this.#idxScope, name, order, items, dependencies, dependents, risky)]);
-//         this.#idxScope += 1;
-//     }
-
-//     addScope(id, name, order = 0, items = [], dependsOn = [], risky = false) {
-//         let newScope = new Scope(id, name, order, items, dependsOn, risky);
-//         this.scopes.update((scopes) => [...scopes, newScope]);
-//         // this.getScopes() = [...this.getScopes()., newScope]
-//         // this.scopes.update(v => [...v, 'a']);
-//     }
-
-//     filterScopesWithItemsExcludingBucket() {
-//         return this.getScopes().filter((scope) => scope.id !== 'bucket' && scope.items.length > 0)
-//     }
-
-//     getScopesExcludingThis(currentScope) {
-//         // console.log('getScopesExcludingThis:', currentScope);
-//         return this.getScopes().filter((scope) => scope.id != currentScope.id && scope.id !== "bucket");
-//     }
-
-//     filterScopes(fn) {
-//         return this.getScopes().filter(fn);
-//     }
-//     sortScopes() {
-//         return this.getScopes().sort((a, b) => {
-//             if (a.id < b.id) {
-//                 return -1;
-//             }
-//             if (a.id > b.id) {
-//                 return 1;
-//             }
-//         });
-//     }
-
-//     updateDependencies(scope, checkedScope, checked) {
-//         if (scope.id && checkedScope.id) {
-//             scope.dependsOn = scope.dependsOn || [];
-//             if (checked) {
-//                 scope.dependsOn = [...new Set([...scope.dependsOn, checkedScope.id])];
-//             } else {
-//                 scope.dependsOn = scope.dependsOn.filter((id) => id !== checkedScope.id);
-//             }
-//         }
-//     }
-
-
-//     sortScopesByPriority() {
-//         const scopes = this.scopes;
-//         const scopesSorted = derived(scopes, ($scopes) =>
-//             this.getScopes().filter((scope) => scope.id !== 'bucket').sort(compare)
-//         );
-//         console.log('priority:', scopesSorted);
-//         return get(scopesSorted);
-//     }
-
-//     static fromObject(obj) {
-//         return new Project(obj);
-//     }
-
-//     static compare(first, second) {
-//         // > 0 	sort b before a
-//         // < 0 	sort a before b
-//         // === 0 	keep original order of a and b
-//         let ret = 0;
-//         if (first.risky && !second.risky && first.dependsOn.includes(second.id)) {
-//             ret = 1;
-//         } else if (first.risky && !second.risky && !first.dependsOn.includes(second.id)) {
-//             ret = -1;
-//         } else if (first.risky && second.risky && first.dependsOn.length > second.dependsOn.length) {
-//             ret = -1;
-//         } else if (
-//             first.risky &&
-//             second.risky &&
-//             first.dependsOn.length === second.dependsOn.length &&
-//             first.items.length > second.items.length
-//         ) {
-//             ret = -1;
-//         } else if (
-//             !first.risky &&
-//             !second.risky &&
-//             first.dependsOn.length > second.dependsOn.length && first.dependsOn.includes(second.id)
-//         ) {
-//             ret = 1;
-//         } else if (
-//             !first.risky &&
-//             !second.risky &&
-//             first.dependsOn.length > second.dependsOn.length && !first.dependsOn.includes(second.id)
-//         ) {
-//             ret = -1;
-//         } else if (!first.risky && !second.risky && first.dependsOn.includes(second.id)) {
-//             ret = 1;
-//         }
-//         return ret;
-//     }
-// }
-
-
-function compare(first, second) {
+export function compare(first, second) {
     // > 0 	sort b before a
     // < 0 	sort a before b
     // === 0 	keep original order of a and b
     let ret = 0;
+
     if (first.risky && !second.risky && first.dependsOn.includes(second.id)) {
         ret = 1;
     } else if (first.risky && !second.risky && !first.dependsOn.includes(second.id)) {

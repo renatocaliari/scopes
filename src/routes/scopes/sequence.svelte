@@ -1,12 +1,19 @@
 <script>
-	import { derived, get } from 'svelte/store';
 	import { dndzone } from 'svelte-dnd-action';
-	import { projectStore } from '$lib/stores/projectStore';
-	import ScopeClass from '$lib/classes/Scope';
+	import { projectStore, compare } from '$lib/stores/projectStore';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 
 	const flipDurationMs = 300;
+
+	const novo = JSON.parse(JSON.stringify(projectStore.sortScopesByPriority()));
+	$projectStore = projectStore.sortScopesByPriority();
+
+	// let sortedScopes = $projectStore.filter((scope) => scope.id !== 'bucket').sort(compare);
+	// $: sortedScopes = $projectStore.filter((scope) => scope.id !== 'bucket').sort(compare);
+	// $: {
+	// 	sortedScopes = $projectStore.filter((scope) => scope.id !== 'bucket').sort(compare);
+	// }
 
 	// let cols = [
 	// 	{
@@ -70,24 +77,6 @@
 		var hue = percentage * (hue1 - hue0) + hue0;
 		return 'hsl(' + hue + ', 100%, ' + (100 - percentage * 10) + '%)';
 	}
-
-	function updateRisky(scope, checked) {
-		project.scopeUpdateRisky(scope, checked);
-		// let teste = project.getScopes().map((s) => {
-		// 	if (s.id === scope.id) {
-		// 		// return a new object
-		// 		return new ScopeClass(scope.id, scope.name, 0, scope.items, scope.dependsOn, checked);
-		// 	}
-		// 	// return the same object
-		// 	return s;
-		// });
-		// console.log('teste:', teste);
-		// console.log('project.getScopes():', project.getScopes());
-		// project.scopes.map();
-		// scope.risky = checked;
-		// project.scopes = project.scopes; // force reactivity
-		// $projectStore = $projectStore; // force reactivity
-	}
 </script>
 
 <div class="text-sm breadcrumbs">
@@ -129,9 +118,13 @@
 
 <button class="btn mb-4">Reset order</button>
 
+<pre>{JSON.stringify(novo)}</pre>
 <pre>{JSON.stringify($projectStore)}</pre>
 <pre>{JSON.stringify(projectStore.sortScopesByPriority())}</pre>
-{#each projectStore.sortScopesByPriority() as scope}
+<!-- {#each [...$projectStore].filter((scope) => scope.id !== 'bucket').sort(compare) as scope} -->
+
+{#each projectStore.sortScopesByPriority() as scope (scope.id)}
+	<!-- {#each sortedScopes as scope} -->
 	<div class="m-2 text-red-400" style:background-color={calculateColor(scope, maxDependents)}>
 		{scope.id}
 		<Scope
@@ -141,14 +134,11 @@
 			checkbox
 			checked={scope.risky}
 			on:checkItem={(e) => {
-				console.log('scope:', scope);
-				console.log('e:', e.detail.item);
 				projectStore.scopeUpdateRisky(e.detail.item, e.detail.checked);
-				// updateRisky(e.detail.item, e.detail.checked);
 			}}
 		>
 			<div slot="header">
-				<!-- <BadgeDependencies {project} {scope} /> -->
+				<BadgeDependencies project={projectStore} bind:scope />
 			</div>
 			<div slot="headerScopeModal">Items of {scope.name}</div>
 		</Scope>

@@ -14,24 +14,4 @@ export default class Scope {
         this.dependsOn = [...new Set(dependendsOn)]
         this.risky = risky
     }
-
-    unlocksDependencies = ((project) => {
-        let result = project.getScopes().filter((scope) => scope.dependsOn.includes(this.id)).map((s) => s.id);
-        return result;
-    });
-
-
-    addItem(name, description = "") {
-        console.log('add item:', name);
-        this.items = [...this.items, new ScopeItem(name, description)];
-    }
-
-    filterItemsIndispensable() {
-        console.log('this.items:', this.items);
-        return this.items.filter((item) => !item.niceToHave)
-    }
-    filterItemsNiceToHave() {
-        return this.items.filter((item) => item.niceToHave)
-    }
-
 }    

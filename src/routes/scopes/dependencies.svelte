@@ -55,7 +55,7 @@
 	</div>
 </div>
 
-<pre>{JSON.stringify($projectStore)}</pre>
+<!-- <pre>{JSON.stringify($projectStore)}</pre> -->
 
 <div class={'grid grid-rows-2 grid-cols-3 grid-flow-row gap-4 place-content-around'}>
 	{#each sortedScopes as scope}
@@ -75,8 +75,6 @@
 						}}
 						fnOnCheckItem={(s, item, checked) => {
 							projectStore.updateDependencies(s, item, checked);
-							console.log('scope:', scope);
-							// $projectStore = $projectStore; // force reactivity
 						}}
 						fnItemsModal={(scope) => {
 							return scope.items;
