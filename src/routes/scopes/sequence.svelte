@@ -1,66 +1,67 @@
 <script>
+	import { derived, get } from 'svelte/store';
 	import { dndzone } from 'svelte-dnd-action';
-	import { projectStoreSorted, projectStore } from '$lib/stores/projectStore';
+	import { projectStore } from '$lib/stores/projectStore';
+	import ScopeClass from '$lib/classes/Scope';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
-	import Items from '$lib/components/Scopes/Items.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 
 	const flipDurationMs = 300;
 
-	let cols = [
-		{
-			title: "Do only the essential to develop Risky and Unknowns (mock if it's necessary)",
-			filter: function (s) {
-				return (
-					s.id !== 'bucket' &&
-					s.items.length > 0 &&
-					!s.risky &&
-					s.dependents.length > 0 &&
-					s.dependents.some((idDependent) =>
-						$projectStore.find((element) => element.risky && element.id === idDependent)
-					)
-				);
-			},
-			sort: compare
-		},
-		{
-			title: 'Risky & Unknowns',
-			filter: function (s) {
-				return s.id !== 'bucket' && s.items.length > 0 && s.risky;
-			},
-			sort: compare
-		},
-		{
-			title: 'Develop ones with dependencies',
-			filter: function (s) {
-				return s.id !== 'bucket' && s.items.length > 0 && !s.risky && s.dependents.length > 0;
-			},
-			sort: compare
-		},
-		{
-			title: 'Develope remaining scopes',
-			filter: function (s) {
-				return s.id !== 'bucket' && s.items.length > 0 && !s.risky && s.dependents.length === 0;
-			},
-			sort: compare
-		}
-	];
+	// let cols = [
+	// 	{
+	// 		title: "Do only the essential to develop Risky and Unknowns (mock if it's necessary)",
+	// 		filter: function (s) {
+	// 			return (
+	// 				s.id !== 'bucket' &&
+	// 				s.items.length > 0 &&
+	// 				!s.risky &&
+	// 				s.dependsOn.length > 0 &&
+	// 				s.dependsOn.some((idDependent) =>
+	// 					project.getScopes().find((element) => element.risky && element.id === idDependent)
+	// 				)
+	// 			);
+	// 		},
+	// 		sort: compare
+	// 	},
+	// 	{
+	// 		title: 'Risky & Unknowns',
+	// 		filter: function (s) {
+	// 			return s.id !== 'bucket' && s.items.length > 0 && s.risky;
+	// 		},
+	// 		sort: compare
+	// 	},
+	// 	{
+	// 		title: 'Develop ones with dependencies',
+	// 		filter: function (s) {
+	// 			return s.id !== 'bucket' && s.items.length > 0 && !s.risky && s.dependsOn.length > 0;
+	// 		},
+	// 		sort: compare
+	// 	},
+	// 	{
+	// 		title: 'Develope remaining scopes',
+	// 		filter: function (s) {
+	// 			return s.id !== 'bucket' && s.items.length > 0 && !s.risky && s.dependsOn.length === 0;
+	// 		},
+	// 		sort: compare
+	// 	}
+	// ];
 
-	function handleDndConsider(e) {
-		$projectStore = e.detail.items;
-	}
-	function handleDndFinalize(e) {
-		$projectStore = e.detail.items;
-	}
+	// function handleDndConsider(e) {
+	// 	project.scopesStore = e.detail.items;
+	// }
+	// function handleDndFinalize(e) {
+	// 	project.scopesStore = e.detail.items;
+	// }
 
 	let maxDependents = $projectStore.reduce((prev, curr) => {
-		return Math.max(prev, curr.dependents.length);
+		return Math.max(prev, curr.dependsOn.length);
 	}, 0);
 
 	function calculateColor(scope, maxDependents) {
 		console.log('max:', maxDependents);
 		return percentageToHsl(
-			isNaN(scope.dependents.length / maxDependents) ? 0 : scope.dependents.length / maxDependents,
+			isNaN(scope.dependsOn.length / maxDependents) ? 0 : scope.dependsOn.length / maxDependents,
 			35,
 			0
 		);
@@ -71,63 +72,21 @@
 	}
 
 	function updateRisky(scope, checked) {
-		scope.risky = checked;
+		project.scopeUpdateRisky(scope, checked);
+		// let teste = project.getScopes().map((s) => {
+		// 	if (s.id === scope.id) {
+		// 		// return a new object
+		// 		return new ScopeClass(scope.id, scope.name, 0, scope.items, scope.dependsOn, checked);
+		// 	}
+		// 	// return the same object
+		// 	return s;
+		// });
+		// console.log('teste:', teste);
+		// console.log('project.getScopes():', project.getScopes());
+		// project.scopes.map();
+		// scope.risky = checked;
+		// project.scopes = project.scopes; // force reactivity
 		// $projectStore = $projectStore; // force reactivity
-	}
-
-	function compare(first, second) {
-		// 		> 0 	sort b before a
-		// < 0 	sort a before b
-		// === 0 	keep original order of a and b
-		// console.log('first:', first);
-		// console.log('second:', second);
-		// console.log('first.risky:', first.risky);
-		// console.log('second.risky:', second.risky);
-		// console.log('first.dependents:', first.dependents);
-		// console.log('second.dependents:', second.dependents);
-		// console.log('first.dependencies:', first.dependencies);
-		// console.log('second.dependencies:', second.dependencies);
-		let ret = 0;
-		if (first.risky && !second.risky && first.dependencies.includes(second.id)) {
-			ret = 1;
-		} else if (first.risky && !second.risky && !first.dependencies.includes(second.id)) {
-			ret = -1;
-		} else if (first.risky && second.risky && first.dependents.length > second.dependents.length) {
-			ret = -1;
-		} else if (
-			first.risky &&
-			second.risky &&
-			first.dependents.length === second.dependents.length &&
-			first.items.length > second.items.length
-		) {
-			ret = -1;
-		} else if (
-			!first.risky &&
-			!second.risky &&
-			first.dependents.length > second.dependents.length
-		) {
-			ret = -1;
-		} else if (!first.risky && !second.risky && first.dependencies.includes(second.id)) {
-			ret = 1;
-		} else if (
-			!first.risky &&
-			!second.risky &&
-			first.dependencies.length < second.dependencies.length
-		) {
-			ret = -1;
-		} else if (
-			!first.risky &&
-			!second.risky &&
-			first.dependencies.length > second.dependencies.length
-		) {
-			console.log('first:', first);
-			console.log('second:', second);
-			console.log('>> entrou');
-			ret = 1;
-		}
-		console.log('>>>> ret:', ret);
-
-		return ret;
 	}
 </script>
 
@@ -170,9 +129,11 @@
 
 <button class="btn mb-4">Reset order</button>
 
-{#each $projectStoreSorted.filter((scope) => scope.id !== 'bucket') as scope}
-	<div>
-		{scope.name}
+<pre>{JSON.stringify($projectStore)}</pre>
+<pre>{JSON.stringify(projectStore.sortScopesByPriority())}</pre>
+{#each projectStore.sortScopesByPriority() as scope}
+	<div class="m-2 text-red-400" style:background-color={calculateColor(scope, maxDependents)}>
+		{scope.id}
 		<Scope
 			{scope}
 			editTitle={false}
@@ -180,17 +141,21 @@
 			checkbox
 			checked={scope.risky}
 			on:checkItem={(e) => {
-				updateRisky(e.detail.item, e.detail.checked);
+				console.log('scope:', scope);
+				console.log('e:', e.detail.item);
+				projectStore.scopeUpdateRisky(e.detail.item, e.detail.checked);
+				// updateRisky(e.detail.item, e.detail.checked);
 			}}
 		>
 			<div slot="header">
-				<BadgeDependencies {scope} />
+				<!-- <BadgeDependencies {project} {scope} /> -->
 			</div>
 			<div slot="headerScopeModal">Items of {scope.name}</div>
 		</Scope>
 	</div>
 {/each}
 
+<!-- 
 <div class={'grid grid-cols-4 grid-flow-col gap-2 place-content-around divide-x-2 divide-dashed'}>
 	{#each cols as col, i}
 		<div>
@@ -205,7 +170,7 @@
 
 			<div class="m-h-24 p-2"><h3>{col.title}</h3></div>
 			<section class={'p-2 grid grid-rows-6 grid-cols-1 grid-flow-col gap-4 place-content-around'}>
-				{#each $projectStoreSorted.filter(col.filter) as scope}
+				{#each project.getScopes().filter(col.filter) as scope}
 					<div>
 						<Scope
 							{scope}
@@ -218,37 +183,37 @@
 							}}
 						>
 							<div slot="header">
-								<BadgeDependencies {scope} />
+								<BadgeDependencies {project} {scope} />
 							</div>
 							<div slot="body">
 								<div>Depends on:</div>
 								<div>
 									<Items
+										{scope}
 										emptyState="No dependencies"
-										items={$projectStore}
-										fnFilter={(items) => {
-											return items.filter(
+										items={project
+											.getScopes()
+											.filter(
 												(s) =>
 													!['bucket', scope.id].includes(s.id) &&
 													s.items.length > 0 &&
-													s.dependents.includes(scope.id)
-											);
-										}}
+													s.dependsOn.includes(scope.id)
+											)}
 									/>
 								</div>
 								<div>Dependencies:</div>
 								<div style:background-color={calculateColor(scope, maxDependents)}>
 									<Items
+										{scope}
 										emptyState="No dependencies"
-										items={$projectStore}
-										fnFilter={(items) => {
-											return items.filter(
+										items={project
+											.getScopes()
+											.filter(
 												(s) =>
 													!['bucket', scope.id].includes(s.id) &&
 													s.items.length > 0 &&
-													s.dependencies.includes(scope.id)
-											);
-										}}
+													s.unlocksDependencies(project).includes(scope.id)
+											)}
 									/>
 								</div>
 							</div>
@@ -259,8 +224,7 @@
 			</section>
 		</div>
 	{/each}
-</div>
-
+</div> -->
 <style>
 	:global(*) {
 		box-sizing: border-box;

@@ -1,38 +1,12 @@
 <script>
-	import Project from '$lib/classes/Project';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import Items from '$lib/components/Scopes/Items.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
-	import { project } from '$lib/stores/projectStore';
+	import { projectStore } from '$lib/stores/projectStore';
 
-	// let project;
-	$: {
-		console.log('project:', project);
-		// $projectStore = $projectStore;
-		// // console.log('atualizou o projeto - antes:', project);
-		// project = Project.fromObject($projectStore);
-		// console.log('atualizou o projeto - depois:', project);
-	}
-
-	function updateDependencies(scope, dependentScope, checked) {
-		console.log(arguments);
-		if (checked) {
-			scope.dependencies = scope.dependencies || [];
-			if (dependentScope?.id) {
-				scope.dependencies = [...new Set([...scope.dependencies, dependentScope.id])];
-			}
-
-			dependentScope.dependents = dependentScope.dependents || [];
-			if (scope.id) {
-				dependentScope.dependents = [...new Set([...dependentScope.dependents, scope.id])];
-			}
-		} else {
-			scope.dependencies = scope.dependencies.filter((node) => node !== dependentScope.id);
-			dependentScope.dependents = dependentScope.dependents.filter((node) => node !== scope.id);
-		}
-		console.log('updade dependencies');
-		// $projectStore = $projectStore; // force reactivity
-	}
+	$: sortedScopes = $projectStore.filter(
+		(scope) => scope.id !== 'bucket' && scope.items.length > 0
+	);
 </script>
 
 <div class="text-sm breadcrumbs">
@@ -81,31 +55,28 @@
 	</div>
 </div>
 
-<!-- fnFilter={(items) => {
-							return items.filter(
-								(s) => s.id !== 'bucket' && s.id !== scope.id && s.items.length > 0
-							);
-						}} -->
+<pre>{JSON.stringify($projectStore)}</pre>
 
 <div class={'grid grid-rows-2 grid-cols-3 grid-flow-row gap-4 place-content-around'}>
-	{#each project.$scopes as scope}
-		<!-- {#each $projectStore.filter((scope) => scope.id !== 'bucket' && scope.items.length > 0) as scope} -->
+	{#each sortedScopes as scope}
 		<div>
 			<Scope {scope} itemsScopeModal={scope.items}>
 				<div slot="header">
-					<BadgeDependencies {scope} />
+					<BadgeDependencies project={projectStore} bind:scope />
 				</div>
 				<div slot="subTitle">Depends on:</div>
 				<div slot="body">
 					<Items
-						{scope}
-						items={project.$scopes.filter((s) => s.id !== scope.id && s.id !== 'bucket')}
+						bind:scope
+						items={projectStore.getScopesExcludingThis(scope)}
 						checkbox
 						fnSetChecked={(s) => {
-							return scope.dependencies.includes(s.id);
+							return scope.dependsOn.includes(s.id);
 						}}
 						fnOnCheckItem={(s, item, checked) => {
-							updateDependencies(s, item, checked);
+							projectStore.updateDependencies(s, item, checked);
+							console.log('scope:', scope);
+							// $projectStore = $projectStore; // force reactivity
 						}}
 						fnItemsModal={(scope) => {
 							return scope.items;

@@ -1,19 +1,17 @@
 <script>
-	import Project from '$lib/classes/Project';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import Items from '$lib/components/Scopes/Items.svelte';
 	import { projectStore } from '$lib/stores/projectStore';
 
-	let project;
-	$: {
-		console.log('atualizou o projeto - antes:', project);
-		project = Project.fromObject($projectStore);
-		console.log('atualizou o projeto - depois:', project);
-	}
+	// let project;
+	// $: {
+	// 	console.log('atualizou o projeto - antes:', project);
+	// 	project = Project.fromObject($projectStore);
+	// 	console.log('atualizou o projeto - depois:', project);
+	// }
 
 	function addItem(scope, value) {
-		scope.addItem(value);
-		$projectStore = $projectStore; // force reactivity
+		projectStore.scopeAddItem(scope, value);
 	}
 </script>
 
@@ -49,14 +47,14 @@
 
 <div class={'grid grid-rows-3 grid-cols-4 grid-flow-row gap-4 place-content-around'}>
 	<!-- {#each project.sortScopes() as scope} -->
-	{#each project.sortScopes() as scope}
+	{#each $projectStore as scope}
 		<div class:row-span-3={scope.id === 'bucket'}>
 			<Scope editTitle={scope.id !== 'bucket'} bind:scope>
 				<div slot="body">
 					<div>Indispensable:</div>
 					<Items
-						{scope}
-						items={scope.filterItemsIndispensable()}
+						bind:scope
+						items={projectStore.scopeFilterItemsIndispensable(scope)}
 						on:addItem={(e) => {
 							addItem(scope, e.detail.value);
 						}}
@@ -69,8 +67,10 @@
 							return item.niceToHave;
 						}}
 						fnOnCheckItem={(scope, i, checked) => {
-							i.niceToHave = checked;
-							$projectStore = $projectStore; // force reactivity
+							projectStore.itemUpdateNiceToHave(scope, i, checked);
+							// i.niceToHave = checked;
+							//project.scopes = project.scopes; // force reactivity
+							// $projectStore = $projectStore; // force reactivity
 						}}
 					/>
 					<!-- fnFilter={(items) => {
@@ -81,7 +81,7 @@
 						<div>Nice to have:</div>
 						<Items
 							{scope}
-							items={scope.filterItemsNiceToHave()}
+							items={projectStore.scopeFilterItemsNiceToHave(scope)}
 							allowEditItem
 							allowRemoveItem
 							checkbox
@@ -89,8 +89,12 @@
 								return item.niceToHave;
 							}}
 							fnOnCheckItem={(scope, i, checked) => {
-								i.niceToHave = checked;
-								$projectStore = $projectStore; // force reactivity
+								projectStore.itemUpdateNiceToHave(scope, i, checked);
+
+								// i.niceToHave = checked;
+								// project.scopes = project.scopes; // force reactivity
+
+								// $projectStore = $projectStore; // force reactivity
 							}}
 						/>
 						<!-- fnFilter={(items) => {

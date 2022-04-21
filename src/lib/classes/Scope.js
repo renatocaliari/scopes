@@ -6,22 +6,28 @@ import ScopeItem from "$lib/classes/ScopeItem"
 
 
 export default class Scope {
-    constructor(id, name, order = 0, items = [], dependencies = [], dependents = [], risky = false) {
+    constructor(id, name, order = 0, items = [], dependendsOn = [], risky = false) {
         this.id = id
         this.name = name
         this.order = order
         this.items = items
-        this.dependencies = [...new Set(dependencies)]
-        this.dependents = [...new Set(dependents)]
+        this.dependsOn = [...new Set(dependendsOn)]
         this.risky = risky
     }
 
+    unlocksDependencies = ((project) => {
+        let result = project.getScopes().filter((scope) => scope.dependsOn.includes(this.id)).map((s) => s.id);
+        return result;
+    });
+
+
     addItem(name, description = "") {
         console.log('add item:', name);
-        this.items.push(new ScopeItem(name, description))
+        this.items = [...this.items, new ScopeItem(name, description)];
     }
 
     filterItemsIndispensable() {
+        console.log('this.items:', this.items);
         return this.items.filter((item) => !item.niceToHave)
     }
     filterItemsNiceToHave() {

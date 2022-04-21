@@ -12,4 +12,8 @@ export default class ScopeItem {
         this.niceToHave = false
         this.description = description
     }
+
+    static createItem(name, description) {
+        return new ScopeItem(name, description);
+    }
 }
