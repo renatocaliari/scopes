@@ -1,49 +1,41 @@
 <script>
-	import { createEventDispatcher } from 'svelte';
 	export let scope;
 	export let itemsScopeModal = [];
 	export let editTitle = false;
-	export let checkbox = false;
 	export let checked = false;
-
-	const dispatch = createEventDispatcher();
-
-	function checkItem(scope, checked) {
-		dispatch('checkItem', {
-			item: scope,
-			checked: checked
-		});
-	}
+	export let color = '#FFFFFF';
 </script>
 
-<div name="scope-{scope.id}" class="p-2 border-2">
+<div
+	name="scope-{scope.id}"
+	class="p-2 border-2 w-96"
+	class:bg-red-300={checked}
+	style:background-color={color}
+>
 	<div name="title" class="mb-2">
-		<div class="inline-flex items-center w-full">
-			{#if checkbox}
-				<input
-					type="checkbox"
-					class="checkbox mr-2"
-					{checked}
-					on:change={(e) => checkItem(scope, e.target.checked)}
-				/>
-			{/if}
-			{#if editTitle}
-				<svelte:element
-					this="h3"
-					contenteditable
-					bind:innerHTML={scope.name}
-					class="mr-2 mt-0 mb-0"
-				/>
-				{#if $$slots.header}
-					<slot name="header" />
+		<div class="flex flex-col w-full">
+			<div class="inline-flex w-full">
+				{#if editTitle}
+					<svelte:element
+						this="h3"
+						contenteditable
+						bind:innerHTML={scope.name}
+						class="mr-2 mt-0 mb-0 w-full"
+					/>
+					{#if $$slots.badge}
+						<slot name="badge" />
+					{/if}
+				{:else}
+					<label for="modal-{scope.id}" class="mr-2 w-full link link-hover prose"
+						><h3>{scope.name}</h3></label
+					>
+					{#if $$slots.badge}
+						<slot name="badge" />
+					{/if}
 				{/if}
-			{:else}
-				<label for="modal-{scope.id}" class="mr-2 w-full link link-hover prose"
-					><h3>{scope.name}</h3></label
-				>
-				{#if $$slots.header}
-					<slot name="header" />
-				{/if}
+			</div>
+			{#if $$slots.header}
+				<slot name="header" />
 			{/if}
 		</div>
 		{#if $$slots.subTitle}

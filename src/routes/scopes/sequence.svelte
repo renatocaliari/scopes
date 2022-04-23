@@ -1,74 +1,54 @@
 <script>
-	import { dndzone } from 'svelte-dnd-action';
 	import { projectStore, compare } from '$lib/stores/projectStore';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
+	import { mounted } from 'svelte-mount';
+	import Id from '../account/user/[id].svelte';
 
-	const flipDurationMs = 300;
+	export let scopesPriorized = []; // fetch from server because store has a weird behavior in client using sort, specially on Firefox where it gets data correctly and blinks showing unexpected order from store
 
-	const novo = JSON.parse(JSON.stringify(projectStore.sortScopesByPriority()));
-	$projectStore = projectStore.sortScopesByPriority();
+	// let sortedScopesIndispensable = [];
+	// let forkedScopes = new Set();
+	// let indexLastRisky = 0;
 
-	// let sortedScopes = $projectStore.filter((scope) => scope.id !== 'bucket').sort(compare);
-	// $: sortedScopes = $projectStore.filter((scope) => scope.id !== 'bucket').sort(compare);
-	// $: {
-	// 	sortedScopes = $projectStore.filter((scope) => scope.id !== 'bucket').sort(compare);
-	// }
-
-	// let cols = [
-	// 	{
-	// 		title: "Do only the essential to develop Risky and Unknowns (mock if it's necessary)",
-	// 		filter: function (s) {
-	// 			return (
-	// 				s.id !== 'bucket' &&
-	// 				s.items.length > 0 &&
-	// 				!s.risky &&
-	// 				s.dependsOn.length > 0 &&
-	// 				s.dependsOn.some((idDependent) =>
-	// 					project.getScopes().find((element) => element.risky && element.id === idDependent)
-	// 				)
-	// 			);
-	// 		},
-	// 		sort: compare
-	// 	},
-	// 	{
-	// 		title: 'Risky & Unknowns',
-	// 		filter: function (s) {
-	// 			return s.id !== 'bucket' && s.items.length > 0 && s.risky;
-	// 		},
-	// 		sort: compare
-	// 	},
-	// 	{
-	// 		title: 'Develop ones with dependencies',
-	// 		filter: function (s) {
-	// 			return s.id !== 'bucket' && s.items.length > 0 && !s.risky && s.dependsOn.length > 0;
-	// 		},
-	// 		sort: compare
-	// 	},
-	// 	{
-	// 		title: 'Develope remaining scopes',
-	// 		filter: function (s) {
-	// 			return s.id !== 'bucket' && s.items.length > 0 && !s.risky && s.dependsOn.length === 0;
-	// 		},
-	// 		sort: compare
+	// const lastIndexOf = (array, key, value) => {
+	// 	for (let i = array?.length - 1; i >= 0; i--) {
+	// 		if (array[i][key] === value) return i;
 	// 	}
-	// ];
+	// 	return -1;
+	// };
+	// //if ($mounted)
+	// $: if ($mounted){
+	// 	forkedScopes = new Set();
+	// 	sortedScopesIndispensable = $projectStore
+	// 		.filter((scope) => scope.id !== 'bucket')
+	// 		.sort(compare);
 
-	// function handleDndConsider(e) {
-	// 	project.scopesStore = e.detail.items;
-	// }
-	// function handleDndFinalize(e) {
-	// 	project.scopesStore = e.detail.items;
+	// 	indexLastRisky = lastIndexOf(sortedScopesIndispensable, 'risky', true);
+
+	// 	scopesPriorized = [...sortedScopesIndispensable].map((scope, index) => {
+	// 		scope.order = index;
+	// 		if (!scope.risky && index <= indexLastRisky) {
+	// 			let forkedScope = JSON.parse(JSON.stringify(scope));
+	// 			forkedScope.id = scope.id + '-forked';
+	// 			forkedScopes = new Set([...forkedScopes, forkedScope]);
+	// 		}
+	// 		return scope;
+	// 	});
+
+	// 	scopesPriorized.splice(indexLastRisky + 1, 0, ...forkedScopes);
+
+	// 	console.log('forkedScopes:', forkedScopes);
+	// 	console.log('scopesPriorized:', scopesPriorized);
 	// }
 
 	let maxDependents = $projectStore.reduce((prev, curr) => {
-		return Math.max(prev, curr.dependsOn.length);
+		return Math.max(prev, curr.dependsOn?.length);
 	}, 0);
 
 	function calculateColor(scope, maxDependents) {
-		console.log('max:', maxDependents);
 		return percentageToHsl(
-			isNaN(scope.dependsOn.length / maxDependents) ? 0 : scope.dependsOn.length / maxDependents,
+			isNaN(scope.dependsOn?.length / maxDependents) ? 0 : scope.dependsOn?.length / maxDependents,
 			35,
 			0
 		);
@@ -111,110 +91,36 @@
 	<div />
 </div>
 
-<ol class="list-inside border-2 p-2 shadow-xl mb-6">
-	<li>Check scopes with more unknowns and risks</li>
-	<li>Order based on dependencies, unknowns and risks</li>
-</ol>
-
-<button class="btn mb-4">Reset order</button>
-
-<pre>{JSON.stringify(novo)}</pre>
-<pre>{JSON.stringify($projectStore)}</pre>
-<pre>{JSON.stringify(projectStore.sortScopesByPriority())}</pre>
-<!-- {#each [...$projectStore].filter((scope) => scope.id !== 'bucket').sort(compare) as scope} -->
-
-{#each projectStore.sortScopesByPriority() as scope (scope.id)}
-	<!-- {#each sortedScopes as scope} -->
-	<div class="m-2 text-red-400" style:background-color={calculateColor(scope, maxDependents)}>
-		{scope.id}
-		<Scope
-			{scope}
-			editTitle={false}
-			itemsScopeModal={scope.items}
-			checkbox
-			checked={scope.risky}
-			on:checkItem={(e) => {
-				projectStore.scopeUpdateRisky(e.detail.item, e.detail.checked);
-			}}
-		>
-			<div slot="header">
-				<BadgeDependencies project={projectStore} bind:scope />
-			</div>
-			<div slot="headerScopeModal">Items of {scope.name}</div>
-		</Scope>
-	</div>
-{/each}
-
-<!-- 
-<div class={'grid grid-cols-4 grid-flow-col gap-2 place-content-around divide-x-2 divide-dashed'}>
-	{#each cols as col, i}
-		<div>
-			<div class="inline-flex justify-between w-full  p-2">
-				<h1>{i + 1}</h1>
-				<div class="w-full text-center">
-					{#if i + 1 < cols.length}
-						<h1>></h1>
-					{/if}
+<div class="w-full">
+	{#each scopesPriorized as scope, idx (scope.id)}
+		{@const calculatedColor = calculateColor(scope, maxDependents)}
+		<div class="m-2 flex justify-center">
+			<Scope {scope} editTitle={false} color={calculatedColor} itemsScopeModal={scope.items}>
+				<div slot="badge">
+					<BadgeDependencies project={projectStore} bind:scope />
 				</div>
-			</div>
-
-			<div class="m-h-24 p-2"><h3>{col.title}</h3></div>
-			<section class={'p-2 grid grid-rows-6 grid-cols-1 grid-flow-col gap-4 place-content-around'}>
-				{#each project.getScopes().filter(col.filter) as scope}
-					<div>
-						<Scope
-							{scope}
-							editTitle={false}
-							itemsScopeModal={scope.items}
-							checkbox
-							checked={scope.risky}
-							on:checkItem={(e) => {
-								updateRisky(e.detail.item, e.detail.checked);
-							}}
-						>
-							<div slot="header">
-								<BadgeDependencies {project} {scope} />
-							</div>
-							<div slot="body">
-								<div>Depends on:</div>
-								<div>
-									<Items
-										{scope}
-										emptyState="No dependencies"
-										items={project
-											.getScopes()
-											.filter(
-												(s) =>
-													!['bucket', scope.id].includes(s.id) &&
-													s.items.length > 0 &&
-													s.dependsOn.includes(scope.id)
-											)}
-									/>
-								</div>
-								<div>Dependencies:</div>
-								<div style:background-color={calculateColor(scope, maxDependents)}>
-									<Items
-										{scope}
-										emptyState="No dependencies"
-										items={project
-											.getScopes()
-											.filter(
-												(s) =>
-													!['bucket', scope.id].includes(s.id) &&
-													s.items.length > 0 &&
-													s.unlocksDependencies(project).includes(scope.id)
-											)}
-									/>
-								</div>
-							</div>
-							<div slot="headerScopeModal">Items of {scope.name}</div>
-						</Scope>
-					</div>
-				{/each}
-			</section>
+				<div slot="header">
+					{#if scope.id.includes('forked')}
+						<div class="badge badge-accent">Do only what is necessary to the next one</div>
+						<br />
+					{/if}
+					<div class="badge" class:badge-outline={!scope.indispensable}>Indispensable</div>
+					<div class="badge" class:badge-outline={!scope.risky}>Risky</div>
+				</div>
+				<div slot="headerScopeModal">Items of {scope.name}</div>
+			</Scope>
 		</div>
+		{#if idx + 1 < scopesPriorized.length}
+			<div class="flex justify-center">
+				<svg height="75" width="30">
+					<line x1="14" y1="1" x2="14" y2="50" style="stroke:rgb(0,0,0);stroke-width:10" />
+					<polygon points="5,50 25,50 15,70" style="fill:black;stroke:black;stroke-width:4" />
+				</svg>
+			</div>
+		{/if}
 	{/each}
-</div> -->
+</div>
+
 <style>
 	:global(*) {
 		box-sizing: border-box;

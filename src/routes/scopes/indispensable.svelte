@@ -1,7 +1,9 @@
 <script>
 	import Scope from '$lib/components/Scopes/Scope.svelte';
-	import Items from '$lib/components/Scopes/Items.svelte';
+	import ToggleScope from '$lib/components/Scopes/ToggleScope.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
+
+	import Items from '$lib/components/Scopes/Items.svelte';
 	import { projectStore } from '$lib/stores/projectStore';
 
 	$: sortedScopes = $projectStore.filter(
@@ -12,16 +14,17 @@
 <div class="text-sm breadcrumbs">
 	<ul>
 		<li><a href="/">Home</a></li>
-		<li><a href="/scopes/dump">Scopes</a></li>
-		<li><a href="/scopes/indispensable">Indispensable</a></li>
-		<li>Dependencies</li>
+		<li><a href="/scopes/dump">Dump</a></li>
+		<li><a href="/scopes/dependencies">Dump</a></li>
+		<li>Indispensable</li>
 	</ul>
 </div>
-<h1>Dependencies</h1>
+<h1>Indispensable Or Risky</h1>
+
 <div class="flex flex-row mb-4 justify-between">
 	<div>
 		<a
-			href="/scopes/dump"
+			href="/scopes/dependencies"
 			class="link-hover btn btn-sm md:btn-md btn-ghost gap-2 normal-case lg:gap-3"
 			><svg
 				class="h-6 w-6 fill-current md:h-8 md:w-8"
@@ -33,18 +36,18 @@
 			>
 			<div class="flex flex-col items-start">
 				<span class="text-base-content/50 hidden text-xs font-normal md:block">Prev</span>
-				<span>Dump</span>
+				<span>Dependencies</span>
 			</div></a
 		>
 	</div>
 	<div>
 		<a
 			sveltekit:prefetch
-			href="/scopes/indispensable"
+			href="/scopes/sequence"
 			class="link-hover btn btn-sm md:btn-md gap-2 normal-case lg:gap-3"
 			><div class="flex flex-col items-end">
 				<span class="text-neutral-content/50 hidden text-xs font-normal md:block">Next</span>
-				<span>Indispensable</span>
+				<span>Sequence</span>
 			</div>
 			<svg
 				class="h-6 w-6 fill-current md:h-8 md:w-8"
@@ -59,34 +62,41 @@
 </div>
 
 <ul class="list-inside border-2 p-2 shadow-xl mb-6">
-	<li>Set which scopes depends on other</li>
+	<li>Set which scopes are indispensable</li>
+	<li>Set which scopes have more unknowns and risks</li>
 </ul>
 
 <div class={'grid grid-rows-2 grid-cols-3 grid-flow-row gap-4 place-content-around'}>
 	{#each sortedScopes as scope}
-		<div>
-			<Scope {scope} itemsScopeModal={scope.items} checked={scope.indispensable}>
+		<div class:row-span-3={scope.id === 'bucket'}>
+			<Scope editTitle={scope.id !== 'bucket'} bind:scope>
 				<div slot="badge">
 					<BadgeDependencies project={projectStore} bind:scope />
 				</div>
-				<div slot="subTitle">Depends on:</div>
-				<div slot="body">
-					<Items
+
+				<div slot="header">
+					<ToggleScope
 						bind:scope
-						items={projectStore.getScopesExcludingThis(scope)}
-						checkbox
-						fnSetChecked={(s) => {
-							return scope.dependsOn.includes(s.id);
+						bind:checked={scope.indispensable}
+						checkText="Indispensable"
+						on:checkItem={(e) => {
+							projectStore.scopeUpdateIndispensable(e.detail.item, e.detail.checked);
 						}}
-						fnOnCheckItem={(s, item, checked) => {
-							projectStore.updateDependencies(s, item, checked);
-						}}
-						fnItemsModal={(scope) => {
-							return scope.items;
+					/>
+					<ToggleScope
+						bind:scope
+						bind:checked={scope.risky}
+						checkText="Risky"
+						on:checkItem={(e) => {
+							projectStore.scopeUpdateRisky(e.detail.item, e.detail.checked);
 						}}
 					/>
 				</div>
-				<div slot="headerScopeModal">Items of {scope.name}</div>
+
+				<div slot="body">
+					<div>Indispensable items:</div>
+					<Items bind:scope items={projectStore.scopeFilterItemsIndispensable(scope)} />
+				</div>
 			</Scope>
 		</div>
 	{/each}

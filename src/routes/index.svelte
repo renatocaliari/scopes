@@ -5,6 +5,8 @@
 	import { Mount } from 'svelte-mount';
 	import { fade } from 'svelte/transition';
 	//console.log('>>> $session:', JSON.stringify($session));
+
+	import { projectStore, compare } from '$lib/stores/projectStore';
 </script>
 
 <svelte:head>

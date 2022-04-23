@@ -22,6 +22,8 @@ export async function externalFetch(request) {
 
 export const handle = async ({ event, resolve }) => {
 
-  let response = await resolve(event);
+  let response = await resolve(event, {
+    ssr: true,
+  });
   return response;
 };

@@ -51,58 +51,70 @@
 		<div class:row-span-3={scope.id === 'bucket'}>
 			<Scope editTitle={scope.id !== 'bucket'} bind:scope>
 				<div slot="body">
-					<div>Indispensable:</div>
-					<Items
-						bind:scope
-						items={projectStore.scopeFilterItemsIndispensable(scope)}
-						on:addItem={(e) => {
-							addItem(scope, e.detail.value);
-						}}
-						allowAddItem
-						allowEditItem
-						allowRemoveItem
-						dragAndDrop
-						checkbox
-						fnSetChecked={(item) => {
-							return item.niceToHave;
-						}}
-						fnOnCheckItem={(scope, i, checked) => {
-							projectStore.itemUpdateNiceToHave(scope, i, checked);
-							// i.niceToHave = checked;
-							//project.scopes = project.scopes; // force reactivity
-							// $projectStore = $projectStore; // force reactivity
-						}}
-					/>
-					<!-- fnFilter={(items) => {
-							return items.filter((item) => !item.niceToHave);
-						}} -->
-
-					{#if scope.id !== 'bucket'}
-						<div>Nice to have:</div>
+					{#if scope.id === 'bucket'}
+						<div>Brain drump:</div>
 						<Items
 							{scope}
 							items={projectStore.scopeFilterItemsNiceToHave(scope)}
+							on:addItem={(e) => {
+								addItem(scope, e.detail.value);
+							}}
+							focusAdd
+							allowAddItem
 							allowEditItem
 							allowRemoveItem
 							checkbox
 							fnSetChecked={(item) => {
-								return item.niceToHave;
+								return item.indispensable;
 							}}
 							fnOnCheckItem={(scope, i, checked) => {
-								projectStore.itemUpdateNiceToHave(scope, i, checked);
+								projectStore.itemUpdateIndispensable(scope, i, checked);
 
-								// i.niceToHave = checked;
+								// i.indispensable = checked;
 								// project.scopes = project.scopes; // force reactivity
 
 								// $projectStore = $projectStore; // force reactivity
 							}}
 						/>
-						<!-- fnFilter={(items) => {
-								return items.filter((item) => item.niceToHave);
-							}} -->
+					{:else}
+						<div>Nice to have:</div>
+						<Items
+							{scope}
+							items={projectStore.scopeFilterItemsNiceToHave(scope)}
+							on:addItem={(e) => {
+								addItem(scope, e.detail.value);
+							}}
+							allowAddItem
+							allowEditItem
+							allowRemoveItem
+							checkbox
+							fnSetChecked={(item) => {
+								return item.indispensable;
+							}}
+							fnOnCheckItem={(scope, i, checked) => {
+								projectStore.itemUpdateIndispensable(scope, i, checked);
+							}}
+						/>
 					{/if}
-				</div>
-			</Scope>
+
+					{#if scope.id !== 'bucket'}
+						<div>Indispensable:</div>
+						<Items
+							bind:scope
+							items={projectStore.scopeFilterItemsIndispensable(scope)}
+							allowRemoveItem
+							dragAndDrop
+							checkbox
+							fnSetChecked={(item) => {
+								return item.indispensable;
+							}}
+							fnOnCheckItem={(scope, i, checked) => {
+								projectStore.itemUpdateIndispensable(scope, i, checked);
+							}}
+						/>
+					{/if}
+				</div></Scope
+			>
 		</div>
 	{/each}
 </div>

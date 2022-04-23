@@ -1,49 +1,52 @@
 <script>
 	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
-
+	import { v4 as uuidv4 } from 'uuid';
 	export let project;
 	export let scope;
+
+	let randomId = uuidv4();
 </script>
 
-<label for="scope-dependents-{scope.id}" class="link link-hover">
-	<div data-tip="# scopes this one depends on" class="tooltip badge badge-error mr-2">
-		{scope.dependsOn.filter((item) => item != null).length}
-	</div>
-</label>
+<div class="inline-flex  flex-wrap: nowrap;">
+	<label for="scope-unlocks-{scope.id}-{randomId}" class="link link-hover">
+		<div data-tip="# scopes this one unlocks" class="tooltip badge badge-success mr-2">
+			{project.scopeUnlocksDependencies(scope).filter((item) => item != null).length}
+		</div>
+	</label>
 
-<label for="scope-dependencies-{scope.id}" class="link link-hover">
-	<div data-tip="# scopes this one unlocks" class="tooltip badge badge-info">
-		{project.scopeUnlocksDependencies(scope).filter((item) => item != null).length}
-	</div>
-</label>
+	<label for="scope-depends-{scope.id}-{randomId}" class="link link-hover">
+		<div data-tip="# scopes this one depends on" class="tooltip badge badge-error">
+			{scope.dependsOn.filter((item) => item != null).length}
+		</div>
+	</label>
+</div>
 
-<input type="checkbox" id="scope-dependencies-{scope.id}" class="modal-toggle" />
+<input type="checkbox" id="scope-unlocks-{scope.id}-{randomId}" class="modal-toggle" />
 <div class="modal">
 	<div class="modal-box relative">
-		<label for="scope-dependencies-{scope.id}" class="btn btn-sm btn-circle absolute right-2 top-2"
-			>✕</label
+		<label
+			for="scope-unlocks-{scope.id}-{randomId}"
+			class="btn btn-sm btn-circle absolute right-2 top-2">✕</label
 		>
-		<h3 class="text-lg font-bold">Dependencies of {scope.name}</h3>
+		<h3 class="text-lg font-bold">Unlocks of {scope.name}</h3>
 		{#each $project.filter((s) => s.dependsOn.includes(scope.id)) as scope (scope.id)}
 			<div class="m-2 p-2 w-auto border-gray-400 input input-bordered">
-				<ItemDragDrop bind:item={scope} readOnly={true} />
+				<ItemDragDrop item={scope} readOnly={true} />
 			</div>
 		{/each}
 	</div>
 </div>
-<input type="checkbox" id="scope-dependents-{scope.id}" class="modal-toggle" />
-
+<input type="checkbox" id="scope-depends-{scope.id}-{randomId}" class="modal-toggle" />
 <div class="modal">
 	<div class="modal-box relative">
-		<label for="scope-dependents-{scope.id}" class="btn btn-sm btn-circle absolute right-2 top-2"
-			>✕</label
+		<label
+			for="scope-depends-{scope.id}-{randomId}"
+			class="btn btn-sm btn-circle absolute right-2 top-2">✕</label
 		>
 		<h3 class="text-lg font-bold">Dependents on {scope.name}</h3>
-		{#each $project.filter((s) => project
-				.scopeUnlocksDependencies(scope)
-				.includes(scope.id)) as scope (scope.id)}
+		{#each $project.filter((s) => scope.dependsOn.includes(s.id)) as scope (scope.id)}
 			<div class="m-2 p-2 w-auto border-gray-400 input input-bordered">
-				<ItemDragDrop bind:item={scope} readOnly={true} />
+				<ItemDragDrop item={scope} readOnly={true} />
 			</div>
 		{/each}
 	</div>

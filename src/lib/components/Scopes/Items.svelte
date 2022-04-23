@@ -9,6 +9,7 @@
 	export let dragAndDrop = false;
 	export let allowRemoveItem = false;
 	export let allowAddItem = false;
+	export let focusAdd = false;
 	export let allowEditItem = false;
 	export let checkbox = false;
 	export let emptyState = 'No items';
@@ -83,8 +84,10 @@
 		}
 	};
 
-	function autoFocus(node) {
-		node.focus();
+	function autoFocus(node, focus) {
+		if (focus) {
+			node.focus();
+		}
 	}
 
 	function proxyDndzone() {
@@ -98,7 +101,7 @@
 	<form class="flex-none form form-control" on:submit|preventDefault={handleSubmit}>
 		<input
 			class="input input-bordered mb-2 rounded-none"
-			use:autoFocus
+			use:autoFocus={focusAdd}
 			id="task"
 			name="task"
 			placeholder="type new task here and press ENTER"
