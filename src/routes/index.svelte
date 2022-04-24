@@ -6,7 +6,11 @@
 	import { fade } from 'svelte/transition';
 	//console.log('>>> $session:', JSON.stringify($session));
 
+	if (browser) {
+		goto('/scopes/dump	');
+	}
 	import { projectStore, compare } from '$lib/stores/projectStore';
+	import { goto } from '$app/navigation';
 </script>
 
 <svelte:head>
