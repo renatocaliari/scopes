@@ -104,6 +104,8 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
         return get(store).filter(fn);
     }
 
+
+
     function updateDependencies(scope, checkedScope, checked) {
         update(scopes => get(store).map((s) => {
             if (scope.id === s.id) {
@@ -136,6 +138,12 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
         }));
     }
 
+    function scopeRemoveItem(scope, item) {
+        update(scopes =>
+            scopes.find((s) => s.id === scope.id)
+                .items.filter((i) => i.id !== item.id));
+    }
+
     function itemUpdateIndispensable(scope, item, indispensable) {
         update(scopes => get(store).map((s) => {
             if (scope.id === s.id) {
@@ -156,7 +164,6 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
             }
             return s;
         }));
-        console.log('store:', get(store));
     }
 
     function scopeUnlocksDependencies(scope) {
@@ -212,6 +219,7 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
         addBucketScope,
         addScopeAutoId,
         scopeUnlocksDependencies,
+        scopeRemoveItem,
         scopeUpdateRisky,
         scopeUpdateIndispensable,
         scopeFilterItemsIndispensable,
