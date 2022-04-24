@@ -10,6 +10,7 @@ import { persistentWritable } from "$lib/stores/persistentStore";
 // export let projectStore = localStorageStore('projectStore', scopes);
 
 export const projectStore = ProjectStore(true, 6, true);
+console.log('projectStore:', get(projectStore));
 
 export function ProjectStore(hasBucket, totalScopes, sampleData) {
     let store = writable([]);
@@ -27,7 +28,7 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
             let risky = false;
             let indispensable = false;
             if (sampleData) {
-                items = [ScopeItem.createItem("item 1", true), ScopeItem.createItem("item 2", true), ScopeItem.createItem("nice to have 1", false), ScopeItem.createItem("nice to have 2", false)];
+                items = [ScopeItem.createItem("item 1 - describing some details to break line and test limits", true), ScopeItem.createItem("item 2", true), ScopeItem.createItem("nice to have 1", false), ScopeItem.createItem("nice to have 2", false)];
                 switch (i) {
                     case 1:
                         dependsOn = ['scope-3'];
@@ -53,13 +54,15 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
                         break;
                 }
             }
-            addScopeAutoId('Change: Scope ' + i, items, dependsOn, risky, indispensable);
+            addScopeAutoId('Scope ' + i, items, dependsOn, risky, indispensable);
         }
     }
 
     function addBucketScope(name, items = [], dependsOn = [], risky = false, indispensable = false) {
         let scope = {
             id: "bucket",
+            title: "",
+            description: "",
             name: name,
             order: 0,
             items: items,
@@ -73,6 +76,8 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
     function addScopeAutoId(name, items = [], dependsOn = [], risky = false, indispensable = false) {
         let scope = {
             id: "scope-" + get(store).length,
+            title: "",
+            description: "",
             name: name,
             order: 0,
             items: items,
@@ -144,13 +149,14 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
         }));
     }
 
-    function scopeAddItem(scope, name, description) {
+    function scopeAddItem(scope, name, indispensable, description) {
         update(scopes => get(store).map((s) => {
             if (scope.id === s.id) {
-                s.items = [...s.items, new ScopeItem(name, description)];
+                s.items = [new ScopeItem(name, indispensable, description), ...s.items];
             }
             return s;
         }));
+        console.log('store:', get(store));
     }
 
     function scopeUnlocksDependencies(scope) {
@@ -166,8 +172,19 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
         return scope.items.filter((item) => !item.indispensable)
     }
 
+    function sortItemsByIndispensable(scope) {
+        return scope.items.sort((first, second) => {
+            if (first.indispensable && !second.indispensable) {
+                return -1;
+            }
+            if (!first.indispensable && second.indispensable) {
+                return 1;
+            }
+            return 0;
+        });
+    }
+
     function sortScopesByPriority() {
-        console.log('sortScopesByPriority');
         // it needed to copy elements from store instead of assign directly
         // based on this idea: https://svelte.dev/repl/44f170d0cd43440ca8dd8e2bff341bda?version=3.17.1
 
@@ -200,6 +217,7 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
         scopeFilterItemsIndispensable,
         scopeFilterItemsNiceToHave,
         itemUpdateIndispensable,
+        sortItemsByIndispensable,
         updateDependencies,
         scopeAddItem,
         filterScopes,
@@ -220,13 +238,15 @@ export function compare(first, second) {
     let retSecond = 1;
 
     // console.log('ordenando');
+    // console.log('first:', first);
+    // console.log('second:', second);
 
-    if (first.dependsOn.includes(second.id)) {
+    if (first.dependsOn?.includes(second.id)) {
         // console.log('>>> first.dependsOn.includes(second.id)');
         // console.log('retornando o second:', second);
         // console.log('o first era:', first);
         ret = retSecond;
-    } else if (second.dependsOn.includes(first.id)) {
+    } else if (second.dependsOn?.includes(first.id)) {
         // console.log('>>> second.dependsOn.includes(first.id)');
         // console.log('retornando o first:', first);
         // console.log('o second era:', second);

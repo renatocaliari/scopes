@@ -29,17 +29,30 @@
 	{#if readOnly}
 		<div class="w-full">{item.name}</div>
 	{:else}
+		{#if dragAndDrop}
+			<div class="mr-2">
+				<svg viewBox="0 0 100 80" width="20" height="20">
+					<rect width="70" height="12" />
+					<rect y="20" width="70" height="12" />
+					<rect y="40" width="70" height="12" />
+				</svg>
+			</div>
+		{/if}
+
 		{#if checkbox}
 			<input
 				on:change={(e) => checkItem(e.target.checked)}
 				type="checkbox"
 				class="checkbox mr-2"
-				aria-label="Set item as nice to have"
 				{checked}
 			/>
 		{/if}
 		{#if allowEditItem}
-			<div class="w-full mr-2 items-center" contenteditable bind:textContent={item.name}>
+			<div
+				class="w-full mr-2 items-center border-2 border-dotted"
+				contenteditable
+				bind:textContent={item.name}
+			>
 				<label for="modal-item-{item.id}" class="mr-2 w-full link link-hover prose"
 					>{item.name}</label
 				>
@@ -49,14 +62,6 @@
 				<label for="modal-item-{item.id}" class="mr-2 w-full link link-hover prose"
 					>{item.name}</label
 				>
-			</div>
-		{/if}
-		{#if dragAndDrop}
-			<div class="move-handle mr-2">
-				<div class="dot" />
-				<div class="dot" />
-				<div class="dot" />
-				<div class="dot" />
 			</div>
 		{/if}
 		{#if allowRemoveItem}

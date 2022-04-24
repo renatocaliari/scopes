@@ -2,6 +2,7 @@
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import Items from '$lib/components/Scopes/Items.svelte';
 	import { projectStore } from '$lib/stores/projectStore';
+	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
 
 	// let project;
 	// $: {
@@ -10,99 +11,61 @@
 	// 	console.log('atualizou o projeto - depois:', project);
 	// }
 
-	function addItem(scope, value) {
-		projectStore.scopeAddItem(scope, value);
+	function addItem(scope, value, indispensable) {
+		projectStore.scopeAddItem(scope, value, indispensable);
 	}
+
+	$: scopeBucket = $projectStore.find((scope) => scope.id === 'bucket');
 </script>
 
-<div class="text-sm breadcrumbs">
-	<ul>
-		<li><a href="/">Home</a></li>
-		<li>Scopes</li>
-	</ul>
-</div>
 <h1>Scopes</h1>
-<div class="flex flex-row mb-4 justify-between">
-	<div />
-	<div>
-		<a
-			sveltekit:prefetch
-			href="/scopes/dependencies"
-			class="link-hover btn btn-sm md:btn-md gap-2 normal-case lg:gap-3"
-			><div class="flex flex-col items-end">
-				<span class="text-neutral-content/50 hidden text-xs font-normal md:block">Next</span>
-				<span>Dependencies</span>
-			</div>
-			<svg
-				class="h-6 w-6 fill-current md:h-8 md:w-8"
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg
-			></a
-		>
-	</div>
-</div>
 
-<div class={'grid grid-rows-3 grid-cols-4 grid-flow-row gap-4 place-content-around'}>
-	<!-- {#each project.sortScopes() as scope} -->
-	{#each $projectStore as scope}
-		<div class:row-span-3={scope.id === 'bucket'}>
-			<Scope editTitle={scope.id !== 'bucket'} bind:scope>
+<NavigationScopes currentBtn={1} />
+
+<div
+	class="flex md:flex-nowrap flex-wrap 
+	place-content-center"
+>
+	<div class="mb-4">
+		<div class="sticky top-0 left-0 mb-4">
+			<Scope editTitle bind:scope={scopeBucket}>
 				<div slot="body">
-					{#if scope.id === 'bucket'}
-						<div>Brain drump:</div>
-						<Items
-							{scope}
-							items={projectStore.scopeFilterItemsNiceToHave(scope)}
-							on:addItem={(e) => {
-								addItem(scope, e.detail.value);
-							}}
-							focusAdd
-							allowAddItem
-							allowEditItem
-							allowRemoveItem
-							checkbox
-							fnSetChecked={(item) => {
-								return item.indispensable;
-							}}
-							fnOnCheckItem={(scope, i, checked) => {
-								projectStore.itemUpdateIndispensable(scope, i, checked);
-
-								// i.indispensable = checked;
-								// project.scopes = project.scopes; // force reactivity
-
-								// $projectStore = $projectStore; // force reactivity
-							}}
-						/>
-					{:else}
-						<div>Nice to have:</div>
-						<Items
-							{scope}
-							items={projectStore.scopeFilterItemsNiceToHave(scope)}
-							on:addItem={(e) => {
-								addItem(scope, e.detail.value);
-							}}
-							allowAddItem
-							allowEditItem
-							allowRemoveItem
-							checkbox
-							fnSetChecked={(item) => {
-								return item.indispensable;
-							}}
-							fnOnCheckItem={(scope, i, checked) => {
-								projectStore.itemUpdateIndispensable(scope, i, checked);
-							}}
-						/>
-					{/if}
-
-					{#if scope.id !== 'bucket'}
-						<div>Indispensable:</div>
+					<div>Brain drump:</div>
+					<Items
+						scope={scopeBucket}
+						items={scopeBucket.items}
+						on:addItem={(e) => {
+							addItem(scopeBucket, e.detail.value, true);
+						}}
+						focusAdd
+						dragAndDrop
+						allowAddItem
+						allowEditItem
+						allowRemoveItem
+					/>
+				</div></Scope
+			>
+		</div>
+	</div>
+	<div
+		class="flex
+		flex-row
+		flex-wrap 
+		justify-center 
+		"
+	>
+		{#each $projectStore.filter((scope) => scope.id !== 'bucket') as scope}
+			<div class="flex mx-4 mb-4 h-80">
+				<Scope editTitle bind:scope>
+					<div slot="body">
 						<Items
 							bind:scope
-							items={projectStore.scopeFilterItemsIndispensable(scope)}
-							allowRemoveItem
+							bind:items={scope.items}
+							on:addItem={(e) => {
+								addItem(scope, e.detail.value, true);
+							}}
+							allowAddItem
+							allowEditItem
 							dragAndDrop
 							checkbox
 							fnSetChecked={(item) => {
@@ -112,11 +75,11 @@
 								projectStore.itemUpdateIndispensable(scope, i, checked);
 							}}
 						/>
-					{/if}
-				</div></Scope
-			>
-		</div>
-	{/each}
+					</div></Scope
+				>
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style>

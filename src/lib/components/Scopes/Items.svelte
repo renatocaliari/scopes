@@ -5,7 +5,7 @@
 	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
 
 	export let scope;
-	export let items = scope.items;
+	export let items = scope.items || [];
 	export let dragAndDrop = false;
 	export let allowRemoveItem = false;
 	export let allowAddItem = false;
@@ -20,24 +20,11 @@
 		return true;
 	};
 	export let fnOnCheckItem = (scope, item, checked) => {};
-	// export let fnFilter = (items) => {
-	// 	return items;
-	// };
 
 	let submit = false;
 	let value;
 
 	const dispatch = createEventDispatcher();
-
-	// function callFilter(items) {
-	// 	let filteredItems = fnFilter(items);
-
-	// 	// console.log('callfilter filteredItems:', filteredItems);
-	// 	// $projectStore = $projectStore;
-	// 	return filteredItems;
-	// }
-
-	// $: filteredItems = callFilter(items);
 
 	const flipDurationMs = 300;
 
@@ -62,9 +49,6 @@
 
 	function addItem(event) {
 		if (event.target.value.trim() !== '') {
-			// let item = new ScopeItem(event.target.value);
-			// items = [item, ...items];
-
 			dispatch('addItem', {
 				value: event.target.value
 			});
@@ -110,23 +94,25 @@
 	</form>
 {/if}
 
-<section
-	class="p-2 border-2 overflow-scroll h-52"
-	use:proxyDndzone={{
-		items: items,
-		flipDurationMs,
-		type: 'items',
-		dropTargetClasses: ['bg-green-50']
-	}}
-	on:consider={handleDndConsider}
-	on:finalize={handleDndFinalize}
->
-	{#if items.length == 0}
+{#if items?.length == 0}
+	<div class="m-2 p-2 w-auto min-h-8 border-2 text-xs">
 		{emptyState}
-	{:else}
+	</div>
+{:else}
+	<section
+		class="p-2 overflow-scroll h-52"
+		use:proxyDndzone={{
+			items: items,
+			flipDurationMs,
+			type: 'items',
+			dropTargetClasses: ['bg-green-50']
+		}}
+		on:consider={handleDndConsider}
+		on:finalize={handleDndFinalize}
+	>
 		{#each items as item (item.id)}
 			<div
-				class="m-2 p-2 w-auto border-gray-400  input input-bordered "
+				class="m-2 p-2 w-auto min-h-8 border-2 text-xs"
 				animate:flip={{ duration: flipDurationMs }}
 			>
 				<ItemDragDrop
@@ -134,9 +120,9 @@
 					{dragAndDrop}
 					{checkbox}
 					checked={fnSetChecked(item)}
+					{allowEditItem}
 					{allowRemoveItem}
 					itemsModal={fnItemsModal(item)}
-					{allowEditItem}
 					on:checkItem={(event) => {
 						checkItem(scope, event.detail.item, event.detail.checked);
 					}}
@@ -146,5 +132,5 @@
 				</ItemDragDrop>
 			</div>
 		{/each}
-	{/if}
-</section>
+	</section>
+{/if}

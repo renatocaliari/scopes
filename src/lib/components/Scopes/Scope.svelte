@@ -4,38 +4,49 @@
 	export let editTitle = false;
 	export let checked = false;
 	export let color = '#FFFFFF';
+	export let width = 'w-80';
 </script>
 
 <div
 	name="scope-{scope.id}"
-	class="p-2 border-2 w-96"
+	class="p-2 border-2 border-slate-800 rounded-md {width}"
 	class:bg-red-300={checked}
 	style:background-color={color}
 >
-	<div name="title" class="mb-2">
+	<div name="title" class="mb-2 w-full">
 		<div class="flex flex-col w-full">
 			<div class="inline-flex w-full">
 				{#if editTitle}
-					<svelte:element
-						this="h3"
-						contenteditable
-						bind:innerHTML={scope.name}
-						class="mr-2 mt-0 mb-0 w-full"
-					/>
+					<div class="w-full ">
+						<svelte:element
+							this="h3"
+							contenteditable
+							bind:innerHTML={scope.name}
+							class="mr-2 mt-0 mb-0 w-full"
+						/>
+					</div>
 					{#if $$slots.badge}
-						<slot name="badge" />
+						<div>
+							<slot name="badge" />
+						</div>
 					{/if}
 				{:else}
-					<label for="modal-{scope.id}" class="mr-2 w-full link link-hover prose"
-						><h3>{scope.name}</h3></label
-					>
+					<div class="w-full h-8">
+						<label for="modal-{scope.id}" class="mr-2 link link-hover prose"
+							><h3>{scope.name}</h3></label
+						>
+					</div>
 					{#if $$slots.badge}
-						<slot name="badge" />
+						<div>
+							<slot name="badge" />
+						</div>
 					{/if}
 				{/if}
 			</div>
 			{#if $$slots.header}
-				<slot name="header" />
+				<div class="inline-flex w-full ">
+					<slot name="header" />
+				</div>
 			{/if}
 		</div>
 		{#if $$slots.subTitle}
