@@ -5,7 +5,7 @@
 	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
 
 	export let scope;
-	export let items = scope.items || [];
+	export let items = scope.items;
 	export let dragAndDrop = false;
 	export let allowRemoveItem = false;
 	export let allowAddItem = false;
@@ -20,6 +20,9 @@
 		return true;
 	};
 	export let fnOnCheckItem = (scope, item, checked) => {};
+
+	// force update items according to scope.items binded
+	$: items = scope.items;
 
 	let submit = false;
 	let value;
@@ -40,7 +43,7 @@
 	}
 
 	function removeItem(itemId) {
-		scope.items = scope.items.filter((node) => node.id != itemId);
+		scope.items = scope.items.filter((node) => node.id !== itemId);
 	}
 
 	const handleSubmit = (event) => {

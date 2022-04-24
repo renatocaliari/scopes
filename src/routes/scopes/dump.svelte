@@ -32,8 +32,7 @@
 				<div slot="body">
 					<div>Brain drump:</div>
 					<Items
-						scope={scopeBucket}
-						items={scopeBucket.items}
+						bind:scope={scopeBucket}
 						on:addItem={(e) => {
 							addItem(scopeBucket, e.detail.value, true);
 						}}
