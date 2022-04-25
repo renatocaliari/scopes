@@ -9,13 +9,22 @@
 
 <div class="inline-flex  flex-wrap: nowrap;">
 	<label for="scope-unlocks-{scope.id}-{randomId}" class="link link-hover">
-		<div data-tip="# scopes this one unlocks" class="tooltip badge badge-success mr-2">
+		<div
+			data-tip="This scope unlocks {project
+				.scopeUnlocksDependencies(scope)
+				.filter((item) => item != null).length} scope(s)"
+			class="tooltip badge badge-success mr-2"
+		>
 			{project.scopeUnlocksDependencies(scope).filter((item) => item != null).length}
 		</div>
 	</label>
 
 	<label for="scope-depends-{scope.id}-{randomId}" class="link link-hover">
-		<div data-tip="# scopes this one depends on" class="tooltip badge badge-error">
+		<div
+			data-tip="{scope.dependsOn.filter((item) => item != null)
+				.length} scope(s) depend on [{scope.name || scope.placeholder}]"
+			class="tooltip badge badge-error"
+		>
 			{scope.dependsOn.filter((item) => item != null).length}
 		</div>
 	</label>

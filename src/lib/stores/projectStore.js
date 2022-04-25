@@ -108,20 +108,25 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
         return get(store).filter(fn);
     }
 
-
-
     function updateDependencies(scope, checkedScope, checked) {
-        update(scopes => get(store).map((s) => {
-            if (scope.id === s.id) {
-                s.dependsOn = s.dependsOn || [];
-                if (checked) {
-                    s.dependsOn = [...new Set([...s.dependsOn, checkedScope.id])];
-                } else {
-                    s.dependsOn = s.dependsOn.filter((id) => id !== checkedScope.id);
+        console.log('checkedScope.dependsOn:', checkedScope.dependsOn);
+
+        if (!checkedScope.dependsOn.includes(scope.id)) {
+            console.log('vai dar update');
+            update(scopes => get(store).map((s) => {
+                if (scope.id === s.id) {
+                    s.dependsOn = s.dependsOn || [];
+                    if (checked) {
+                        s.dependsOn = [...new Set([...s.dependsOn, checkedScope.id])];
+                    } else {
+                        s.dependsOn = s.dependsOn.filter((id) => id !== checkedScope.id);
+                    }
                 }
-            }
-            return s;
-        }));
+                return s;
+            }));
+        } else {
+            console.log('não vai dar update');
+        }
     }
 
     function scopeUpdateRisky(scope, risky) {

@@ -34,6 +34,7 @@
 							return scope.dependsOn.includes(s.id);
 						}}
 						fnOnCheckItem={(s, item, checked) => {
+							console.log('vai chamar');
 							projectStore.updateDependencies(s, item, checked);
 						}}
 						fnItemsModal={(scope) => {
