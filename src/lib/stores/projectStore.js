@@ -10,7 +10,7 @@ import { SvelteComponentDev } from "svelte/internal";
 
 // export let projectStore = localStorageStore('projectStore', scopes);
 
-export const projectStore = ProjectStore(true, 9, true);
+export const projectStore = ProjectStore(true, 9, false);
 
 // console.log('projectStore:', get(projectStore));
 
