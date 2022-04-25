@@ -16,7 +16,7 @@
 
 <ul class="list-inside border-2 p-2 shadow-xl mb-6">
 	<!-- <li>Set which scopes are indispensable</li> -->
-	<li>Set which scopes have more unknowns and risks</li>
+	<li>Set which scopes are riskiers</li>
 </ul>
 
 <div class={'grid grid-rows-2 grid-cols-3 grid-flow-row gap-4 place-content-around'}>

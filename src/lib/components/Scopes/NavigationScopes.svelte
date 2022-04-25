@@ -14,19 +14,19 @@
 		},
 		{
 			linkText: 'Unknowns',
-			h1: 'Unknowns: Riskies Scopes',
+			h1: 'Unknowns',
+			h2: 'Which scopes have risky unknowns (vs routine work)?',
 			link: '/scopes/unknowns'
 		},
 		{
-			linkText: 'Sequence',
-			h1: 'Automatic sequence Scopes',
-			h2: 'This sequence is to execution',
+			linkText: 'Generate Sequence',
+			h1: 'Automatic sequence to execute the scopes',
 			link: '/scopes/sequence'
 		},
 		{
-			linkText: 'Pattern Language',
-			h1: 'Pattern Language',
-			h2: 'This information is to create documentation to other people that will execute it',
+			linkText: 'Create Documentation',
+			h1: 'Documentation',
+			h2: 'Create documentation to other people that will execute it',
 			link: '/scopes/patternLanguage'
 		}
 	];
