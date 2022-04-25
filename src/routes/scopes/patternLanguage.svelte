@@ -1,25 +1,23 @@
 <script>
-	import { projectStore, compare } from '$lib/stores/projectStore';
+	import { projectStore } from '$lib/stores/projectStore';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 	import SvgArrow from './svgArrow.svelte';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
 
-	export let sortedScopesIndispensable = []; // fetch from server because store has a weird behavior in client using sort, specially on Firefox where it gets data correctly and blinks showing unexpected order from store
+	$: sortedScopesIndispensable = projectStore.sortScopesByPriority().sortedScopesIndispensable;
 
 	let maxDependents = $projectStore.reduce((prev, curr) => {
 		return Math.max(prev, curr.dependsOn?.length);
 	}, 0);
 </script>
 
-<h1>Pattern Language</h1>
-
 <NavigationScopes currentBtn={5} />
 
 <div class="w-full ">
 	{#each sortedScopesIndispensable as scope, idx (scope.id)}
 		<div class="m-2 flex justify-center ">
-			<Scope {scope} editTitle={true} itemsScopeModal={scope.items} width="w-full">
+			<Scope bind:scope editTitle={true} itemsScopeModal={scope.items} width="w-full">
 				<div slot="badge" class="w-full ">
 					<BadgeDependencies project={projectStore} bind:scope />
 				</div>
@@ -29,7 +27,7 @@
 					<h2
 						class="mt-2 border-dashed border-2 border-gray-300"
 						contenteditable
-						bind:textContent={scope.title}
+						bind:innerHTML={scope.title}
 						placeholder="Write here the name of this group..."
 					/>
 				</div>
@@ -38,7 +36,7 @@
 						<div
 							class="col-span-2 border-dashed border-2 border-gray-300"
 							contenteditable
-							bind:textContent={scope.description}
+							bind:innerHTML={scope.description}
 							placeholder="Write here the sections related to this group..."
 						/>
 						<div class="p-2">

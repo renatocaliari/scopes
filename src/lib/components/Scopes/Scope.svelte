@@ -33,7 +33,7 @@
 				{:else}
 					<div class="w-full h-8">
 						<label for="modal-{scope.id}" class="mr-2 link link-hover prose"
-							><h3>{scope.name}</h3></label
+							><h3>{scope.name}: {scope.description}</h3></label
 						>
 					</div>
 					{#if $$slots.badge}

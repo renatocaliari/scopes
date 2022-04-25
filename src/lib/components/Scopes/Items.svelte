@@ -5,7 +5,8 @@
 	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
 
 	export let scope;
-	export let items = scope.items;
+	export let items;
+	export let forceMinHeight = true;
 	export let dragAndDrop = false;
 	export let allowRemoveItem = false;
 	export let allowAddItem = false;
@@ -20,9 +21,6 @@
 		return true;
 	};
 	export let fnOnCheckItem = (scope, item, checked) => {};
-
-	// force update items according to scope.items binded
-	$: items = scope.items;
 
 	let submit = false;
 	let value;
@@ -103,7 +101,8 @@
 	</div>
 {:else}
 	<section
-		class="p-2 overflow-scroll h-52"
+		class:h-52={forceMinHeight}
+		class:overflow-scroll={forceMinHeight}
 		use:proxyDndzone={{
 			items: items,
 			flipDurationMs,
@@ -115,7 +114,7 @@
 	>
 		{#each items as item (item.id)}
 			<div
-				class="m-2 p-2 w-auto min-h-8 border-2 text-xs"
+				class="w-auto text-xs min-h-8 border-2 p-2 my-2"
 				animate:flip={{ duration: flipDurationMs }}
 			>
 				<ItemDragDrop

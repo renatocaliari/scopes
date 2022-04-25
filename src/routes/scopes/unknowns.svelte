@@ -12,12 +12,10 @@
 	);
 </script>
 
-<h1>Indispensable Or Risky</h1>
-
 <NavigationScopes currentBtn={3} />
 
 <ul class="list-inside border-2 p-2 shadow-xl mb-6">
-	<li>Set which scopes are indispensable</li>
+	<!-- <li>Set which scopes are indispensable</li> -->
 	<li>Set which scopes have more unknowns and risks</li>
 </ul>
 
@@ -30,14 +28,14 @@
 				</div>
 
 				<div slot="header">
-					<ToggleScope
+					<!-- <ToggleScope
 						bind:scope
 						bind:checked={scope.indispensable}
 						checkText="Indispensable"
 						on:checkItem={(e) => {
 							projectStore.scopeUpdateIndispensable(e.detail.item, e.detail.checked);
 						}}
-					/>
+					/> -->
 					<ToggleScope
 						bind:scope
 						bind:checked={scope.risky}

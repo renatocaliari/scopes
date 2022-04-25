@@ -18,9 +18,17 @@
 	$: scopeBucket = $projectStore.find((scope) => scope.id === 'bucket');
 </script>
 
-<h1>Scopes</h1>
-
 <NavigationScopes currentBtn={1} />
+
+<ol class="list-inside border-2 p-2 shadow-xl mb-6">
+	<li>In Bucket, dump all you think is needed to do or solve something</li>
+	<li>
+		Group these items in the scopes on the side asking: what can be completed together in isolation
+		of the rest?
+	</li>
+	<li>Name the scopes based on affinity and relationship of items grouped together</li>
+	<li>Uncheck items nice-to-have, otherwise they are checked as indispensable.</li>
+</ol>
 
 <div
 	class="flex md:flex-nowrap flex-wrap 
@@ -33,6 +41,7 @@
 					<div>Brain drump:</div>
 					<Items
 						bind:scope={scopeBucket}
+						bind:items={scopeBucket.items}
 						on:addItem={(e) => {
 							addItem(scopeBucket, e.detail.value, true);
 						}}

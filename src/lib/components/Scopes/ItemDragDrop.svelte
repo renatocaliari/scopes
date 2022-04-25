@@ -30,7 +30,7 @@
 		<div class="w-full">{item.name}</div>
 	{:else}
 		{#if dragAndDrop}
-			<div class="mr-2">
+			<div>
 				<svg viewBox="0 0 100 80" width="20" height="20">
 					<rect width="70" height="12" />
 					<rect y="20" width="70" height="12" />
@@ -49,7 +49,7 @@
 		{/if}
 		{#if allowEditItem}
 			<div
-				class="w-full mr-2 items-center border-2 border-dotted"
+				class="w-full items-center border-2 border-dotted"
 				contenteditable
 				bind:textContent={item.name}
 			>
@@ -57,11 +57,13 @@
 					>{item.name}</label
 				>
 			</div>
+		{:else if itemsModal.length > 0}
+			<div class="items-center">
+				<label for="modal-item-{item.id}" class="w-full link link-hover prose">{item.name}</label>
+			</div>
 		{:else}
-			<div class="w-full mr-2 items-center">
-				<label for="modal-item-{item.id}" class="mr-2 w-full link link-hover prose"
-					>{item.name}</label
-				>
+			<div class="items-center">
+				{item.name}
 			</div>
 		{/if}
 		{#if allowRemoveItem}

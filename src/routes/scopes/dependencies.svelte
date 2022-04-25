@@ -10,7 +10,6 @@
 	);
 </script>
 
-<h1>Dependencies</h1>
 <NavigationScopes currentBtn={2} />
 
 <ul class="list-inside border-2 p-2 shadow-xl mb-6">
