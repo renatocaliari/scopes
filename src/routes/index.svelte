@@ -9,7 +9,6 @@
 	if (browser) {
 		goto('/scopes/dump	');
 	}
-	import { projectStore, compare } from '$lib/stores/projectStore';
 	import { goto } from '$app/navigation';
 </script>
 
