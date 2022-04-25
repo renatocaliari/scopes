@@ -19,15 +19,16 @@
 <div class={'grid grid-rows-2 grid-cols-3 grid-flow-row gap-4 place-content-around'}>
 	{#each sortedScopes as scope}
 		<div>
-			<Scope {scope} itemsScopeModal={scope.items} checked={scope.indispensable}>
+			<Scope bind:scope itemsScopeModal={scope.items} checked={scope.indispensable}>
 				<div slot="badge">
 					<BadgeDependencies project={projectStore} bind:scope />
 				</div>
 				<div slot="subTitle">Depends on:</div>
 				<div slot="body">
 					<Items
+						emptyState="No Scope"
 						bind:scope
-						items={projectStore.getScopesExcludingThis(scope)}
+						items={projectStore.filterScopesWithItemsExcludingThisAndBucket(scope)}
 						checkbox
 						fnSetChecked={(s) => {
 							return scope.dependsOn.includes(s.id);

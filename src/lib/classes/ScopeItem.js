@@ -11,6 +11,7 @@ export default class ScopeItem {
         this.name = name
         this.indispensable = indispensable
         this.description = description
+        this.placeholder = ''
     }
 
     static createItem(name, indispensable, description) {

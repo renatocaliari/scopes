@@ -27,7 +27,7 @@
 
 <div class="task inline-flex items-center w-full min-h-8">
 	{#if readOnly}
-		<div class="w-full">{item.name}</div>
+		<div class="w-full">{item.name || item.placeholder}</div>
 	{:else}
 		{#if dragAndDrop}
 			<div>
@@ -48,7 +48,7 @@
 			/>
 		{/if}
 		{#if allowEditItem}
-			<div
+			<span
 				class="w-full items-center border-2 border-dotted"
 				contenteditable
 				bind:textContent={item.name}
@@ -56,14 +56,16 @@
 				<label for="modal-item-{item.id}" class="mr-2 w-full link link-hover prose"
 					>{item.name}</label
 				>
-			</div>
+			</span>
 		{:else if itemsModal.length > 0}
 			<div class="items-center">
-				<label for="modal-item-{item.id}" class="w-full link link-hover prose">{item.name}</label>
+				<label for="modal-item-{item.id}" class="w-full link link-hover prose"
+					>{item.name || item.placeholder}</label
+				>
 			</div>
 		{:else}
 			<div class="items-center">
-				{item.name}
+				{item.name || item.placeholder}
 			</div>
 		{/if}
 		{#if allowRemoveItem}

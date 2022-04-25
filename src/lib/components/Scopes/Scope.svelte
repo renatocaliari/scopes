@@ -5,6 +5,15 @@
 	export let checked = false;
 	export let color = '#FFFFFF';
 	export let width = 'w-80';
+
+	let textPlaceholder;
+	$: {
+		scope.name = scope.name.replace('<br>', '');
+		textPlaceholder =
+			!scope.name || scope.name.replace('<br>', '').trim().length === 0
+				? 'Scope ' + scope.id.split('-')[1]
+				: '';
+	}
 </script>
 
 <div
@@ -21,8 +30,12 @@
 						<svelte:element
 							this="h3"
 							contenteditable
+							placeholder={textPlaceholder}
 							bind:innerHTML={scope.name}
-							class="mr-2 mt-0 mb-0 w-full"
+							class="mr-2 mt-0 mb-0 w-full min-h-8 block"
+							class:border-dashed={textPlaceholder}
+							class:border-2={textPlaceholder}
+							class:border-slate-200={textPlaceholder}
 						/>
 					</div>
 					{#if $$slots.badge}
@@ -31,9 +44,13 @@
 						</div>
 					{/if}
 				{:else}
-					<div class="w-full h-8">
+					<div class="w-full min-h-8">
 						<label for="modal-{scope.id}" class="mr-2 link link-hover prose"
-							><h3>{scope.name}: {scope.description}</h3></label
+							><h3>
+								{!scope.name || scope.name.replace('<br>', '').trim().length === 0
+									? 'Scope ' + scope.id.split('-')[1]
+									: scope.name.replace('<br>', '')}
+							</h3></label
 						>
 					</div>
 					{#if $$slots.badge}
@@ -79,3 +96,11 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	[placeholder]:not(empty):before {
+		content: attr(placeholder);
+		display: block;
+		opacity: 0.5;
+	}
+</style>

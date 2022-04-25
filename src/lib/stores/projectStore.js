@@ -57,7 +57,7 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
                         break;
                 }
             }
-            addScopeAutoId('Scope ' + i, items, dependsOn, risky, indispensable);
+            addScopeAutoId('', items, dependsOn, risky, indispensable);
         }
     }
 
@@ -82,6 +82,7 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
             title: "",
             description: "",
             name: name,
+            placeholder: "Scope " + get(store).length,
             order: 0,
             items: items,
             dependsOn: dependsOn,
@@ -99,8 +100,8 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
         ; return get(store).filter((scope) => scope.id !== 'bucket' && scope.items.length > 0)
     }
 
-    function getScopesExcludingThis(currentScope) {
-        return get(store).filter((scope) => scope.id != currentScope.id && scope.id !== "bucket");
+    function filterScopesWithItemsExcludingThisAndBucket(currentScope) {
+        return get(store).filter((scope) => scope.id != currentScope.id && scope.id !== "bucket" && scope.items.length > 0);
     }
 
     function filterScopes(fn) {
@@ -302,7 +303,7 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
         sortScopesByPriority,
         filterScopes,
         filterScopesWithItemsExcludingBucket,
-        getScopesExcludingThis,
+        filterScopesWithItemsExcludingThisAndBucket,
         set,
         update,
         subscribe

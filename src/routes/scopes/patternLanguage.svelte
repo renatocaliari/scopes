@@ -79,5 +79,6 @@
 	[contenteditable]:empty:before {
 		content: attr(placeholder);
 		display: block;
+		opacity: 0.5;
 	}
 </style>

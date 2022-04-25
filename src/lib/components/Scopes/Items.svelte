@@ -94,12 +94,8 @@
 		/>
 	</form>
 {/if}
-
+<!-- 
 {#if items?.length == 0}
-	<div class="m-2 p-2 w-auto min-h-8 border-2 text-xs">
-		{emptyState}
-	</div>
-{:else}
 	<section
 		class:h-52={forceMinHeight}
 		class:overflow-scroll={forceMinHeight}
@@ -112,11 +108,30 @@
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}
 	>
-		{#each items as item (item.id)}
-			<div
-				class="w-auto text-xs min-h-8 border-2 p-2 my-2"
-				animate:flip={{ duration: flipDurationMs }}
-			>
+		<div class="m-2 p-2 w-auto min-h-8 border-2 text-xs h-40">
+			{emptyState}
+		</div>
+	</section> -->
+<!-- {:else} -->
+<section
+	class:h-40={forceMinHeight}
+	class:overflow-scroll={forceMinHeight}
+	use:proxyDndzone={{
+		items: items,
+		flipDurationMs,
+		type: 'items',
+		dropTargetClasses: ['bg-green-50']
+	}}
+	on:consider={handleDndConsider}
+	on:finalize={handleDndFinalize}
+>
+	{#each items as item (item.id)}
+		<div
+			class="w-auto text-xs min-h-8 p-2 my-2"
+			class:border-2={item.name.length != 0}
+			animate:flip={{ duration: flipDurationMs }}
+		>
+			{#if item.name || item.placeholder}
 				<ItemDragDrop
 					bind:item
 					{dragAndDrop}
@@ -132,7 +147,8 @@
 				>
 					<div slot="headerModal">Items of {item.name}</div>
 				</ItemDragDrop>
-			</div>
-		{/each}
-	</section>
-{/if}
+			{/if}
+		</div>
+	{/each}
+</section>
+<!-- {/if} -->
