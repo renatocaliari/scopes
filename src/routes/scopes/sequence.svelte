@@ -1,11 +1,21 @@
 <script>
 	import { projectStore, compare } from '$lib/stores/projectStore';
+	import { sequenceScopes } from '$lib/utils/sequenceScopes';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 	import SvgArrow from './svgArrow.svelte';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
+	import { browser } from '$app/env';
 
-	export let scopesForkedPriorized = []; // fetch from server because store has a weird behavior in client using sort, specially on Firefox where it gets data correctly and blinks showing unexpected order from store
+	// let scopesForkedPriorized = projectStore.sortScopesByPriority();
+	export let scopesForkedPriorized; // fetch from server because store has a weird behavior in client using sort, specially on Firefox where it gets data correctly and blinks showing unexpected order from store
+	// let scopesForkedPriorized = sequenceScopes().scopesForkedPriorized;
+	// $: scopesForkedPriorized = projectStore.sortScopesByPriority().scopesForkedPriorized;
+	if (!browser) {
+		console.log('server: scopesForkedPriorized:', scopesForkedPriorized);
+	} else {
+		console.log('browser: scopesForkedPriorized:', scopesForkedPriorized);
+	}
 
 	let maxDependents = $projectStore.reduce((prev, curr) => {
 		return Math.max(prev, curr.dependsOn?.length);
@@ -82,7 +92,7 @@
 		<div class="m-2 flex justify-center">
 			<Scope {scope} editTitle={false} color={calculatedColor} itemsScopeModal={scope.items}>
 				<div slot="badge">
-					<BadgeDependencies project={projectStore} bind:scope />
+					<BadgeDependencies project={projectStore} {scope} />
 				</div>
 				<div slot="header">
 					<div class="badge" class:hidden={!scope.indispensable}>Indispensable</div>

@@ -1,9 +1,11 @@
-import { scopesForkedPriorized } from '$lib/utils/sequenceScopes'
+import { sequenceScopes } from '$lib/utils/sequenceScopes'
 
 export async function get({ params }) {
-    if (scopesForkedPriorized) {
+    console.log('>>>> carregou...');
+
+    if (sequenceScopes().scopesForkedPriorized) {
         return {
-            body: { scopesForkedPriorized }
+            body: { scopesForkedPriorized: sequenceScopes().scopesForkedPriorized }
         };
     }
 }

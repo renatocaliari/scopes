@@ -1,9 +1,9 @@
-import { sortedScopesIndispensable } from '$lib/utils/sequenceScopes'
+import { sequenceScopes } from '$lib/utils/sequenceScopes'
 
-export async function get({ params }) {
-    if (sortedScopesIndispensable) {
+export function get({ params }) {
+    if (sequenceScopes().sortedScopesIndispensable) {
         return {
-            body: { sortedScopesIndispensable }
+            body: { sortedScopesIndispensable: sequenceScopes().sortedScopesIndispensable }
         };
     }
 }

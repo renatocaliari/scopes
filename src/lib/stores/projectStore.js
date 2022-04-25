@@ -10,7 +10,8 @@ import { persistentWritable } from "$lib/stores/persistentStore";
 // export let projectStore = localStorageStore('projectStore', scopes);
 
 export const projectStore = ProjectStore(true, 6, true);
-console.log('projectStore:', get(projectStore));
+
+// console.log('projectStore:', get(projectStore));
 
 export function ProjectStore(hasBucket, totalScopes, sampleData) {
     let store = writable([]);
@@ -197,9 +198,9 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
 
         // another idea with slice: https://github.com/sveltejs/svelte/issues/6071
 
-        const scopesSorted = derived(store, (s) =>
-            s.filter((scope) => scope.id !== 'bucket').sort(compare)
-        );
+        // const scopesSorted = derived(store, (s) =>
+        //     s.filter((scope) => scope.id !== 'bucket').sort(compare)
+        // );
 
         // const scopesSorted = derived(store, (s) =>
         //     [...s].filter((scope) => scope.id !== 'bucket').sort(compare)
@@ -207,11 +208,84 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
 
         // const scopesSorted = [...get(store)].slice().filter((scope) => scope.id !== 'bucket').slice().sort(compare)
 
-        return get(scopesSorted);
-        // return [...get(store)].sort(compare)
+        let lastPriority = {};
+        const scopesSorted = JSON.parse(
+            JSON.stringify(
+                get(store)
+            )
+        ).
+            filter((scope) => scope.id !== "bucket").reduce((acc, curr, idx, arr) => {
+                // console.log('acc stringify:', JSON.stringify(acc));
+                console.log('acc:', acc);
+                console.log('idx:', idx);
+                console.log('arr:', arr);
+
+                // let first = acc ? acc.slice(-1)[0] : [];
+                // let second = curr;
+
+                let next = arr[idx + 1];
+
+                // if (idx + 1 === arr.length) return acc.push(curr);
+                if (idx === 0) {
+                    lastPriority = curr;
+                    return acc;
+                }
+                console.log('lastPriority:', lastPriority);
+                console.log('curr:', curr);
+                console.log('next:', next);
+
+                if (lastPriority.dependsOn?.includes(curr?.id)) {
+                    acc.splice(acc.length - 1, 1, curr, lastPriority);
+                    lastPriority = lastPriority;
+                } else if (curr?.dependsOn?.includes(lastPriority?.id)) {
+                    acc.splice(acc.length - 1, 1, lastPriority, curr);
+                    lastPriority = curr;
+                } else if (lastPriority?.risky && !curr?.risky) {
+                    acc.splice(acc.length - 1, 1, lastPriority, curr);
+                    lastPriority = curr;
+                } else if (!lastPriority?.risky && curr?.risky) {
+                    acc.splice(acc.length - 1, 1, curr, lastPriority);
+                    lastPriority = lastPriority;
+                } else if (lastPriority?.dependsOn?.length > curr?.dependsOn?.length) {
+                    acc.splice(acc.length - 1, 1, lastPriority, curr);
+                    lastPriority = lastPriority;
+                } else if (lastPriority?.dependsOn?.length < curr?.dependsOn?.length) {
+                    acc.splice(acc.length - 1, 1, curr, lastPriority);
+                    lastPriority = curr;
+                } else {
+                    acc.splice(acc.length - 1, 1, lastPriority, curr);
+                    lastPriority = curr;
+                }
+
+                // if (lastPriority.dependsOn?.includes(next?.id)) {
+                //     acc.splice(acc.length - 1, 1, next, lastPriority);
+                //     lastPriority = curr;
+                // } else if (next?.dependsOn?.includes(lastPriority?.id)) {
+                //     acc.splice(acc.length - 1, 1, lastPriority, next);
+                //     lastPriority = next;
+                // } else if (lastPriority?.risky && !next?.risky) {
+                //     acc.splice(acc.length - 1, 1, lastPriority, next);
+                //     lastPriority = next;
+                // } else if (!lastPriority?.risky && next?.risky) {
+                //     acc.splice(acc.length - 1, 1, next, lastPriority);
+                //     lastPriority = curr;
+                // } else if (lastPriority?.dependsOn?.length > next?.dependsOn?.length) {
+                //     acc.splice(acc.length - 1, 1, next, lastPriority);
+                //     lastPriority = curr;
+                // } else if (lastPriority?.dependsOn?.length < next?.dependsOn?.length) {
+                //     acc.splice(acc.length - 1, 1, lastPriority, next);
+                //     lastPriority = next;
+                // } else {
+                //     acc.splice(acc.length - 1, 1, lastPriority, next);
+                //     lastPriority = next;
+                // }
+                return acc;
+            }, []);
+
+        console.log("#### sequenceScopes:", scopesSorted);
+        return sequenceScopes(scopesSorted);
 
     }
-
 
     return {
         reset: () => set([]),
@@ -228,12 +302,63 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
         sortItemsByIndispensable,
         updateDependencies,
         scopeAddItem,
+        sortScopesByPriority,
         filterScopes,
         filterScopesWithItemsExcludingBucket,
         getScopesExcludingThis,
         set,
         update,
         subscribe
+    }
+};
+
+
+export const lastIndexOf = (array, key, value) => {
+    for (let i = array?.length - 1; i >= 0; i--) {
+        if (array[i][key] === value) return i;
+    }
+    return -1;
+};
+
+
+export function sequenceScopes(scopes) {
+    let copyStore = JSON.parse(JSON.stringify(scopes));
+
+    let scopesPriorized = [];
+    let forkedScopes = [];
+    let indexLastRisky = 0;
+
+    let sortedScopesIndispensable = [];
+    let scopesForkedPriorized = [];
+
+    sortedScopesIndispensable = copyStore.filter((scope) => scope.id !== 'bucket');
+    indexLastRisky = lastIndexOf(sortedScopesIndispensable, 'risky', true);
+
+    scopesPriorized = [...sortedScopesIndispensable].map((scope, index) => {
+        scope.order = index;
+        if (!scope.risky && index <= indexLastRisky) {
+            let previousId = scope.id;
+            scope.id = scope.id + '-forked';
+            let forkedScope = JSON.parse(JSON.stringify(scope));
+            forkedScope.id = previousId;
+            forkedScopes = [...forkedScopes, forkedScope];
+        }
+        return scope;
+    });
+
+    let scopesBeforeLastRisky = scopesPriorized.slice(0, indexLastRisky + 1);
+    let scopesAfterLastRisky = scopesPriorized.slice(indexLastRisky + 1);
+    scopesAfterLastRisky = scopesAfterLastRisky.concat(forkedScopes);
+    scopesAfterLastRisky.sort(compare);
+
+    scopesPriorized.splice(indexLastRisky + 1, 0, scopesAfterLastRisky);
+
+    scopesAfterLastRisky
+    scopesForkedPriorized = scopesBeforeLastRisky.concat(scopesAfterLastRisky);
+
+    return {
+        sortedScopesIndispensable: sortedScopesIndispensable,
+        scopesForkedPriorized: scopesForkedPriorized
     }
 };
 
@@ -273,12 +398,12 @@ export function compare(first, second) {
         // console.log('>>> first.dependsOn.includes(second.id)');
         // console.log('retornando o second:', second);
         // console.log('o first era:', first);
-        ret = retSecond;
+        ret = retFirst;
     } else if (first.dependsOn.length < second.dependsOn.length) {
         // console.log('>>> second.dependsOn.includes(first.id)');
         // console.log('retornando o first:', first);
         // console.log('o second era:', second);
-        ret = retFirst;
+        ret = retSecond;
     }
     return ret;
 }

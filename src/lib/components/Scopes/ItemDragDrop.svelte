@@ -127,36 +127,4 @@
 	.task:hover button.remove {
 		opacity: 1;
 	}
-
-	.task:hover .move-handle {
-		opacity: 1;
-	}
-
-	.move-handle {
-		grid-row: 1 / 2;
-		grid-column: 2 / 3;
-		align-self: center;
-		width: 32px;
-		min-width: 32px;
-		height: 32px;
-		min-height: 32px;
-		font-size: 8px;
-		border: 1px solid #ccc;
-		border-radius: 16px;
-		background-color: #eee;
-		transition: opacity 250ms;
-		opacity: 0.1;
-		display: grid;
-		grid-template-rows: repeat(2, 8px);
-		grid-template-columns: repeat(2, 8px);
-		grid-auto-flow: row-dense;
-		place-content: center;
-	}
-	.dot {
-		background-color: #aaa;
-		width: 4px;
-		height: 4px;
-		border-radius: 2px;
-		place-self: center;
-	}
 </style>
