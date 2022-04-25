@@ -1,8 +1,10 @@
 
 import { writable, get, derived } from "svelte/store"
 import ScopeItem from "$lib/classes/ScopeItem";
-import { persistentWritable } from "$lib/stores/persistentStore";
+// import { persistentWritable } from "$lib/stores/persistentStore";
 import { SvelteComponentDev } from "svelte/internal";
+
+import { localStorageStore } from 'fractils'
 
 // based on:
 // a. without store: https://svelte.dev/repl/243498124f354af59070ae52da38d82f?version=3.44.2
@@ -15,8 +17,9 @@ export const projectStore = ProjectStore(true, 9, false);
 // console.log('projectStore:', get(projectStore));
 
 export function ProjectStore(hasBucket, totalScopes, sampleData) {
-    let store = writable([]);
+    // let store = writable([]);
     // let store = persistentWritable("scopes", []);
+    let store = localStorageStore("scopes", []);
 
     const { set, subscribe, update } = store;
 
@@ -109,33 +112,30 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
     }
 
     function updateDependencies(scope, checkedScope, checked) {
-        console.log('checkedScope.dependsOn:', checkedScope.dependsOn);
-
-        if (!checkedScope.dependsOn.includes(scope.id)) {
-            console.log('vai dar update');
-            update(scopes => get(store).map((s) => {
-                if (scope.id === s.id) {
-                    s.dependsOn = s.dependsOn || [];
-                    if (checked) {
-                        s.dependsOn = [...new Set([...s.dependsOn, checkedScope.id])];
-                    } else {
-                        s.dependsOn = s.dependsOn.filter((id) => id !== checkedScope.id);
-                    }
+        update(scopes => get(store).map((s) => {
+            if (scope.id === s.id) {
+                s.dependsOn = s.dependsOn || [];
+                if (checked) {
+                    s.dependsOn = [...new Set([...s.dependsOn, checkedScope.id])];
+                } else {
+                    s.dependsOn = s.dependsOn.filter((id) => id !== checkedScope.id);
                 }
-                return s;
-            }));
-        } else {
-            console.log('não vai dar update');
-        }
+            }
+            return s;
+        }));
+        store = store;
+        // }
     }
 
     function scopeUpdateRisky(scope, risky) {
         update(scopes => get(store).map((s) => {
             if (scope.id === s.id) {
                 s.risky = risky;
+                console.log('atualizou');
             }
             return s;
         }));
+        store = store;
     }
 
     function scopeUpdateIndispensable(scope, indispensable) {
@@ -145,12 +145,16 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
             }
             return s;
         }));
+        store = store;
+
     }
 
     function scopeRemoveItem(scope, item) {
         update(scopes =>
             scopes.find((s) => s.id === scope.id)
                 .items.filter((i) => i.id !== item.id));
+        store = store;
+
     }
 
     function itemUpdateIndispensable(scope, item, indispensable) {
@@ -164,6 +168,8 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
             }
             return s;
         }));
+        store = store;
+
     }
 
     function scopeAddItem(scope, name, indispensable, description) {
@@ -173,6 +179,8 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
             }
             return s;
         }));
+        store = store;
+
     }
 
     function scopeUnlocksDependencies(scope) {
@@ -249,7 +257,7 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
 
 
         const sortedScopesIndispensable = derived(store, (s) => {
-            let copyFilteredStore = JSON.parse(JSON.stringify(s.filter((scope) => scope.id !== 'bucket')));
+            let copyFilteredStore = JSON.parse(JSON.stringify(s.filter((scope) => scope.id !== 'bucket' && scope.items.length > 0)));
             return mergeSort(copyFilteredStore);
         });
 

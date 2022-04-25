@@ -114,7 +114,7 @@
 	</section> -->
 <!-- {:else} -->
 <section
-	class:h-40={forceMinHeight}
+	class:h-18={forceMinHeight}
 	class:overflow-scroll={forceMinHeight}
 	use:proxyDndzone={{
 		items: items,
@@ -128,7 +128,7 @@
 	{#each items as item (item.id)}
 		<div
 			class="w-auto text-xs min-h-8 p-2 my-2"
-			class:border-2={item.name.length != 0}
+			class:border-2={item.name || item.placeholder}
 			animate:flip={{ duration: flipDurationMs }}
 		>
 			{#if item.name || item.placeholder}

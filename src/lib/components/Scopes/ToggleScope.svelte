@@ -15,6 +15,7 @@
 	}
 </script>
 
+{checked}
 <div class="form-control">
 	<label class="label cursor-pointer">
 		<span class="label-text mr-2"

@@ -36,7 +36,7 @@
 >
 	<div class="mb-4">
 		<div class="sticky top-0 left-0 mb-4">
-			<Scope editTitle bind:scope={scopeBucket}>
+			<Scope editTitle bind:scope={scopeBucket} width="w-80">
 				<div slot="body">
 					<div>Brain drump:</div>
 					<Items
@@ -64,7 +64,7 @@
 	>
 		{#each $projectStore.filter((scope) => scope.id !== 'bucket') as scope}
 			<div class="flex mx-4 mb-4 h-80">
-				<Scope editTitle bind:scope>
+				<Scope editTitle bind:scope width="w-80">
 					<div slot="body">
 						<Items
 							bind:scope

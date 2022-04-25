@@ -23,7 +23,7 @@
 				<div slot="badge">
 					<BadgeDependencies project={projectStore} bind:scope />
 				</div>
-				<div slot="subTitle">Depends on:</div>
+				<div slot="subTitle">Depends on scopes:</div>
 				<div slot="body">
 					<Items
 						emptyState="No Scope"
@@ -34,8 +34,17 @@
 							return scope.dependsOn.includes(s.id);
 						}}
 						fnOnCheckItem={(s, item, checked) => {
-							console.log('vai chamar');
+							if (checked && item.dependsOn.includes(s.id)) {
+								alert(
+									'You are creating a circular dependency. [' +
+										item.name +
+										'] already depends on [' +
+										(s.name || s.placeholder) +
+										']'
+								);
+							}
 							projectStore.updateDependencies(s, item, checked);
+							$projectStore = $projectStore;
 						}}
 						fnItemsModal={(scope) => {
 							return scope.items;

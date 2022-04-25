@@ -17,7 +17,7 @@
 <div class="w-full ">
 	{#each sortedScopesIndispensable as scope, idx (scope.id)}
 		<div class="m-2 flex justify-center ">
-			<Scope bind:scope editTitle={true} itemsScopeModal={scope.items} width="w-full">
+			<Scope bind:scope itemsScopeModal={scope.items} width="w-full">
 				<div slot="badge" class="w-full ">
 					<BadgeDependencies project={projectStore} bind:scope />
 				</div>

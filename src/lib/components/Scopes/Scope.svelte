@@ -4,7 +4,7 @@
 	export let editTitle = false;
 	export let checked = false;
 	export let color = '#FFFFFF';
-	export let width = 'w-80';
+	export let width = '';
 
 	let textPlaceholder;
 	$: {
@@ -18,7 +18,7 @@
 
 <div
 	name="scope-{scope.id}"
-	class="p-2 border-2 border-slate-800 rounded-md {width}"
+	class="card bg-base-100 shadow-xl p-2 {width}"
 	class:bg-red-300={checked}
 	style:background-color={color}
 >
@@ -44,7 +44,7 @@
 						</div>
 					{/if}
 				{:else}
-					<div class="w-full min-h-8">
+					<div class="card-title w-full min-h-8">
 						<label for="modal-{scope.id}" class="mr-2 link link-hover prose"
 							><h3>
 								{!scope.name || scope.name.replace('<br>', '').trim().length === 0

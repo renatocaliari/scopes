@@ -49,15 +49,17 @@
 					{#if scope.id.includes('forked')}
 						<div class="border-2 border-dotted border-red-500 p-2">
 							<p>
-								Do ONLY what is necessary to do the next scope: <span class="font-bold">
-									{nextOne.name}.</span
-								> Decide if you can and should do simulated tasks of this scope that mimic the behavior
-								of real tasks in controlled ways with the sole intention of allowing the execution of
-								the next scope.
+								Do ONLY what is necessary to do the next scope <span
+									class="font-bold bg-yellow-300"
+								>
+									{nextOne.name || nextOne.placeholder}</span
+								>. Decide if you can and should do simulated tasks of this scope that mimic the
+								behavior of real tasks in controlled ways with the sole intention of allowing the
+								execution of the next scope.
 							</p>
 							<p>
-								Relax, <span class="font-bold">{scope.name}</span> will appear later on again for you
-								to run fully.
+								Relax, <span class="font-bold bg-yellow-300">{scope.name || scope.placeholder}</span
+								> will appear later on again, so you'll can execute fully.
 							</p>
 						</div>
 					{/if}

@@ -22,9 +22,9 @@
 <div class={'grid grid-rows-2 grid-cols-3 grid-flow-row gap-4 place-content-around'}>
 	{#each sortedScopes as scope}
 		<div class:row-span-3={scope.id === 'bucket'}>
-			<Scope editTitle={scope.id !== 'bucket'} bind:scope>
+			<Scope bind:scope>
 				<div slot="badge">
-					<BadgeDependencies project={projectStore} bind:scope />
+					<BadgeDependencies project={projectStore} {scope} />
 				</div>
 
 				<div slot="header">
