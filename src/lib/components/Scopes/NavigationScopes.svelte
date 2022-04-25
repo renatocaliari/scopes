@@ -38,8 +38,10 @@
 			class="btn"
 			class:btn-active={currentBtn - 1 == idx}
 			class:btn-disabled={!activeBtns.includes(idx + 1)}
-			href={btn.link}>{btn.linkText}</a
-		>
+			href={btn.link}
+			sveltekit:prefetch
+			>{btn.linkText}
+		</a>
 	{/each}
 </div>
 <h1>{btns[currentBtn - 1].h1}</h1>
