@@ -41,11 +41,11 @@
 		{@const itemsNiceToHave = projectStore.scopeFilterItemsNiceToHave(scope)}
 
 		<div>
-			<Scope
-				bind:scope
+			<!-- 				bind:scope
 				icon={scope.risky ? '' : undefined}
 				classColor={scope.risky ? 'bg-red-50' : undefined}
-			>
+ -->
+			<Scope bind:scope classColor={scope.risky ? 'bg-red-50' : undefined}>
 				<div slot="badge">
 					<BadgeDependencies project={projectStore} {scope} />
 				</div>

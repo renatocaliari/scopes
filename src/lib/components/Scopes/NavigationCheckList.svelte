@@ -118,7 +118,8 @@
 			{#each checkList as item, idx (item.name)}
 				<li>
 					<div class="inline-flex items-center">
-						<Icon data={item.checked ? '✅' : '⭕'} class="mr-2" />{item.text}
+						<!-- <Icon data={item.checked ? check : uncheck} class="mr-2" />{item.text} -->
+						{item.checked ? '✅' : '⭕'}{item.text}
 					</div>
 				</li>
 			{/each}
