@@ -1,10 +1,5 @@
 <script>
-	import { session } from '$app/stores';
-	import { auth } from '$lib/auth';
 	import { browser } from '$app/env';
-	import { Mount } from 'svelte-mount';
-	import { fade } from 'svelte/transition';
-	//console.log('>>> $session:', JSON.stringify($session));
 
 	if (browser) {
 		goto('/scopes/dump	');

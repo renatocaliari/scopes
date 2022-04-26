@@ -6,8 +6,8 @@
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
 	import Items from '$lib/components/Scopes/Items.svelte';
 	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
-	import Fa from 'svelte-fa/src/fa.svelte';
-	import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+	import Icon from 'svelte-awesome';
+	// import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
 	function scopesToText(scopes) {
 		let text = '';
@@ -105,7 +105,8 @@
 					<div slot="header">
 						<div class="badge" class:hidden={!scope.indispensable}>Indispensable</div>
 						<div class="badge" class:hidden={!scope.forkedScopeId}>
-							<Fa icon={faCircleExclamation} class="mr-2" /> Do only the essential
+							<!-- <Icon data={faCircleExclamation} class="mr-2" />  -->
+							Do only the essential
 						</div>
 						<div class="badge" class:hidden={!scope.risky}>Risky</div>
 					</div>

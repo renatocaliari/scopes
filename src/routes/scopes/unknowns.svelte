@@ -8,7 +8,7 @@
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
 	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
 
-	import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+	// import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
 	let sortedScopes;
 	$: {
@@ -43,7 +43,7 @@
 		<div>
 			<Scope
 				bind:scope
-				icon={scope.risky ? faCircleExclamation : undefined}
+				icon={scope.risky ? '' : undefined}
 				classColor={scope.risky ? 'bg-red-50' : undefined}
 			>
 				<div slot="badge">

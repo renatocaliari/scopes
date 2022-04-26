@@ -1,5 +1,5 @@
 <script>
-	import Fa from 'svelte-fa/src/fa.svelte';
+	import Icon from 'svelte-awesome';
 
 	export let scope;
 	export let itemsScopeModal = [];
@@ -50,7 +50,7 @@
 							<label for="modal-{scope.id}" class="mr-2 link link-hover prose"
 								><h3 class="inline-flex align-middle content-center items-center">
 									{#if icon}
-										<Fa {icon} class=" mr-2" />
+										<Icon data={icon} class=" mr-2" />
 									{/if}
 									{!scope?.name || scope?.name?.replace('<br>', '').trim().length === 0
 										? 'Scope ' + scope?.id?.split('-')[1]

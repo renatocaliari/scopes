@@ -2,27 +2,61 @@
 </script>
 
 <h1>About</h1>
-<div>
-	<p>Hi! I'm Cali (Renato Caliari) from Brazil.</p>
-	<p>
-		I created <span class="font-bold">GreatExecution*</span> with the intention of making our make our
-		projects execution easier.
-	</p>
-	<p>You can learn more about me in my site: https://renatocaliari.com</p>
+<div class="flex flex-col justify-center items-center">
+	<div class="text-2xl w-1/2 ">
+		<span>
+			Hi! I'm Cali (Renato Caliari) from Brazil.
+			<span
+				>I created <span class="font-bold">Scopefully</span> with the intention of making our projects
+				execution easier.
+			</span>
+		</span>
+		<p>You can:</p>
+		<ul>
+			<li>
+				know more about me on my site (pt-BR): <a href="https://renatocaliari.com"
+					>https://renatocaliari.com</a
+				>
+			</li>
+			<li>
+				follow me on Twitter: <a href="https://twitter.com/renatocaliari/">@renatocaliari</a>
+			</li>
+			<li>
+				connecto on LinkedIn: <a href="https://linkedin.com/in/renatocaliari/"
+					>https://linkedin.com/in/renatocaliari/</a
+				>
+			</li>
+			<li>
+				follow me on medium (pt-BR): <a href="https://medium.com/@renatocaliari"
+					>https://medium.com/@renatocaliari</a
+				>
+			</li>
+		</ul>
+		<p>
+			<span class="font-bold">*</span>You can suggest better names as the product evolves. :)
+		</p>
 
-	<p>
-		<span class="font-bold">*</span>Yes!, you can suggest better names as the product evolves. :)
-	</p>
-
-	<h2>Inspiration and credit</h2>
-	This product was inspired by
-	<a href="https://world.hey.com/rjs/. ">Ryan Singer</a>'s (kudos!) material on digital product
-	development. You can consult his texts:
-	<a href="https://world.hey.com/rjs/">https://world.hey.com/rjs/</a>.
-	<h2>Caution:</h2>
-	This is an under development and incomplete version. The data is not yet persisted and is therefore
-	lost at the end of the navigation.
-	<h2>Technology</h2>
-	For this product I am using the Svelte + SvelteKit framework. I made this pilot product while relearning
-	how to develop software and while learning Svelte, after more than 1 decade working in other areas.
+		<h2 class="mt-4 mb-4">Inspiration and credit</h2>
+		This product was inspired by
+		<a href="https://world.hey.com/rjs/. ">Ryan Singer</a>'s (kudos!) material on digital product
+		development. You can consult his texts here:
+		<a href="https://world.hey.com/rjs/">https://world.hey.com/rjs/</a>.
+		<h2 class="mt-8 mb-4">Data</h2>
+		All data is being stored in your own browser, using localStorage.
+		<h2 class="mt-8 mb-4">Technology</h2>
+		<p>To develop this product I'm using Svelte + SvelteKit.</p>
+		<p>
+			I made this first version while relearning how to develop software and at the same time
+			learning how to develop using Svelte, after many years without developing.
+		</p>
+		<p>In recent year I worked as:</p>
+		<ul>
+			<li>Product Manager</li>
+			<li>HR Manager</li>
+			<li>Teacher on leadership</li>
+			<li>
+				Consultant helping organization in organizational design, culture and product management.
+			</li>
+		</ul>
+	</div>
 </div>

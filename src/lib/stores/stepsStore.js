@@ -25,7 +25,8 @@ export const stepsStore = writable([
     },
     {
         linkText: 'Generate Sequence',
-        h1: 'Automatic sequence to execute the scopes',
+        h1: 'Sequence to execute the scopes',
+        h2: 'Sequence generated automatically based on all information',
         link: '/scopes/sequence',
         active: false,
         completed: true

@@ -1,8 +1,10 @@
 <script>
 	import CopyToClipboard from '$lib/components/CopyToClipboard.svelte';
-	import Fa from 'svelte-fa/src/fa.svelte';
-	import { faCircleCheck as check } from '@fortawesome/free-solid-svg-icons';
-	import { faCircleCheck as uncheck } from '@fortawesome/free-regular-svg-icons';
+	// import Fa from 'svelte-fa/src/fa.svelte';
+
+	import Icon from 'svelte-awesome';
+	// import { faCircleCheck as check } from '@fortawesome/free-solid-svg-icons';
+	// import { faCircleCheck as uncheck } from '@fortawesome/free-regular-svg-icons';
 	import { projectStore } from '$lib/stores/projectStore';
 	import { stepsStore } from '$lib/stores/stepsStore';
 
@@ -116,7 +118,7 @@
 			{#each checkList as item, idx (item.name)}
 				<li>
 					<div class="inline-flex items-center">
-						<Fa icon={item.checked ? check : uncheck} class="mr-2" />{item.text}
+						<Icon data={item.checked ? '✅' : '⭕'} class="mr-2" />{item.text}
 					</div>
 				</li>
 			{/each}

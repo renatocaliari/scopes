@@ -4,6 +4,8 @@
 	export let currentStep = 0;
 </script>
 
+<h1>{$stepsStore[currentStep].h1}</h1>
+
 <div class="btn-group justify-center my-4">
 	{#each $stepsStore as btn, idx}
 		<a
@@ -16,7 +18,7 @@
 		</a>
 	{/each}
 </div>
-<h1>{$stepsStore[currentStep].h1}</h1>
+
 {#if $stepsStore[currentStep].h2}
 	<h2>{$stepsStore[currentStep].h2}</h2>
 {/if}
