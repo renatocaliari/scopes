@@ -13,8 +13,8 @@
 	}, 0);
 </script>
 
-<NavigationScopes currentStep={5}>
-	<NavigationCheckList linkPreviousStep="/scopes/sequence" />
+<NavigationScopes currentStep={4} let:currentStep>
+	<NavigationCheckList {currentStep} linkPreviousStep="/scopes/sequence" />
 </NavigationScopes>
 
 <div class="w-full ">
@@ -30,7 +30,7 @@
 					<h2
 						class="mt-2 border-dashed border-2 border-gray-300"
 						contenteditable
-						bind:innerHTML={scope.title}
+						bind:textContent={scope.title}
 						placeholder="Write here the name of this group..."
 					/>
 				</div>
@@ -39,7 +39,7 @@
 						<div
 							class="col-span-2 border-dashed border-2 border-gray-300"
 							contenteditable
-							bind:innerHTML={scope.description}
+							bind:textContent={scope.description}
 							placeholder="Write here the sections related to this group..."
 						/>
 						<div class="p-2">
