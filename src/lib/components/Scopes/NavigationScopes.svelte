@@ -1,5 +1,5 @@
 <script>
-	export let currentBtn = 1;
+	export let currentStep = 1;
 	export let activeBtns = [1, 2, 3, 4, 5];
 	let btns = [
 		{
@@ -8,14 +8,13 @@
 			link: '/scopes/dump'
 		},
 		{
-			linkText: 'Dependencies',
-			h1: 'Dependencies',
+			linkText: 'Set Dependencies',
+			h1: 'Set Dependencies',
 			link: '/scopes/dependencies'
 		},
 		{
-			linkText: 'Unknowns',
-			h1: 'Unknowns',
-			h2: 'Which scopes have risky unknowns (vs routine work)?',
+			linkText: 'Set Risky Unknowns',
+			h1: 'Set Risky Unknowns',
 			link: '/scopes/unknowns'
 		},
 		{
@@ -36,7 +35,7 @@
 	{#each btns as btn, idx}
 		<a
 			class="btn"
-			class:btn-active={currentBtn - 1 == idx}
+			class:btn-active={currentStep - 1 == idx}
 			class:btn-disabled={!activeBtns.includes(idx + 1)}
 			href={btn.link}
 			sveltekit:prefetch
@@ -44,7 +43,10 @@
 		</a>
 	{/each}
 </div>
-<h1>{btns[currentBtn - 1].h1}</h1>
-{#if btns[currentBtn - 1].h2}
-	<h2>{btns[currentBtn - 1].h2}</h2>
+<h1>{btns[currentStep - 1].h1}</h1>
+{#if btns[currentStep - 1].h2}
+	<h2>{btns[currentStep - 1].h2}</h2>
 {/if}
+
+<slot />
+<slot name="checkList" />

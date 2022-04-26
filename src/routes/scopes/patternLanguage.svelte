@@ -4,6 +4,7 @@
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 	import SvgArrow from './svgArrow.svelte';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
+	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
 
 	$: sortedScopesIndispensable = projectStore.sortScopesByPriority().sortedScopesIndispensable;
 
@@ -12,7 +13,9 @@
 	}, 0);
 </script>
 
-<NavigationScopes currentBtn={5} />
+<NavigationScopes currentStep={5}>
+	<NavigationCheckList linkPreviousStep="/scopes/sequence" />
+</NavigationScopes>
 
 <div class="w-full ">
 	{#each sortedScopesIndispensable as scope, idx (scope.id)}

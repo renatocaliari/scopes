@@ -7,6 +7,7 @@
 	import Items from '$lib/components/Scopes/Items.svelte';
 	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
 	import ItemsList from '$lib/components/Scopes/ItemsList.svelte';
+	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
 
 	$: scopesForkedPriorized = projectStore.sortScopesByPriority().scopesForkedPriorized;
 
@@ -27,7 +28,9 @@
 	// }
 </script>
 
-<NavigationScopes currentBtn={4} />
+<NavigationScopes currentStep={4}>
+	<NavigationCheckList linkNextStep="/scopes/patternLanguage" linkPreviousStep="/scopes/unknowns" />
+</NavigationScopes>
 
 <div class="w-full">
 	{#each scopesForkedPriorized as scope, idx (scope.id)}
@@ -59,22 +62,14 @@
 							</p>
 							<p>
 								Relax, <span class="font-bold bg-yellow-300">{scope.name || scope.placeholder}</span
-								> will appear later on again, so you'll can execute fully.
+								> will appear later on again, so you'll be able to execute fully.
 							</p>
 						</div>
 					{/if}
 					<h4>Indispensable:</h4>
-					<Items
-						bind:scope
-						items={scope.items.filter((item) => item.indispensable == true)}
-						forceMinHeight={false}
-					/>
+					<Items bind:scope items={scope.items.filter((item) => item.indispensable == true)} />
 					<h4>Nice to have:</h4>
-					<Items
-						bind:scope
-						items={scope.items.filter((item) => item.indispensable == false)}
-						forceMinHeight={false}
-					/>
+					<Items bind:scope items={scope.items.filter((item) => item.indispensable == false)} />
 				</div>
 			</Scope>
 		</div>

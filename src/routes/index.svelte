@@ -19,11 +19,6 @@
 This template uses and has:
 <ul>
 	<li>DaisyUI & TailwindCSS</li>
-	<li>Authentication with Supabase</li>
-	<li>
-		Felte - Form for Svelte:
-		https://dev.to/pabloabc/announcing-felte-10-a-form-library-for-svelte-solid-and-react-5ble
-	</li>
 	<li>svelte-actions: https://github.com/sw-yx/svelte-actions</li>
 	<li>svelte-mount: https://github.com/ghostdevv/svelte-mount</li>
 	<li>uuid v4: to generate id</li>

@@ -6,28 +6,50 @@
 	import Items from '$lib/components/Scopes/Items.svelte';
 	import { projectStore } from '$lib/stores/projectStore';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
+	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
+
+	import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
 	$: sortedScopes = $projectStore.filter(
 		(scope) => scope.id !== 'bucket' && scope.items.length > 0
 	);
+
+	let checkList = [
+		{
+			name: 'dependencies',
+			text: 'Optionally, set which scopes have risky unknowns (vs routine work)',
+			checked: false
+		}
+	];
 </script>
 
-<NavigationScopes currentBtn={3} />
-
-<ul class="list-inside border-2 p-2 shadow-xl mb-6">
-	<!-- <li>Set which scopes are indispensable</li> -->
-	<li>Set which scopes are riskiers</li>
-</ul>
+<NavigationScopes currentStep={3}>
+	<NavigationCheckList
+		optional={true}
+		{checkList}
+		linkNextStep="/scopes/sequence"
+		linkPreviousStep="/scopes/dependencies"
+	/>
+</NavigationScopes>
 
 <div class={'grid grid-rows-2 grid-cols-3 grid-flow-row gap-4 place-content-around'}>
 	{#each sortedScopes as scope}
-		<div class:row-span-3={scope.id === 'bucket'}>
-			<Scope bind:scope>
+		{@const itemsNiceToHave = projectStore.scopeFilterItemsNiceToHave(scope)}
+
+		<div>
+			<Scope
+				bind:scope
+				icon={scope.risky ? faCircleExclamation : undefined}
+				classColor={scope.risky ? 'bg-red-50' : undefined}
+			>
 				<div slot="badge">
 					<BadgeDependencies project={projectStore} {scope} />
 				</div>
 
-				<div slot="header">
+				<div
+					slot="header"
+					class="inline-flex w-full justify-end rounded-md p-[0.1rem] border-b-2 border-slate-200"
+				>
 					<!-- <ToggleScope
 						bind:scope
 						bind:checked={scope.indispensable}
@@ -39,15 +61,15 @@
 					<ToggleScope
 						bind:scope
 						bind:checked={scope.risky}
-						checkText="Risky"
+						checkText="Risky unknowns"
 						on:checkItem={(e) => {
 							projectStore.scopeUpdateRisky(e.detail.item, e.detail.checked);
+							$projectStore = $projectStore;
 						}}
 					/>
 				</div>
-
 				<div slot="body">
-					<div>Indispensable items:</div>
+					<h4>Indispensable (hiding Nice To Have):</h4>
 					<Items bind:scope items={projectStore.scopeFilterItemsIndispensable(scope)} />
 				</div>
 			</Scope>

@@ -1,9 +1,11 @@
 <script>
+	import Fa from 'svelte-fa';
+
 	export let scope;
 	export let itemsScopeModal = [];
 	export let editTitle = false;
-	export let checked = false;
-	export let color = '#FFFFFF';
+	export let icon;
+	export let classColor = 'bg-slate-50';
 	export let width = '';
 
 	let textPlaceholder;
@@ -18,9 +20,7 @@
 
 <div
 	name="scope-{scope.id}"
-	class="card bg-base-100 shadow-xl p-2 {width}"
-	class:bg-red-300={checked}
-	style:background-color={color}
+	class="card bg-base-100 shadow-xl p-4 {width} max-h-screen {classColor}"
 >
 	<div name="title" class="mb-2 w-full">
 		<div class="flex flex-col w-full">
@@ -32,10 +32,7 @@
 							contenteditable
 							placeholder={textPlaceholder}
 							bind:innerHTML={scope.name}
-							class="mr-2 mt-0 mb-0 w-full min-h-8 block"
-							class:border-dashed={textPlaceholder}
-							class:border-2={textPlaceholder}
-							class:border-slate-200={textPlaceholder}
+							class="mr-2 mt-0 mb-0 w-full min-h-8 block border-dashed border-2 border-slate-200"
 						/>
 					</div>
 					{#if $$slots.badge}
@@ -46,7 +43,10 @@
 				{:else}
 					<div class="card-title w-full min-h-8">
 						<label for="modal-{scope.id}" class="mr-2 link link-hover prose"
-							><h3>
+							><h3 class="inline-flex align-middle content-center items-center">
+								{#if icon}
+									<Fa {icon} class=" mr-2" />
+								{/if}
 								{!scope.name || scope.name.replace('<br>', '').trim().length === 0
 									? 'Scope ' + scope.id.split('-')[1]
 									: scope.name.replace('<br>', '')}
@@ -61,7 +61,7 @@
 				{/if}
 			</div>
 			{#if $$slots.header}
-				<div class="inline-flex w-full ">
+				<div>
 					<slot name="header" />
 				</div>
 			{/if}
@@ -98,6 +98,10 @@
 </div>
 
 <style>
+	:is([contenteditable], [placeholder]) {
+		cursor: text;
+	}
+
 	[placeholder]:not(empty):before {
 		content: attr(placeholder);
 		display: block;

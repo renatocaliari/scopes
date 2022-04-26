@@ -4,17 +4,31 @@
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 	import { projectStore } from '$lib/stores/projectStore';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
+	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
 
 	$: sortedScopes = $projectStore.filter(
 		(scope) => scope.id !== 'bucket' && scope.items.length > 0
 	);
+
+	let checkList;
+
+	$: checkList = [
+		{
+			name: 'dependencies',
+			text: 'Optionally, set which scopes depends on other',
+			checked: sortedScopes.some((scope) => scope.dependsOn.length > 0)
+		}
+	];
 </script>
 
-<NavigationScopes currentBtn={2} />
-
-<ul class="list-inside border-2 p-2 shadow-xl mb-6">
-	<li>Set which scopes depends on other</li>
-</ul>
+<NavigationScopes currentStep={2}>
+	<NavigationCheckList
+		{checkList}
+		optional={true}
+		linkNextStep="/scopes/unknowns"
+		linkPreviousStep="/scopes/dump"
+	/>
+</NavigationScopes>
 
 <div class={'grid grid-rows-2 grid-cols-3 grid-flow-row gap-4 place-content-around'}>
 	{#each sortedScopes as scope}

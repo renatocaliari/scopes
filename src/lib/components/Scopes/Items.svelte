@@ -6,7 +6,8 @@
 
 	export let scope;
 	export let items;
-	export let forceMinHeight = true;
+	export let minHeight = 'min-h-0';
+	export let maxHeight = 'h-48';
 	export let dragAndDrop = false;
 	export let allowRemoveItem = false;
 	export let allowAddItem = false;
@@ -114,8 +115,7 @@
 	</section> -->
 <!-- {:else} -->
 <section
-	class:h-18={forceMinHeight}
-	class:overflow-scroll={forceMinHeight}
+	class="overflow-auto {minHeight} {maxHeight}"
 	use:proxyDndzone={{
 		items: items,
 		flipDurationMs,
@@ -128,7 +128,7 @@
 	{#each items as item (item.id)}
 		<div
 			class="w-auto text-xs min-h-8 p-2 my-2"
-			class:border-2={item.name || item.placeholder}
+			class:border-b-2={item.name || item.placeholder}
 			animate:flip={{ duration: flipDurationMs }}
 		>
 			{#if item.name || item.placeholder}
@@ -151,4 +151,10 @@
 		</div>
 	{/each}
 </section>
+
 <!-- {/if} -->
+<style>
+	:is([contenteditable], [placeholder]) {
+		cursor: text;
+	}
+</style>

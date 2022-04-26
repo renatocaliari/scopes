@@ -15,12 +15,9 @@
 	}
 </script>
 
-{checked}
-<div class="form-control">
+<div class="form-control place-content-around w-full">
 	<label class="label cursor-pointer">
-		<span class="label-text mr-2"
-			><div class="badge" class:badge-outline={!checked}>{checkText}</div></span
-		>
+		<span class="label-text mr-2">{checkText}</span>
 		<input
 			type="checkbox"
 			class="toggle toggle-primary"

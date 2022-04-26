@@ -40,6 +40,8 @@
   },
   "type": "module",
   "dependencies": {
+    "@fortawesome/free-regular-svg-icons": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@supabase/supabase-js": "^1.31.1",
     "@types/bcrypt": "^5.0.0",
     "@types/uuid": "^8.3.4",
@@ -47,9 +49,9 @@
     "cookie": "^0.4.2",
     "daisyui": "^2.13.0",
     "dotenv": "^16.0.0",
-    "felte": "^1.1.5",
     "jsonwebtoken": "^8.5.1",
     "svelte-actions": "^0.2.2",
+    "svelte-fa": "^2.4.0",
     "uuid": "^8.3.2"
   }
 }
