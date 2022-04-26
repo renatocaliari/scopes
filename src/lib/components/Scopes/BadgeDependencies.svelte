@@ -1,10 +1,10 @@
 <script>
 	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
 	import { v4 as uuidv4 } from 'uuid';
+	let randomId = uuidv4();
+
 	export let project;
 	export let scope;
-
-	let randomId = uuidv4();
 </script>
 
 <div class="inline-flex  flex-wrap: nowrap;">

@@ -2,7 +2,9 @@
 import { writable, get, derived } from "svelte/store"
 import ScopeItem from "$lib/classes/ScopeItem";
 // import { persistentWritable } from "$lib/stores/persistentStore";
-import { SvelteComponentDev } from "svelte/internal";
+import { v4 as uuidv4 } from 'uuid';
+let randomId = uuidv4();
+
 
 import { localStorageStore } from 'fractils'
 
@@ -74,7 +76,8 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
             items: items,
             dependsOn: dependsOn,
             risky: risky,
-            indispensable: indispensable
+            indispensable: indispensable,
+            forkedScopeId: undefined
         }
         addScope(scope);
     }
@@ -90,7 +93,8 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
             items: items,
             dependsOn: dependsOn,
             risky: risky,
-            indispensable: indispensable
+            indispensable: indispensable,
+            forkedScopeId: undefined
         };
         addScope(scope);
     }
@@ -184,7 +188,7 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
     }
 
     function scopeUnlocksDependencies(scope) {
-        let result = get(store).filter((s) => s.dependsOn.includes(scope.id));
+        let result = get(store).filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(scope.forkedScopeId));
         return result;
     };
 
@@ -271,10 +275,11 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
                 scope.order = index;
                 if (!scope.risky && index <= indexLastRisky) {
                     let previousId = scope.id;
-                    scope.id = scope.id + '-forked';
                     let forkedScope = JSON.parse(JSON.stringify(scope));
                     forkedScope.id = previousId;
                     forkedScopes = [...forkedScopes, forkedScope];
+                    scope.forkedScopeId = scope.id;
+                    scope.id = scope.id + '-' + randomId;
                 }
                 return scope;
             });
