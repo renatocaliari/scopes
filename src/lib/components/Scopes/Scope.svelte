@@ -24,8 +24,8 @@
 	class="card bg-base-100 shadow-xl p-4 {width} max-h-screen {classColor}"
 >
 	<div class:collapse={collapsable} class:collapse-arrow={collapsable} tabindex="0">
-		<input type="checkbox" />
-		<div name="title" class="collapse-title mb-2 w-full">
+		<input type="checkbox" class:hidden={!collapsable} />
+		<div name="title" class:collapse-title={collapsable} class="mb-2 w-full">
 			<div class="flex flex-col w-full">
 				<div class="inline-flex w-full">
 					{#if editTitle}
@@ -73,7 +73,7 @@
 				<div class="flex-none"><slot name="subTitle" /></div>
 			{/if}
 		</div>
-		<div class="collapse-content">
+		<div class:collapse-content={collapsable}>
 			{#if $$slots.body}
 				<slot name="body" />
 			{/if}

@@ -5,28 +5,33 @@
 		{
 			linkText: 'Dump & Cluster',
 			h1: 'Dump & Cluster',
-			link: '/scopes/dump'
+			link: '/scopes/dump',
+			active: true
 		},
 		{
 			linkText: 'Set Dependencies',
 			h1: 'Set Dependencies',
-			link: '/scopes/dependencies'
+			link: '/scopes/dependencies',
+			active: true
 		},
 		{
 			linkText: 'Set Risky Unknowns',
 			h1: 'Set Risky Unknowns',
-			link: '/scopes/unknowns'
+			link: '/scopes/unknowns',
+			active: true
 		},
 		{
 			linkText: 'Generate Sequence',
 			h1: 'Automatic sequence to execute the scopes',
-			link: '/scopes/sequence'
+			link: '/scopes/sequence',
+			active: true
 		},
 		{
 			linkText: 'Create Documentation',
 			h1: 'Documentation',
 			h2: 'Create documentation to other people that will execute it',
-			link: '/scopes/patternLanguage'
+			link: '/scopes/patternLanguage',
+			active: true
 		}
 	];
 </script>
@@ -36,7 +41,7 @@
 		<a
 			class="btn"
 			class:btn-active={currentStep - 1 == idx}
-			class:btn-disabled={!activeBtns.includes(idx + 1)}
+			class:btn-disabled={!btn.active}
 			href={btn.link}
 			sveltekit:prefetch
 			>{btn.linkText}
