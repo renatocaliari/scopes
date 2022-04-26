@@ -49,7 +49,7 @@
 		{/if}
 		{#if allowEditItem}
 			<span
-				class="w-full items-center border-2 border-dotted"
+				class="w-full items-center border-2 border-dotted m-1"
 				contenteditable
 				bind:textContent={item.name}
 			>
@@ -130,5 +130,9 @@
 
 	.task:hover button.remove {
 		opacity: 1;
+	}
+
+	:is([contenteditable], [placeholder]) {
+		cursor: text;
 	}
 </style>
