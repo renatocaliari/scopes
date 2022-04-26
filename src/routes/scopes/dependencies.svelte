@@ -6,10 +6,13 @@
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
 	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
 
-	$: sortedScopes = $projectStore.filter(
-		(scope) => scope.id !== 'bucket' && scope.items.length > 0
-	);
-
+	let sortedScopes;
+	$: {
+		$projectStore,
+			(sortedScopes = $projectStore
+				.filter((scope) => scope.id !== 'bucket')
+				.filter((scope) => scope.items.length > 0));
+	}
 	let checkList;
 
 	$: checkList = [
@@ -21,9 +24,10 @@
 	];
 </script>
 
-<NavigationScopes currentStep={2}>
+<NavigationScopes currentStep={1} let:currentStep>
 	<NavigationCheckList
 		{checkList}
+		{currentStep}
 		optional={true}
 		linkNextStep="/scopes/unknowns"
 		linkPreviousStep="/scopes/dump"
@@ -33,7 +37,7 @@
 <div class={'grid grid-rows-2 grid-cols-3 grid-flow-row gap-4 place-content-around'}>
 	{#each sortedScopes as scope}
 		<div>
-			<Scope bind:scope itemsScopeModal={scope.items} checked={scope.indispensable}>
+			<Scope bind:scope itemsScopeModal={scope.items}>
 				<div slot="badge">
 					<BadgeDependencies project={projectStore} bind:scope />
 				</div>

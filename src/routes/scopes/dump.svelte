@@ -5,60 +5,68 @@
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
 	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
 
-	// let project;
-	// $: {
-	// 	console.log('atualizou o projeto - antes:', project);
-	// 	project = Project.fromObject($projectStore);
-	// 	console.log('atualizou o projeto - depois:', project);
-	// }
-
 	function addItem(scope, value, indispensable) {
 		projectStore.scopeAddItem(scope, value, indispensable);
 	}
 
-	$: scopeBucket = $projectStore.find((scope) => scope.id === 'bucket');
-
+	let scopeBucket;
 	let checkList;
 
-	$: checkList = [
-		{
-			name: 'dump',
-			text: 'In Bucket, dump all you think is needed to do or solve',
-			checked: $projectStore.some((scope) => scope.items.length > 0)
-		},
-		{
-			name: 'group',
-			text: 'Group those items in the scopes on the side asking: what items can be completed together in isolation of the other items?',
-			checked: $projectStore.some((scope) => scope.id !== 'bucket' && scope.items.length > 0)
-		},
-		{
-			name: 'more',
-			text: 'Group in more than 1 scope',
-			checked:
-				$projectStore.filter((scope) => scope.id !== 'bucket' && scope.items.length > 0).length > 1
-		},
-		{
-			name: 'name',
-			text: 'Name the scopes with items based on affinity and relationship of items grouped together',
-			checked:
-				$projectStore.filter(
-					(scope) => scope.id !== 'bucket' && scope.items.length > 0 && scope.name.length > 0
-				).length > 0 &&
-				$projectStore.filter(
-					(scope) => scope.id !== 'bucket' && scope.items.length > 0 && scope.name.length === 0
-				).length === 0
-		},
-		{
-			name: 'indispensable',
-			text: 'Check the indispensable items. The ones unchecked consider as nice-to-have',
-			checked: $projectStore.some((scope) => scope.items.some((item) => item.indispensable))
-		}
-	];
+	$: {
+		scopeBucket = $projectStore.find((scope) => scope.id === 'bucket');
+
+		checkList = [
+			{
+				name: 'dump',
+				text: 'In Bucket, dump all you think is needed to do or solve',
+				checked: $projectStore.some((scope) => scope.items.length > 0)
+			},
+			{
+				name: 'group',
+				text: 'Group those items in the scopes on the side asking: what items can be completed together in isolation of the other items?',
+				checked: $projectStore.some((scope) => scope.id !== 'bucket' && scope.items.length > 0)
+			},
+			{
+				name: 'more',
+				text: 'Group in more than 1 scope',
+				checked:
+					$projectStore
+						.filter((scope) => scope.id !== 'bucket')
+						.filter((scope) => scope.items.length > 0).length > 1
+			},
+			{
+				name: 'name',
+				text: 'Name the scopes with items based on affinity and relationship of items grouped together',
+				checked:
+					$projectStore
+						.filter((scope) => scope.id !== 'bucket')
+						.filter((scope) => scope.items.length > 0 && scope.name.length > 0).length > 0 &&
+					$projectStore
+						.filter((scope) => scope.id !== 'bucket')
+						.filter((scope) => scope.items.length > 0 && scope.name.length === 0).length === 0
+			},
+			{
+				name: 'indispensable',
+				text: 'Check the indispensable items in each scope used. The ones unchecked are considered nice-to-have',
+				checked:
+					$projectStore.filter((scope) => scope.id !== 'bucket' && scope.items.length > 0).length >
+						0 &&
+					$projectStore
+						.filter((scope) => scope.id !== 'bucket' && scope.items.length > 0)
+						.every((scope) => scope.items.some((item) => item.indispensable))
+			}
+		];
+	}
 </script>
 
-<NavigationScopes currentStep={1}>
+<NavigationScopes currentStep={0} let:currentStep>
 	<div slot="checkList">
-		<NavigationCheckList bind:checkList allowClearAll={true} linkNextStep="/scopes/dependencies" />
+		<NavigationCheckList
+			{currentStep}
+			{checkList}
+			allowClearAll={true}
+			linkNextStep="/scopes/dependencies"
+		/>
 	</div>
 </NavigationScopes>
 <div
@@ -92,7 +100,7 @@
 		class="flex
 		flex-row
 		flex-wrap 
-		justify-center 
+		place-content-around
 		"
 	>
 		{#each $projectStore.filter((scope) => scope.id !== 'bucket') as scope}
@@ -115,6 +123,7 @@
 							}}
 							fnOnCheckItem={(scope, i, checked) => {
 								projectStore.itemUpdateIndispensable(scope, i, checked);
+								$projectStore = $projectStore;
 							}}
 						/>
 					</div></Scope

@@ -112,8 +112,12 @@ export function ProjectStore() {
         update(scopes => [...scopes, scope]);
     }
 
+    function filterScopesButBucket() {
+        return get(store).filter((scope) => scope.id !== 'bucket')
+    }
+
     function filterScopesWithItemsExcludingBucket() {
-        ; return get(store).filter((scope) => scope.id !== 'bucket' && scope.items.length > 0)
+        return get(store).filter((scope) => scope.id !== 'bucket' && scope.items.length > 0)
     }
 
     function filterScopesWithItemsExcludingThisAndBucket(currentScope) {
@@ -269,6 +273,16 @@ export function ProjectStore() {
         // another idea with slice: https://github.com/sveltejs/svelte/issues/6071
 
 
+        // let copyFilteredStore = JSON.parse(JSON.stringify(get(store).filter((scope) => scope.id !== 'bucket' && scope.items.length > 0)));
+        // let scopes = [];
+        // scopes = scopes.concat(
+        //     get(store).find((s) => s.id === 'bucket'),
+        //     mergeSort(copyFilteredStore),
+        //     get(store).filter((s) => s.id !== 'bucket' && s.items.length === 0)
+        // );
+        // set(scopes); 
+        // const sortedScopesIndispensable = store;
+
         const sortedScopesIndispensable = derived(store, (s) => {
             let copyFilteredStore = JSON.parse(JSON.stringify(s.filter((scope) => scope.id !== 'bucket' && scope.items.length > 0)));
             return mergeSort(copyFilteredStore);
@@ -330,6 +344,7 @@ export function ProjectStore() {
         scopeAddItem,
         sortScopesByPriority,
         filterScopes,
+        filterScopesButBucket,
         filterScopesWithItemsExcludingBucket,
         filterScopesWithItemsExcludingThisAndBucket,
         set,

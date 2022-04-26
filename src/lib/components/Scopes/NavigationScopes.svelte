@@ -1,56 +1,25 @@
 <script>
-	export let currentStep = 1;
-	let btns = [
-		{
-			linkText: 'Dump & Cluster',
-			h1: 'Dump & Cluster',
-			link: '/scopes/dump',
-			active: true
-		},
-		{
-			linkText: 'Set Dependencies',
-			h1: 'Set Dependencies',
-			link: '/scopes/dependencies',
-			active: true
-		},
-		{
-			linkText: 'Set Risky Unknowns',
-			h1: 'Set Risky Unknowns',
-			link: '/scopes/unknowns',
-			active: true
-		},
-		{
-			linkText: 'Generate Sequence',
-			h1: 'Automatic sequence to execute the scopes',
-			link: '/scopes/sequence',
-			active: true
-		},
-		{
-			linkText: 'Create Documentation',
-			h1: 'Documentation',
-			h2: 'Create documentation to other people that will execute it',
-			link: '/scopes/patternLanguage',
-			active: true
-		}
-	];
+	import { stepsStore } from '$lib/stores/stepsStore';
+
+	export let currentStep = 0;
 </script>
 
 <div class="btn-group justify-center my-4">
-	{#each btns as btn, idx}
+	{#each $stepsStore as btn, idx}
 		<a
 			class="btn"
-			class:btn-active={currentStep - 1 == idx}
-			class:btn-disabled={!btn.active}
+			class:btn-active={currentStep == idx}
+			class:btn-disabled={!$stepsStore[0].completed}
 			href={btn.link}
 			sveltekit:prefetch
 			>{btn.linkText}
 		</a>
 	{/each}
 </div>
-<h1>{btns[currentStep - 1].h1}</h1>
-{#if btns[currentStep - 1].h2}
-	<h2>{btns[currentStep - 1].h2}</h2>
+<h1>{$stepsStore[currentStep].h1}</h1>
+{#if $stepsStore[currentStep].h2}
+	<h2>{$stepsStore[currentStep].h2}</h2>
 {/if}
 
-<slot />
-<slot name="checkList" />
+<slot {currentStep} />
+<slot {currentStep} name="checkList" />

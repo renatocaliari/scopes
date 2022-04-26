@@ -9,9 +9,59 @@
 	import Fa from 'svelte-fa/src/fa.svelte';
 	import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
+	function scopesToText(scopes) {
+		let text = '';
+		scopes.forEach((scope, idx) => {
+			text = text.concat('\n- Step ' + (idx + 1) + ': Scope [' + scope.name + ']');
+			text = text.concat(
+				scope.forkedScopeId
+					? '\n\t- WARNING: Do only the essential at this step to do the next scope [' +
+							scopes[idx + 1].name +
+							']'
+					: ''
+			);
+			text = text.concat(
+				scope.risky ? '\n\t- WARNING: This scope is RISKY because has UNKNOWNS' : ''
+			);
+			if (scope.dependsOn.length > 0) {
+				text = text.concat('\n\t- Depends on:');
+				scope.dependsOn.forEach((dependsOnId) => {
+					let sDepend = scopes.find((s) => s.id === dependsOnId);
+					text = text.concat('\n\t\t- ' + sDepend.name);
+				});
+			}
+
+			let unlocksScopes = scopes.filter((s) => s.dependsOn.includes(scope.id));
+			if (unlocksScopes.length > 0) {
+				text = text.concat('\n\t- Unlock scopes:');
+				unlocksScopes.forEach((s) => {
+					text = text.concat('\n\t\t- ' + s.name);
+				});
+			}
+
+			let indispensableItems = scope.items.filter((item) => item.indispensable);
+			let niceToHave = scope.items.filter((item) => !item.indispensable);
+			if (indispensableItems.length > 0) {
+				text = text.concat('\n\t- Indispensable items:');
+				indispensableItems.forEach((item) => {
+					text = text.concat('\n\t\t- ' + item.name);
+				});
+			}
+			if (niceToHave.length > 0) {
+				text = text.concat('\n\t- Nice to have items:');
+				niceToHave.forEach((item) => {
+					text = text.concat('\n\t\t- ' + item.name);
+				});
+			}
+		});
+		console.log('text:', text);
+		return text;
+	}
+
 	let scopesForkedPriorized;
 	$: {
-		scopesForkedPriorized = projectStore.sortScopesByPriority().scopesForkedPriorized;
+		$projectStore,
+			(scopesForkedPriorized = projectStore.sortScopesByPriority().scopesForkedPriorized);
 	}
 
 	// let maxDependents = $projectStore.reduce((prev, curr) => {
@@ -31,8 +81,13 @@
 	// }
 </script>
 
-<NavigationScopes currentStep={4}>
-	<NavigationCheckList linkNextStep="/scopes/patternLanguage" linkPreviousStep="/scopes/unknowns" />
+<NavigationScopes currentStep={3} let:currentStep>
+	<NavigationCheckList
+		{currentStep}
+		exportText={scopesToText(scopesForkedPriorized)}
+		linkNextStep="/scopes/patternLanguage"
+		linkPreviousStep="/scopes/unknowns"
+	/>
 </NavigationScopes>
 
 <div class="w-full">

@@ -5,7 +5,7 @@
 	export let itemsScopeModal = [];
 	export let editTitle = false;
 	export let icon = undefined;
-	export let classColor = 'bg-slate-50';
+	export let classColor = '';
 	export let width = '';
 	export let collapsable = false;
 
@@ -23,7 +23,7 @@
 
 <div
 	name="scope-{scope.id}"
-	class="card bg-base-100 shadow-xl p-4 {width} max-h-screen {classColor}"
+	class="rounded-md border-[0.1em] border-slate-300 shadow-xl p-4 {width} max-h-screen {classColor}"
 >
 	<div class:collapse={collapsable} class:collapse-arrow={collapsable}>
 		<input type="checkbox" class:hidden={!collapsable} />

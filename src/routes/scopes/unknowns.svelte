@@ -10,22 +10,26 @@
 
 	import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
-	$: sortedScopes = $projectStore.filter(
-		(scope) => scope.id !== 'bucket' && scope.items.length > 0
-	);
-
-	let checkList = [
+	let sortedScopes;
+	$: {
+		$projectStore,
+			(sortedScopes = $projectStore
+				.filter((scope) => scope.id !== 'bucket')
+				.filter((scope) => scope.items.length > 0));
+	}
+	$: checkList = [
 		{
 			name: 'dependencies',
 			text: 'Optionally, set which scopes have risky unknowns (vs routine work)',
-			checked: false
+			checked: sortedScopes.some((scope) => scope.risky)
 		}
 	];
 </script>
 
-<NavigationScopes currentStep={3}>
+<NavigationScopes currentStep={2} let:currentStep>
 	<NavigationCheckList
 		optional={true}
+		{currentStep}
 		{checkList}
 		linkNextStep="/scopes/sequence"
 		linkPreviousStep="/scopes/dependencies"

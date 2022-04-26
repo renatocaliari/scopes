@@ -1,5 +1,7 @@
 <script>
 	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
+	import { fly } from 'svelte/transition';
+
 	import { v4 as uuidv4 } from 'uuid';
 	let randomId = uuidv4();
 
@@ -15,7 +17,11 @@
 				.filter((item) => item != null).length} scope(s)"
 			class="tooltip badge badge-success mr-2"
 		>
-			{project.scopeUnlocksDependencies(scope).filter((item) => item != null).length}
+			{#key project.scopeUnlocksDependencies(scope).filter((item) => item != null).length}
+				<span class="display: inline-block" in:fly={{ y: -20 }}>
+					{project.scopeUnlocksDependencies(scope).filter((item) => item != null).length}
+				</span>
+			{/key}
 		</div>
 	</label>
 
@@ -25,7 +31,11 @@
 				.length} scope(s) depend(s) on [{scope.name || scope.placeholder}]"
 			class="tooltip badge badge-error"
 		>
-			{scope.dependsOn.filter((item) => item != null).length}
+			{#key scope.dependsOn.filter((item) => item != null).length}
+				<span class="display: inline-block" in:fly={{ y: -20 }}>
+					{scope.dependsOn.filter((item) => item != null).length}
+				</span>
+			{/key}
 		</div>
 	</label>
 </div>
