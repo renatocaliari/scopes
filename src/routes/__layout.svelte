@@ -6,16 +6,6 @@
 	import LoadingPageProgressBar from '$lib/components/LoadingPageProgressBar.svelte';
 	import Header from '$lib/components/Header.svelte';
 	import { notificationData } from '$lib/stores/notificationStore';
-
-	export const load = async ({ url }) => {
-		return {
-			props: { loggedOut: url.searchParams.get('loggedOut') }
-		};
-	};
-</script>
-
-<script>
-	export let loggedOut;
 </script>
 
 <LoadingPageProgressBar />

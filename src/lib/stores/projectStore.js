@@ -12,57 +12,66 @@ import { localStorageStore } from 'fractils'
 // a. without store: https://svelte.dev/repl/243498124f354af59070ae52da38d82f?version=3.44.2
 // b. with store: https://svelte.dev/repl/164f13f5d99b46e7a8f4cb9627db2aee?version=3.44.1
 
-// export let projectStore = localStorageStore('projectStore', scopes);
+export const projectStore = ProjectStore();
+if (get(projectStore).length === 0) {
+    console.log('call createInitialData');
+    projectStore.createInitialData(true, 9, false);
+}
 
-export const projectStore = ProjectStore(true, 9, false);
-
-// console.log('projectStore:', get(projectStore));
-
-export function ProjectStore(hasBucket, totalScopes, sampleData) {
+export function ProjectStore() {
     // let store = writable([]);
     // let store = persistentWritable("scopes", []);
     let store = localStorageStore("scopes", []);
 
     const { set, subscribe, update } = store;
 
-    if (get(store).length === 0) {
-        if (hasBucket) {
-            addBucketScope('Bucket');
-        }
-        for (let i = 1; i <= totalScopes; i++) {
-            let items = [];
-            let dependsOn = [];
-            let risky = false;
-            let indispensable = false;
-            if (sampleData) {
-                items = [ScopeItem.createItem("item 1 - describing some details to break line and test limits", true), ScopeItem.createItem("item 2", true), ScopeItem.createItem("nice to have 1", false), ScopeItem.createItem("nice to have 2", false)];
-                switch (i) {
-                    case 1:
-                        dependsOn = ['scope-3'];
-                        break;
-                    case 2:
-                        dependsOn = ['scope-6', 'scope-1', 'scope-3'];
-                        risky = true;
-                        break;
-                    case 3:
-                        risky = true;
-                        break;
-                    case 4:
-                        dependsOn = ['scope-5'];
-                        // indispensable = true;
-                        break;
-                    case 5:
-                        risky = true;
-                        break;
-                    case 6:
-                        dependsOn = ['scope-1'];
-                        // indispensable = true;
-                        break;
-                    default:
-                        break;
-                }
+    function reset() {
+        console.log('reseting...');
+        set([]);
+        createInitialData(true, 9, false);
+    }
+
+    function createInitialData(hasBucket, totalScopes, sampleData) {
+        console.log('creating initial data')
+        if (get(store).length === 0) {
+            if (hasBucket) {
+                addBucketScope('Bucket');
             }
-            addScopeAutoId('', items, dependsOn, risky, indispensable);
+            for (let i = 1; i <= totalScopes; i++) {
+                let items = [];
+                let dependsOn = [];
+                let risky = false;
+                let indispensable = false;
+                if (sampleData) {
+                    items = [ScopeItem.createItem("item 1 - describing some details to break line and test limits", true), ScopeItem.createItem("item 2", true), ScopeItem.createItem("nice to have 1", false), ScopeItem.createItem("nice to have 2", false)];
+                    switch (i) {
+                        case 1:
+                            dependsOn = ['scope-3'];
+                            break;
+                        case 2:
+                            dependsOn = ['scope-6', 'scope-1', 'scope-3'];
+                            risky = true;
+                            break;
+                        case 3:
+                            risky = true;
+                            break;
+                        case 4:
+                            dependsOn = ['scope-5'];
+                            // indispensable = true;
+                            break;
+                        case 5:
+                            risky = true;
+                            break;
+                        case 6:
+                            dependsOn = ['scope-1'];
+                            // indispensable = true;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                addScopeAutoId('', items, dependsOn, risky, indispensable);
+            }
         }
     }
 
@@ -304,7 +313,8 @@ export function ProjectStore(hasBucket, totalScopes, sampleData) {
     }
 
     return {
-        reset: () => set([]),
+        createInitialData: createInitialData,
+        reset: reset,
         addScope,
         addBucketScope,
         addScopeAutoId,

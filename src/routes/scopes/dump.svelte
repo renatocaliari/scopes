@@ -58,7 +58,7 @@
 
 <NavigationScopes currentStep={1}>
 	<div slot="checkList">
-		<NavigationCheckList bind:checkList linkNextStep="/scopes/dependencies" />
+		<NavigationCheckList bind:checkList allowClearAll={true} linkNextStep="/scopes/dependencies" />
 	</div>
 </NavigationScopes>
 <div

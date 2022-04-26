@@ -1,6 +1,5 @@
 <script>
 	export let currentStep = 1;
-	export let activeBtns = [1, 2, 3, 4, 5];
 	let btns = [
 		{
 			linkText: 'Dump & Cluster',

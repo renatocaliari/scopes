@@ -6,7 +6,7 @@
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
 	import Items from '$lib/components/Scopes/Items.svelte';
 	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
-	import Fa from 'svelte-fa';
+	import Fa from 'svelte-fa/src/fa.svelte';
 	import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
 	let scopesForkedPriorized;

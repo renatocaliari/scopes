@@ -1,5 +1,5 @@
 <script>
-	import Fa from 'svelte-fa';
+	import Fa from 'svelte-fa/src/fa.svelte';
 
 	export let scope;
 	export let itemsScopeModal = [];
@@ -11,11 +11,13 @@
 
 	let textPlaceholder;
 	$: {
-		scope.name = scope.name.replace('<br>', '');
-		textPlaceholder =
-			!scope.name || scope.name.replace('<br>', '').trim().length === 0
-				? 'Scope ' + scope.id.split('-')[1]
-				: '';
+		if (scope) {
+			scope.name = scope.name?.replace('<br>', '');
+			textPlaceholder =
+				!scope.name || scope.name?.replace('<br>', '').trim().length === 0
+					? 'Scope ' + scope.id.split('-')[1]
+					: '';
+		}
 	}
 </script>
 
@@ -23,9 +25,9 @@
 	name="scope-{scope.id}"
 	class="card bg-base-100 shadow-xl p-4 {width} max-h-screen {classColor}"
 >
-	<div class:collapse={collapsable} class:collapse-arrow={collapsable} tabindex="0">
+	<div class:collapse={collapsable} class:collapse-arrow={collapsable}>
 		<input type="checkbox" class:hidden={!collapsable} />
-		<div name="title" class:collapse-title={collapsable} class="mb-2 w-full">
+		<div class:collapse-title={collapsable} class="mb-2 w-full">
 			<div class="flex flex-col w-full">
 				<div class="inline-flex w-full">
 					{#if editTitle}
@@ -50,9 +52,9 @@
 									{#if icon}
 										<Fa {icon} class=" mr-2" />
 									{/if}
-									{!scope.name || scope.name.replace('<br>', '').trim().length === 0
-										? 'Scope ' + scope.id.split('-')[1]
-										: scope.name.replace('<br>', '')}
+									{!scope?.name || scope?.name?.replace('<br>', '').trim().length === 0
+										? 'Scope ' + scope?.id?.split('-')[1]
+										: scope?.name?.replace('<br>', '')}
 								</h3></label
 							>
 						</div>
