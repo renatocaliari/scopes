@@ -6,20 +6,30 @@
 	let randomId = uuidv4();
 
 	export let project;
+	export let scopes = [];
 	export let scope;
+
+	if (!scopes.length) {
+		scopes = $project;
+	}
+
+	let unlockDependencies = project
+		.scopeUnlocksDependencies(scope, scopes)
+		.filter((item) => item != null);
+	let dependsOn = scopes.filter((s) => scope.dependsOn.includes(s.id));
 </script>
 
 <div class="inline-flex  flex-wrap: nowrap;">
 	<label for="scope-unlocks-{scope.id}-{randomId}" class="link link-hover">
 		<div
 			data-tip="This scope unlocks {project
-				.scopeUnlocksDependencies(scope)
+				.scopeUnlocksDependencies(scope, scopes)
 				.filter((item) => item != null).length} scope(s)"
 			class="tooltip badge badge-success mr-2"
 		>
-			{#key project.scopeUnlocksDependencies(scope).filter((item) => item != null).length}
+			{#key unlockDependencies.length}
 				<span class="display: inline-block" in:fly={{ y: -20 }}>
-					{project.scopeUnlocksDependencies(scope).filter((item) => item != null).length}
+					{unlockDependencies.length}
 				</span>
 			{/key}
 		</div>
@@ -48,7 +58,7 @@
 			class="btn btn-sm btn-circle absolute right-2 top-2">✕</label
 		>
 		<h3 class="text-lg font-bold">{scope.name} unlocks:</h3>
-		{#each $project.filter((s) => s.dependsOn.includes(scope.id)) as scope (scope.id)}
+		{#each unlockDependencies as scope (scope.id)}
 			<div class="m-2 p-2 w-auto border-gray-400 input input-bordered">
 				<ItemDragDrop item={scope} readOnly={true} />
 			</div>
@@ -63,7 +73,7 @@
 			class="btn btn-sm btn-circle absolute right-2 top-2">✕</label
 		>
 		<h3 class="text-lg font-bold">Scopes depends on {scope.name}</h3>
-		{#each $project.filter((s) => scope.dependsOn.includes(s.id)) as scope (scope.id)}
+		{#each dependsOn as scope (scope.id)}
 			<div class="m-2 p-2 w-auto border-gray-400 input input-bordered">
 				<ItemDragDrop item={scope} readOnly={true} />
 			</div>

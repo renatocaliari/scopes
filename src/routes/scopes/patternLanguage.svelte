@@ -1,12 +1,12 @@
 <script>
-	import { projectStore } from '$lib/stores/projectStore';
+	import { projectStore, sortedGroupedScopesDocumentation } from '$lib/stores/projectStore';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 	import SvgArrow from './svgArrow.svelte';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
 	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
 
-	$: sortedScopesIndispensable = projectStore.sortScopesByPriority().sortedScopesIndispensable;
+	projectStore.sortScopesByPriority();
 
 	let maxDependents = $projectStore.reduce((prev, curr) => {
 		return Math.max(prev, curr.dependsOn?.length);
@@ -18,7 +18,7 @@
 </NavigationScopes>
 
 <div class="w-full ">
-	{#each sortedScopesIndispensable as scope, idx (scope.id)}
+	{#each $sortedGroupedScopesDocumentation as scope, idx (scope.id)}
 		<div class="m-2 flex justify-center ">
 			<Scope bind:scope itemsScopeModal={scope.items} width="w-full">
 				<div slot="badge" class="w-full ">
@@ -66,7 +66,7 @@
 				<div slot="headerScopeModal">Items of {scope.name}</div>
 			</Scope>
 		</div>
-		{#if idx + 1 < sortedScopesIndispensable.length}
+		{#if idx + 1 < $sortedGroupedScopesDocumentation.length}
 			<div class="flex justify-center">
 				<SvgArrow />
 			</div>

@@ -1,5 +1,6 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+	import { add_classes } from 'svelte/internal';
 	const dispatch = createEventDispatcher();
 
 	export let item;
@@ -11,8 +12,9 @@
 	export let allowRemoveItem = false;
 	export let allowEditItem = false;
 
-	function checkItem(checked) {
+	function checkItem(e, checked) {
 		dispatch('checkItem', {
+			event: e,
 			item: item,
 			checked: checked
 		});
@@ -23,11 +25,28 @@
 			item: item
 		});
 	}
+
+	let mouseIsOver = false;
+	function mouseOver(e) {
+		mouseIsOver = true;
+	}
+
+	function mouseOut(e) {
+		mouseIsOver = false;
+		e.target.blur();
+	}
 </script>
 
-<div class="task inline-flex items-center w-full min-h-8">
+<div class="task inline-flex items-center w-full min-h-8 align-middle break-words">
 	{#if readOnly}
-		<div class="w-full">{item.name || item.placeholder}</div>
+		<div
+			class="w-full"
+			class:line-clamp-2={!mouseIsOver}
+			on:mouseenter={mouseOver}
+			on:mouseout={mouseOut}
+		>
+			{item.name || item.placeholder}
+		</div>
 	{:else}
 		{#if dragAndDrop}
 			<div>
@@ -41,7 +60,7 @@
 
 		{#if checkbox}
 			<input
-				on:change={(e) => checkItem(e.target.checked)}
+				on:change={(e) => checkItem(e, e.target.checked)}
 				type="checkbox"
 				class="checkbox mr-2"
 				{checked}
@@ -49,7 +68,10 @@
 		{/if}
 		{#if allowEditItem}
 			<span
-				class="w-full items-center border-2 border-dotted m-1"
+				class="w-full items-center border-2 border-dotted m-1 break-words"
+				class:line-clamp-2={!mouseIsOver}
+				on:mouseenter={mouseOver}
+				on:mouseout={mouseOut}
 				contenteditable
 				bind:textContent={item.name}
 			>
@@ -58,13 +80,23 @@
 				>
 			</span>
 		{:else if itemsModal.length > 0}
-			<div class="items-center">
+			<div
+				class="items-center break-words"
+				class:line-clamp-2={!mouseIsOver}
+				on:mouseenter={mouseOver}
+				on:mouseout={mouseOut}
+			>
 				<label for="modal-item-{item.id}" class="w-full link link-hover prose"
 					>{item.name || item.placeholder}</label
 				>
 			</div>
 		{:else}
-			<div class="items-center">
+			<div
+				class="items-center"
+				class:line-clamp-2={!mouseIsOver}
+				on:mouseenter={mouseOver}
+				on:mouseout={mouseOut}
+			>
 				{item.name || item.placeholder}
 			</div>
 		{/if}
@@ -134,5 +166,9 @@
 
 	:is([contenteditable], [placeholder]) {
 		cursor: text;
+	}
+
+	[contenteditable='true']:active,
+	[contenteditable='true']:focus {
 	}
 </style>

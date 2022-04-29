@@ -9,6 +9,7 @@
 	let sortedScopes;
 	$: {
 		$projectStore,
+			console.log('projectStore', $projectStore),
 			(sortedScopes = $projectStore
 				.filter((scope) => scope.id !== 'bucket')
 				.filter((scope) => scope.items.length > 0));
@@ -22,6 +23,13 @@
 			checked: sortedScopes.some((scope) => scope.dependsOn.length > 0)
 		}
 	];
+
+	function confirmClearDependencies() {
+		$projectStore.map((scope) => {
+			scope.dependsOn = [];
+		});
+		$projectStore = $projectStore;
+	}
 </script>
 
 <NavigationScopes currentStep={1} let:currentStep>
@@ -31,7 +39,16 @@
 		optional={true}
 		linkNextStep="/scopes/unknowns"
 		linkPreviousStep="/scopes/dump"
-	/>
+	>
+		<div slot="buttons">
+			<label
+				for="modal-clear-dependencies"
+				class="btn btn-warning modal-button"
+				class:btn-disabled={$projectStore.every((scope) => scope.dependsOn === 0)}
+				>Clear all dependencies</label
+			>
+		</div>
+	</NavigationCheckList>
 </NavigationScopes>
 
 <div class={'grid grid-rows-2 grid-cols-3 grid-flow-row gap-4 place-content-around'}>
@@ -51,7 +68,7 @@
 						fnSetChecked={(s) => {
 							return scope.dependsOn.includes(s.id);
 						}}
-						fnOnCheckItem={(s, item, checked) => {
+						fnOnCheckItem={(e, s, item, checked) => {
 							if (checked && item.dependsOn.includes(s.id)) {
 								alert(
 									'You are creating a circular dependency. [' +
@@ -73,6 +90,21 @@
 			</Scope>
 		</div>
 	{/each}
+</div>
+
+<input type="checkbox" id="modal-clear-dependencies" class="modal-toggle" />
+<div class="modal modal-bottom sm:modal-middle">
+	<div class="modal-box">
+		<h3 class="font-bold text-lg">Are you sure you want to clear all dependencies?</h3>
+		<div class="modal-action">
+			<label for="modal-clear-dependencies" class="btn">Cancel</label>
+			<label
+				for="modal-clear-dependencies"
+				class="btn btn-warning"
+				on:click={confirmClearDependencies}>Confirm</label
+			>
+		</div>
+	</div>
 </div>
 
 <style>

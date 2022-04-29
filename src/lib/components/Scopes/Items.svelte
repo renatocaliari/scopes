@@ -21,7 +21,7 @@
 	export let fnSetChecked = (item) => {
 		return true;
 	};
-	export let fnOnCheckItem = (scope, item, checked) => {};
+	export let fnOnCheckItem = (event, scope, item, checked) => {};
 
 	let submit = false;
 	let value;
@@ -37,8 +37,8 @@
 		scope.items = e.detail.items;
 	}
 
-	function checkItem(scope, item, checked) {
-		fnOnCheckItem(scope, item, checked);
+	function checkItem(e, scope, item, checked) {
+		fnOnCheckItem(e, scope, item, checked);
 	}
 
 	function removeItem(itemId) {
@@ -125,29 +125,27 @@
 	on:consider={handleDndConsider}
 	on:finalize={handleDndFinalize}
 >
-	{#each items as item (item.id)}
+	{#each items.filter((i) => i.name || i.placeholder) as item (item.id)}
 		<div
 			class="w-auto text-xs min-h-8 p-2 my-2"
 			class:border-b-2={item.name || item.placeholder}
 			animate:flip={{ duration: flipDurationMs }}
 		>
-			{#if item.name || item.placeholder}
-				<ItemDragDrop
-					bind:item
-					{dragAndDrop}
-					{checkbox}
-					checked={fnSetChecked(item)}
-					{allowEditItem}
-					{allowRemoveItem}
-					itemsModal={fnItemsModal(item)}
-					on:checkItem={(event) => {
-						checkItem(scope, event.detail.item, event.detail.checked);
-					}}
-					on:removeItem={(event) => removeItem(event.detail.item.id)}
-				>
-					<div slot="headerModal">Items of {item.name}</div>
-				</ItemDragDrop>
-			{/if}
+			<ItemDragDrop
+				bind:item
+				{dragAndDrop}
+				{checkbox}
+				checked={fnSetChecked(item)}
+				{allowEditItem}
+				{allowRemoveItem}
+				itemsModal={fnItemsModal(item)}
+				on:checkItem={(event) => {
+					checkItem(event.detail.event, scope, event.detail.item, event.detail.checked);
+				}}
+				on:removeItem={(event) => removeItem(event.detail.item.id)}
+			>
+				<div slot="headerModal">Items of {item.name}</div>
+			</ItemDragDrop>
 		</div>
 	{/each}
 </section>

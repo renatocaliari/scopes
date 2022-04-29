@@ -1,5 +1,6 @@
 <script>
 	import Icon from 'svelte-awesome';
+	import { prevent_default } from 'svelte/internal';
 
 	export let scope;
 	export let itemsScopeModal = [];
@@ -12,11 +13,13 @@
 	let textPlaceholder;
 	$: {
 		if (scope) {
-			scope.name = scope.name?.replace('<br>', '');
+			// scope.name = scope.name?.replace('<br>', '');
+			// textPlaceholder =
+			// !scope.name || scope.name?.replace('<br>', '').trim().length === 0
+			// 	? 'Scope ' + scope.id.split('-')[1]
+			// 	: '';
 			textPlaceholder =
-				!scope.name || scope.name?.replace('<br>', '').trim().length === 0
-					? 'Scope ' + scope.id.split('-')[1]
-					: '';
+				!scope.name || scope.name.trim().length === 0 ? 'Scope ' + scope.id.split('-')[1] : '';
 		}
 	}
 </script>
@@ -31,13 +34,18 @@
 			<div class="flex flex-col w-full">
 				<div class="inline-flex w-full">
 					{#if editTitle}
-						<div class="w-full ">
+						<div class="w-full flex flex-nowrap whitespace-nowrap">
 							<svelte:element
 								this="h3"
 								contenteditable
+								on:keypress={(e) => {
+									if (e.code === 'Enter') {
+										e.preventDefault();
+									}
+								}}
 								placeholder={textPlaceholder}
-								bind:innerHTML={scope.name}
-								class="mr-2 mt-0 mb-0 w-full min-h-8 block border-dashed border-2 border-slate-200"
+								bind:textContent={scope.name}
+								class="mr-2 mt-0 mb-0 w-full min-h-8 border-dashed border-2 border-slate-200 inline"
 							/>
 						</div>
 						{#if $$slots.badge}
@@ -52,9 +60,12 @@
 									{#if icon}
 										<Icon data={icon} class=" mr-2" />
 									{/if}
-									{!scope?.name || scope?.name?.replace('<br>', '').trim().length === 0
+									<!-- {!scope?.name || scope?.name?.replace('<br>', '').trim().length === 0
 										? 'Scope ' + scope?.id?.split('-')[1]
-										: scope?.name?.replace('<br>', '')}
+										: scope?.name?.replace('<br>', '')} -->
+									{!scope?.name || scope?.name?.trim().length === 0
+										? 'Scope ' + scope?.id?.split('-')[1]
+										: scope?.name}
 								</h3></label
 							>
 						</div>
@@ -109,9 +120,15 @@
 		cursor: text;
 	}
 
-	[placeholder]:not(empty):before {
+	[contenteditable]:not(empty):not(:focus):before {
 		content: attr(placeholder);
-		display: block;
+		display: inline;
 		opacity: 0.5;
 	}
+
+	/* [placeholder]:empty:not(:focus):before {
+		content: attr(placeholder);
+		display: inline;
+		opacity: 0.5;
+	} */
 </style>
