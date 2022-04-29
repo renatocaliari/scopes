@@ -13,10 +13,15 @@
 		scopes = $project;
 	}
 
+	console.log('BADGE scopes:', scopes);
 	let unlockDependencies = project
 		.scopeUnlocksDependencies(scope, scopes)
 		.filter((item) => item != null);
-	let dependsOn = scopes.filter((s) => scope.dependsOn.includes(s.id));
+
+	console.log('scope.dependsOn:', scope.dependsOn);
+	let dependsOn = scopes.filter(
+		(s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
+	);
 </script>
 
 <div class="inline-flex  flex-wrap: nowrap;">
@@ -37,14 +42,11 @@
 
 	<label for="scope-depends-{scope.id}-{randomId}" class="link link-hover">
 		<div
-			data-tip="{scope.dependsOn.filter((item) => item != null)
-				.length} scope(s) depend(s) on [{scope.name || scope.placeholder}]"
+			data-tip="{dependsOn.length} scope(s) depend(s) on [{scope.name || scope.placeholder}]"
 			class="tooltip badge badge-error"
 		>
-			{#key scope.dependsOn.filter((item) => item != null).length}
-				<span class="display: inline-block" in:fly={{ y: -20 }}>
-					{scope.dependsOn.filter((item) => item != null).length}
-				</span>
+			{#key dependsOn.length}
+				<span class="display: inline-block" in:fly={{ y: -20 }}> {dependsOn.length} </span>
 			{/key}
 		</div>
 	</label>
