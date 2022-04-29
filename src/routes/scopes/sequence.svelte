@@ -1,6 +1,10 @@
 <script>
 	import CopyToClipboard from '$lib/components/CopyToClipboard.svelte';
-	import { projectStore, sortedGroupedAndForkedScopes } from '$lib/stores/projectStore';
+	import {
+		projectStore,
+		sortedGroupedAndForkedScopes,
+		sortedScopesDocumentation
+	} from '$lib/stores/projectStore';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 	import SvgArrow from './svgArrow.svelte';
@@ -136,7 +140,7 @@
 </NavigationScopes>
 
 <section
-	class="overflow-auto p-2 border-2 flex flex-row w-full min-w-full"
+	class="overflow-auto p-2 border-2 flex flex-col w-full min-w-full"
 	use:proxyDndzone={{
 		items: $sortedGroupedAndForkedScopes,
 		flipDurationMs,
@@ -149,7 +153,7 @@
 	{#each $sortedGroupedAndForkedScopes as group, idxGroup (group.id)}
 		<div
 			animate:flip={{ duration: flipDurationMs }}
-			class="card justify-start w-96 flex flex-col border-2 p-2 m-2 overflow-auto align-middle content-center"
+			class="card justify-start w-full flex flex-row border-2 p-2 m-2 overflow-auto align-middle content-center"
 		>
 			<div class="move cursor-grab align-middle content-center justify-items-center">
 				<svg viewBox="0 0 100 80" width="20" height="20">
@@ -164,11 +168,15 @@
 			{#each group.items as scope, idx (scope.id)}
 				<!-- {@const calculatedColor = calculateColor(scope, maxDependents)} -->
 				{@const nextOne = group[idx + 1] ? group[idx + 1] : { name: '' }}
+				{@const scopes = $sortedGroupedAndForkedScopes.reduce((acc, group, idx, arr) => {
+					acc.push(group.items);
+					return acc.flat(2);
+				}, [])}
 				<div class="m-2 justify-center flex">
 					<div class="justify-start content-start items-start">
 						<Scope {scope} editTitle={false} itemsScopeModal={scope.items} width="w-96" collapsable>
 							<div slot="badge">
-								<BadgeDependencies project={projectStore} scopes={group.items} {scope} />
+								<BadgeDependencies project={projectStore} {scopes} {scope} />
 							</div>
 							<div slot="header">
 								<div class="badge" class:hidden={!scope.indispensable}>Indispensable</div>

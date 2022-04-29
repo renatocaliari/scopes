@@ -18,7 +18,7 @@ export let projectStore = ProjectStore();
 
 export let sortedGroupedScopes = localStorageStore('scopesSorted', []);
 export let sortedGroupedAndForkedScopes = localStorageStore('groupedAndForkedScopes', []);
-export let sortedGroupedScopesDocumentation = localStorageStore('scopesSortedDocumentation', []);
+export let sortedScopesDocumentation = localStorageStore('scopesSortedDocumentation', []);
 
 
 export function ProjectStore() {
@@ -38,7 +38,7 @@ export function ProjectStore() {
         createInitialData(true, 9, true);
     }
 
-    function createInitialData(hasBucket, totalScopes, sampleData, case1 = false) {
+    function createInitialData(hasBucket, totalScopes, sampleData, idxSample = 1) {
         console.log('store empty')
         if (hasBucket) {
             addBucketScope('Bucket');
@@ -50,7 +50,7 @@ export function ProjectStore() {
             let risky = false;
             let indispensable = false;
             if (sampleData) {
-                if (case1) {
+                if (idxSample == 1) {
                     switch (i) {
                         case 1:
                             name = 'scope-1'
@@ -97,8 +97,7 @@ export function ProjectStore() {
                         default:
                             break;
                     }
-
-                } else {
+                } else if (idxSample == 2) {
                     switch (i) {
                         case 1:
                             name = 'scope-1'
@@ -132,6 +131,53 @@ export function ProjectStore() {
                         case 7:
                             name = 'scope-7'
                             dependsOn = ['scope-6'];
+                            // indispensable = true;
+                            break;
+                        case 8:
+                            // name = 'scope-8'
+                            // indispensable = true;
+                            break;
+                        case 9:
+                            // name = 'scope-9'
+                            // indispensable = true;
+                            break;
+                        default:
+                            break;
+                    }
+                } else if (idxSample == 3) {
+                    switch (i) {
+                        case 1:
+                            name = 'scope-1'
+                            dependsOn = [];
+                            break;
+                        case 2:
+                            name = 'scope-2'
+                            dependsOn = [];
+                            risky = true;
+                            break;
+                        case 3:
+                            name = 'scope-3'
+                            risky = true;
+                            break;
+                        case 4:
+                            name = 'scope-4'
+                            dependsOn = ['scope-5'];
+                            // indispensable = true;
+
+                            break;
+                        case 5:
+                            name = 'scope-5'
+                            risky = true;
+
+                            break;
+                        case 6:
+                            name = 'scope-6'
+                            dependsOn = ['scope-5'];
+                            // indispensable = true;
+                            break;
+                        case 7:
+                            name = 'scope-7'
+                            dependsOn = ['scope-5', 'scope-6'];
                             // indispensable = true;
                             break;
                         case 8:
@@ -287,7 +333,17 @@ export function ProjectStore() {
 
     function scopeUnlocksDependencies(scope, scopes = []) {
         if (scopes.length) {
-            return scopes.filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId);
+            console.log('scopeUnlocksDependencies scope:', scope);
+            // scope = scope-7
+            // s = scope-3
+            // s.dependsOn = scope-7-AAAAAA
+            //(s.forkedScopeId && scopes.find((s2) => s2.id === s.forkedScopeId))
+            let forkedScope = scopes.find((s2) => s2.forkedScopeId === scope.id);
+            let forkedScopeId = forkedScope ? forkedScope.id : 0;
+            console.log('-----forkedScope:', forkedScope);
+            console.log('-----forkedScope:', forkedScope !== undefined);
+
+            return scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(forkedScopeId));
         } else {
             return get(store).filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId);
         }
@@ -317,17 +373,30 @@ export function ProjectStore() {
         let indexLastRisky = 0;
 
         let copyGroupsScopes = JSON.parse(JSON.stringify(groupsScopes));
-        copyGroupsScopes.map((group) => {
+        let itemsRemainingOfRiskyGroups = [];
+        let idxGroupRisky = 0;
+        copyGroupsScopes.map((group, idx) => {
             indexLastRisky = lastIndexOf(group.items, 'risky', true);
+            group.risky = indexLastRisky > -1;
+            if (!group.risky) {
+                idxGroupRisky = idx;
+            }
+            console.log('group:', idxGroupRisky);
+            console.log('group obj:', group);
+            let forkedScopes = generateForkingScopesBasedOnRiskyScopes(group.items, indexLastRisky, itemsRemainingOfRiskyGroups);
+            group.items = group.items.filter((s) => !s.remove);
 
-            let forkedScopes = generateForkingScopesBasedOnRiskyScopes(group.items, indexLastRisky);
-
-            let scopesBeforeLastRisky = group.items.slice(0, indexLastRisky + 1);
-            let scopesAfterLastRisky = group.items.slice(indexLastRisky + 1);
-            scopesAfterLastRisky = scopesAfterLastRisky.concat(forkedScopes);
-            scopesAfterLastRisky = mergeSort(mergeScopesRisky, scopesAfterLastRisky);
-            group.items = scopesBeforeLastRisky.concat(scopesAfterLastRisky);
+            console.log('group.items:', group.items);
+            // let scopesBeforeLastRisky = group.items.slice(0, indexLastRisky + 1);
+            // let scopesAfterLastRisky = group.items.slice(indexLastRisky + 1);
+            // scopesAfterLastRisky = scopesAfterLastRisky.concat(forkedScopes);
+            // scopesAfterLastRisky = mergeSort(mergeScopesRisky, scopesAfterLastRisky);
+            // group.items = scopesBeforeLastRisky.concat(scopesAfterLastRisky);
         })
+
+        console.log('idxGroupRisky:', idxGroupRisky);
+        let groupOfItemsRemainingOfRiskyGroups = { id: 999, risky: false, items: itemsRemainingOfRiskyGroups };
+        copyGroupsScopes.splice(lastIndexOf(copyGroupsScopes, 'risky', true) + 1, 0, groupOfItemsRemainingOfRiskyGroups);
         return copyGroupsScopes;
     }
 
@@ -338,35 +407,25 @@ export function ProjectStore() {
 
         let copyFilteredStore = JSON.parse(JSON.stringify(get(store).filter((scope) => scope.id !== 'bucket' && scope.items.length > 0)));
 
-        let groupedScopes = groupScopes(copyFilteredStore)
+        let groupedScopes = groupScopes(copyFilteredStore);
         let groupedSortedScopes = mergeSort(mergeGroupScopes, groupedScopes);
         console.log('groupedSortedScopes:', groupedSortedScopes);
+
+        //        let splittedGroupByRiskyAndRoutine(groupedSortedScopes);
 
         sortedGroupedScopes.set(groupedSortedScopes);
 
         sortedGroupedAndForkedScopes.set(sortScopesinGroupForkingByRisky(get(sortedGroupedScopes)));
         console.log('>>>> sortedGroupedScopes:', get(sortedGroupedAndForkedScopes));
 
-        sortedGroupedScopesDocumentation.set(mergeSort(mergeScopes, copyFilteredStore));
-        console.log('>>>> sortedGroupedScopesDocumentation:', get(sortedGroupedScopesDocumentation));
 
-
-        // console.log('>>>> copyFilteredStore:', JSON.parse(JSON.stringify(copyFilteredStore)));
-        // console.log('>>>> mergeSort(copyFilteredStore):', mergeSort(copyFilteredStore))
-        // sortedGroupedScopes.set(mergeSort(copyFilteredStore));
-        // sortedGroupedScopes.set(makeGroupScopes(get(sortedGroupedAndForkedScopes)));
-
-        // console.log('get(sortedGroupedAndForkedScopes):', get(sortedGroupedAndForkedScopes));
-
-
-        // scopesForkedPriorizedAndGrouped.forEach((group) => {
-        //     group.items = mergeSort(group.items);
-        // })
+        sortedScopesDocumentation.set(mergeSort(mergeScopes, copyFilteredStore));
+        console.log('>>>> sortedScopesDocumentation:', get(sortedScopesDocumentation));
 
         return {
             sortedGroupedScopes: get(sortedGroupedScopes),
             sortedGroupedAndForkedScopes: get(sortedGroupedAndForkedScopes),
-            sortedGroupedScopesDocumentation: get(sortedGroupedScopesDocumentation)
+            sortedScopesDocumentation: get(sortedScopesDocumentation)
         }
     }
 
@@ -398,7 +457,7 @@ export function ProjectStore() {
 };
 
 
-function generateForkingScopesBasedOnRiskyScopes(scopes, indexLastRisky) {
+function generateForkingScopesBasedOnRiskyScopes(scopes, indexLastRisky, itemsRemainingOfRiskyGroups) {
     let forkedScopes = [];
     let scopesGroupedInRisky = []
 
@@ -419,14 +478,22 @@ function generateForkingScopesBasedOnRiskyScopes(scopes, indexLastRisky) {
             }
             scope.freezeOrder = true;
         } else if (scopesGroupedInRisky.some((s) => scope.dependsOn.includes(s.id))) {
-            console.log('(scopesGroupedInRisky.some((s) => scope.dependsOn.includes(s.id))):', (scopesGroupedInRisky.some((s) => scope.dependsOn.includes(s.id))));
-            scope.freezeOrder = true;
+            itemsRemainingOfRiskyGroups.push(scope);
+            console.log('remaining scope:', scope);
+            scope.remove = true;
+            // scope.freezeOrder = true;
         } else {
             scope.freezeOrder = false;
         }
         return scope;
     });
 
+    forkedScopes.map((s) => {
+        itemsRemainingOfRiskyGroups.push(s);
+        s.remove = true
+    });
+
+    console.log('forkedScopes:', forkedScopes);
     updateDependenciesOfScopesGeneratedByFork(scopes);
 
     return forkedScopes;
@@ -451,6 +518,13 @@ export const lastIndexOf = (array, key, value) => {
     }
     return -1;
 };
+
+
+function splittedGroupByRiskyAndRoutine(groupedSortedScopes) {
+    groupedSortedScopes.forEach((group) => {
+
+    })
+}
 
 
 function sortGroupScopes(groups) {

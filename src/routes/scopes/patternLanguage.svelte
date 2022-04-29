@@ -1,5 +1,5 @@
 <script>
-	import { projectStore, sortedGroupedScopesDocumentation } from '$lib/stores/projectStore';
+	import { projectStore, sortedScopesDocumentation } from '$lib/stores/projectStore';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 	import SvgArrow from './svgArrow.svelte';
@@ -18,7 +18,7 @@
 </NavigationScopes>
 
 <div class="w-full ">
-	{#each $sortedGroupedScopesDocumentation as scope, idx (scope.id)}
+	{#each $sortedScopesDocumentation as scope, idx (scope.id)}
 		<div class="m-2 flex justify-center ">
 			<Scope bind:scope itemsScopeModal={scope.items} width="w-full">
 				<div slot="badge" class="w-full ">
@@ -66,7 +66,7 @@
 				<div slot="headerScopeModal">Items of {scope.name}</div>
 			</Scope>
 		</div>
-		{#if idx + 1 < $sortedGroupedScopesDocumentation.length}
+		{#if idx + 1 < $sortedScopesDocumentation.length}
 			<div class="flex justify-center">
 				<SvgArrow />
 			</div>

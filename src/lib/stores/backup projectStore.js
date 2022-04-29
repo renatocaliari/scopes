@@ -16,10 +16,9 @@ let store = writable([]);
 
 export let projectStore = ProjectStore();
 
-export let sortedScopesStore = localStorageStore('scopesSorted', []);
-export let sortedScopesForkedStore = localStorageStore('scopesForkedSorted', []);
-export const sortedScopesGroupStore = localStorageStore('scopesGroupSorted', []);
-export let sortedScopesStoreDocumentation = localStorageStore('scopesSortedDocumentation', []);
+export let sortedGroupedScopes = localStorageStore('scopesSorted', []);
+export let sortedGroupedAndForkedScopes = localStorageStore('groupedAndForkedScopes', []);
+export let sortedScopesDocumentation = localStorageStore('scopesSortedDocumentation', []);
 
 
 export function ProjectStore() {
@@ -39,7 +38,7 @@ export function ProjectStore() {
         createInitialData(true, 9, true);
     }
 
-    function createInitialData(hasBucket, totalScopes, sampleData) {
+    function createInitialData(hasBucket, totalScopes, sampleData, case1 = true) {
         console.log('store empty')
         if (hasBucket) {
             addBucketScope('Bucket');
@@ -51,62 +50,110 @@ export function ProjectStore() {
             let risky = false;
             let indispensable = false;
             if (sampleData) {
-                switch (i) {
-                    case 1:
-                        name = 'scope-1'
-                        dependsOn = ['scope-3'];
-                        items = [ScopeItem.createItem("item 1 - describing some details to break line and test limits", true), ScopeItem.createItem("item 2", true), ScopeItem.createItem("nice to have 1", false), ScopeItem.createItem("nice to have 2", false)];
-                        break;
-                    case 2:
-                        name = 'scope-2'
-                        dependsOn = ['scope-1', 'scope-3'];
-                        items = [ScopeItem.createItem("item 1 - describing some details to break line and test limits", true), ScopeItem.createItem("item 2", true), ScopeItem.createItem("nice to have 1", false), ScopeItem.createItem("nice to have 2", false)];
-                        risky = true;
-                        break;
-                    case 3:
-                        name = 'scope-3'
-                        risky = true;
-                        items = [ScopeItem.createItem("item 1 - describing some details to break line and test limits", true), ScopeItem.createItem("item 2", true), ScopeItem.createItem("nice to have 1", false), ScopeItem.createItem("nice to have 2", false)];
+                if (case1) {
+                    switch (i) {
+                        case 1:
+                            name = 'scope-1'
+                            dependsOn = ['scope-2', 'scope-3', 'scope-4'];
+                            break;
+                        case 2:
+                            name = 'scope-2'
+                            dependsOn = [];
+                            risky = true;
+                            break;
+                        case 3:
+                            name = 'scope-3'
+                            dependsOn = ['scope-2', 'scope-7'];
+                            risky = true;
+                            break;
+                        case 4:
+                            name = 'scope-4'
+                            dependsOn = ['scope-3'];
+                            // indispensable = true;
+                            break;
+                        case 5:
+                            name = 'scope-5'
+                            dependsOn = ['scope-6'];
+                            risky = true;
 
-                        break;
-                    case 4:
-                        name = 'scope-4'
-                        dependsOn = ['scope-5'];
-                        // indispensable = true;
-                        items = [ScopeItem.createItem("item 1 - describing some details to break line and test limits", true), ScopeItem.createItem("item 2", true), ScopeItem.createItem("nice to have 1", false), ScopeItem.createItem("nice to have 2", false)];
+                            break;
+                        case 6:
+                            name = 'scope-6'
+                            // dependsOn = ['scope-1'];
+                            // indispensable = true;
+                            break;
+                        case 7:
+                            name = 'scope-7'
+                            // indispensable = true;
+                            break;
+                        case 8:
+                            // name = 'scope-8'
+                            // indispensable = true;
+                            break;
+                        case 9:
+                            // name = 'scope-9'
+                            // indispensable = true;
+                            break;
+                        default:
+                            break;
+                    }
 
-                        break;
-                    case 5:
-                        name = 'scope-5'
-                        risky = true;
-                        items = [ScopeItem.createItem("item 1 - describing some details to break line and test limits", true), ScopeItem.createItem("item 2", true), ScopeItem.createItem("nice to have 1", false), ScopeItem.createItem("nice to have 2", false)];
+                } else {
+                    switch (i) {
+                        case 1:
+                            name = 'scope-1'
+                            dependsOn = ['scope-3'];
+                            break;
+                        case 2:
+                            name = 'scope-2'
+                            dependsOn = ['scope-1', 'scope-3'];
+                            risky = true;
+                            break;
+                        case 3:
+                            name = 'scope-3'
+                            risky = true;
+                            break;
+                        case 4:
+                            name = 'scope-4'
+                            dependsOn = ['scope-5'];
+                            // indispensable = true;
 
-                        break;
-                    case 6:
-                        // name = 'scope-6'
-                        // items = [ScopeItem.createItem("item 1 - describing some details to break line and test limits", true), ScopeItem.createItem("item 2", true), ScopeItem.createItem("nice to have 1", false), ScopeItem.createItem("nice to have 2", false)];
-                        // dependsOn = ['scope-1'];
-                        // indispensable = true;
-                        break;
-                    case 7:
-                        // name = 'scope-7'
-                        // indispensable = true;
-                        break;
-                    case 8:
-                        // name = 'scope-8'
-                        // indispensable = true;
-                        break;
-                    case 9:
-                        // name = 'scope-9'
-                        // indispensable = true;
-                        break;
-                    default:
-                        break;
+                            break;
+                        case 5:
+                            name = 'scope-5'
+                            risky = true;
+
+                            break;
+                        case 6:
+                            name = 'scope-6'
+                            // dependsOn = ['scope-1'];
+                            // indispensable = true;
+                            break;
+                        case 7:
+                            name = 'scope-7'
+                            dependsOn = ['scope-6'];
+                            // indispensable = true;
+                            break;
+                        case 8:
+                            // name = 'scope-8'
+                            // indispensable = true;
+                            break;
+                        case 9:
+                            // name = 'scope-9'
+                            // indispensable = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
+            }
+            if (name) {
+                items = [ScopeItem.createItem("item 1 - describing some details to break line and test limits", true), ScopeItem.createItem("item 2", true), ScopeItem.createItem("nice to have 1", false), ScopeItem.createItem("nice to have 2", false)];
             }
             addScopeAutoId(name, items, dependsOn, risky, indispensable, i);
         }
     }
+
 
     function addBucketScope(name, items = [], dependsOn = [], risky = false, indispensable = false, order = 0) {
         let scope = {
@@ -238,9 +285,12 @@ export function ProjectStore() {
 
     }
 
-    function scopeUnlocksDependencies(scope) {
-        let result = get(store).filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(scope.forkedScopeId));
-        return result;
+    function scopeUnlocksDependencies(scope, scopes = []) {
+        if (scopes.length) {
+            return scopes.filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId);
+        } else {
+            return get(store).filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId);
+        }
     };
 
     function scopeFilterItemsIndispensable(scope) {
@@ -263,83 +313,22 @@ export function ProjectStore() {
         });
     }
 
-    function merge(left, right, originalArr) {
-        let sortedArr = []; // the sorted elements will go here
-        while (left.length && right.length) {
-
-            // console.log('>>>>>>>>>>>>>>>>>>>>>>>>> right[0]:', right[0]);
-            // console.log('>>>>>>>>>>>>>>>>>>>>>>>>> left[0]:', left[0]);
-
-            if (left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id)) {
-                sortedArr.push(right.shift());
-                // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
-            } else if (right[0].dependsOn?.includes(left[0].id) && !left[0].dependsOn?.includes(right[0].id)) {
-                sortedArr.push(left.shift());
-                // console.log('} else if (right[0].dependsOn?.includes(left[0].id) && !left[0].dependsOn?.includes(right[0].id)) {');
-            } else if (left[0].risky && !right[0].risky) {
-                sortedArr.push(left.shift());
-                // console.log('} else if (left[0].risky && !right[0].risky) {');
-            } else if (!left[0].risky && right[0].risky) {
-                sortedArr.push(right.shift());
-                // console.log('} else if (!left[0].risky && right[0].risky) {');
-            } else if (left[0].dependsOn?.length > right[0].dependsOn?.length) {
-                sortedArr.push(left.shift());
-                // console.log('} else if (left[0].dependsOn?.length > right[0].dependsOn?.length) {');
-            } else if (left[0].dependsOn?.length < right[0].dependsOn?.length) {
-                sortedArr.push(right.shift());
-                // console.log('} else if (left[0].dependsOn?.length < right[0].dependsOn?.length) {');
-            } else if (originalArr.filter((scope) => scope.dependsOn.includes(left[0].id)).length > originalArr.filter((scope) => scope.dependsOn.includes(right[0].id)).length) {
-                sortedArr.push(left.shift());
-            } else if (originalArr.filter((scope) => scope.dependsOn.includes(left[0].id)).length < originalArr.filter((scope) => scope.dependsOn.includes(right[0].id)).length) {
-                sortedArr.push(right.shift());
-            } else if (left[0].order > right[0].order) {
-                sortedArr.push(right.shift());
-            } else if (right[0].order > left[0].order) {
-                sortedArr.push(left.shift());
-            } else {
-                sortedArr.push(right.shift());
-                console.log('else');
-            }
-            // console.log('...:', JSON.parse(JSON.stringify(sortedArr)));
-
-        }
-
-        // console.log('sortedArr:', JSON.parse(JSON.stringify(sortedArr)));
-        // use spread operator and create a new array, combining the three arrays
-        return [...sortedArr, ...left, ...right];
-    }
-
-    function mergeSort(arr, originalArr = []) {
-        if (originalArr.length === 0) {
-            arr = JSON.parse(JSON.stringify(arr));
-            originalArr = JSON.parse(JSON.stringify(arr));
-        }
-        // the base case is array length <=1
-        if (arr.length <= 1) {
-            return arr;
-        }
-        const half = arr.length / 2;
-        const left = arr.splice(0, half); // the first half of the array
-        const right = arr;
-        // console.log('left:', JSON.parse(JSON.stringify(left)));
-        // console.log('right:', JSON.parse(JSON.stringify(right)));
-        return merge(mergeSort(left, originalArr), mergeSort(right, originalArr), originalArr);
-    }
-
-    function sortScopesForkingByRisky(scopes) {
+    function sortScopesinGroupForkingByRisky(groupsScopes) {
         let indexLastRisky = 0;
 
-        let copyScopes = JSON.parse(JSON.stringify(scopes));
-        indexLastRisky = lastIndexOf(copyScopes, 'risky', true);
+        let copyGroupsScopes = JSON.parse(JSON.stringify(groupsScopes));
+        copyGroupsScopes.map((group) => {
+            indexLastRisky = lastIndexOf(group.items, 'risky', true);
 
-        let forkedScopes = generateForkingScopesBasedOnRiskyScopes(copyScopes, indexLastRisky);
+            let forkedScopes = generateForkingScopesBasedOnRiskyScopes(group.items, indexLastRisky);
 
-        let scopesBeforeLastRisky = copyScopes.slice(0, indexLastRisky + 1);
-        let scopesAfterLastRisky = copyScopes.slice(indexLastRisky + 1);
-        scopesAfterLastRisky = scopesAfterLastRisky.concat(forkedScopes);
-        scopesAfterLastRisky = mergeSort(scopesAfterLastRisky);
-
-        return scopesBeforeLastRisky.concat(scopesAfterLastRisky);
+            let scopesBeforeLastRisky = group.items.slice(0, indexLastRisky + 1);
+            let scopesAfterLastRisky = group.items.slice(indexLastRisky + 1);
+            scopesAfterLastRisky = scopesAfterLastRisky.concat(forkedScopes);
+            scopesAfterLastRisky = mergeSort(mergeScopesRisky, scopesAfterLastRisky);
+            group.items = scopesBeforeLastRisky.concat(scopesAfterLastRisky);
+        })
+        return copyGroupsScopes;
     }
 
     function sortScopesByPriority() {
@@ -349,27 +338,24 @@ export function ProjectStore() {
 
         let copyFilteredStore = JSON.parse(JSON.stringify(get(store).filter((scope) => scope.id !== 'bucket' && scope.items.length > 0)));
 
-        console.log('>>>> copyFilteredStore:', JSON.parse(JSON.stringify(copyFilteredStore)));
-        console.log('>>>> mergeSort(copyFilteredStore):', mergeSort(copyFilteredStore))
-        sortedScopesStore.set(mergeSort(copyFilteredStore));
-        console.log('>>>> sortedScopesStore:', get(sortedScopesStore));
-        sortedScopesForkedStore.set(sortScopesForkingByRisky(get(sortedScopesStore)));
-        sortedScopesGroupStore.set(makeGroupScopes(get(sortedScopesForkedStore)));
+        let groupedScopes = groupScopes(copyFilteredStore)
+        let groupedSortedScopes = mergeSort(mergeGroupScopes, groupedScopes);
+        console.log('groupedSortedScopes:', groupedSortedScopes);
 
-        console.log('get(sortedScopesForkedStore):', get(sortedScopesForkedStore));
-        console.log('makeGroupScopes(get(sortedScopesForkedStore)):', makeGroupScopes(get(sortedScopesForkedStore)));
+        let splittedGroupByRiskyAndRoutine(groupedSortedScopes);
 
-        // sortedScopesStoreDocumentation.set(get(sortedScopesStore));
+        sortedGroupedScopes.set(groupedSortedScopes);
 
-        // scopesForkedPriorizedAndGrouped.forEach((group) => {
-        //     group.items = mergeSort(group.items);
-        // })
+        sortedGroupedAndForkedScopes.set(sortScopesinGroupForkingByRisky(get(sortedGroupedScopes)));
+        console.log('>>>> sortedGroupedScopes:', get(sortedGroupedAndForkedScopes));
+
+        sortedScopesDocumentation.set(mergeSort(mergeScopes, copyFilteredStore));
+        console.log('>>>> sortedScopesDocumentation:', get(sortedScopesDocumentation));
 
         return {
-            sortedScopesStore: get(sortedScopesStore),
-            sortedScopesForkedStore: get(sortedScopesForkedStore),
-            sortedScopesGroupStore: get(sortedScopesGroupStore),
-            sortedScopesStoreDocumentation: get(sortedScopesStoreDocumentation)
+            sortedGroupedScopes: get(sortedGroupedScopes),
+            sortedGroupedAndForkedScopes: get(sortedGroupedAndForkedScopes),
+            sortedScopesDocumentation: get(sortedScopesDocumentation)
         }
     }
 
@@ -407,8 +393,8 @@ function generateForkingScopesBasedOnRiskyScopes(scopes, indexLastRisky) {
 
     scopes.map((scope, index) => {
         scope.order = index;
-        console.log('scopes[indexLastRisky]):', scopes[indexLastRisky]);
-        console.log('scope:', scope);
+        // console.log('scopes[indexLastRisky]):', scopes[indexLastRisky]);
+        // console.log('scope:', scope);
 
         if (index <= indexLastRisky) {
             scopesGroupedInRisky.push(scope);
@@ -456,7 +442,19 @@ export const lastIndexOf = (array, key, value) => {
 };
 
 
-function makeGroupScopes(inputArr) {
+function splittedGroupByRiskyAndRoutine(groupedSortedScopes) {
+    groupedSortedScopes.forEach((group) => {
+
+    })
+}
+
+
+function sortGroupScopes(groups) {
+
+}
+
+
+function groupScopes(inputArr) {
     // copied from: https://stackoverflow.com/questions/41669281/group-array-by-nested-dependent-array-element
     // make matrix graph
     inputArr = JSON.parse(JSON.stringify(inputArr));
@@ -510,7 +508,150 @@ function makeGroupScopes(inputArr) {
             }
         });
         idx++;
-        return { id: idx, items: scopes };
+        return { id: idx, items: mergeSort(mergeScopesRisky, scopes) };
     });
     return result;
+}
+
+
+function mergeGroupScopes(left, right) {
+    let sortedArr = []; // the sorted elements will go here
+    while (left.length && right.length) {
+
+        // console.log('>>>>>>>>>>>>>>>>>>>>>>>>> right[0]:', right[0]);
+        // console.log('>>>>>>>>>>>>>>>>>>>>>>>>> left[0]:', left[0]);
+
+        if (left[0].items.filter((scope) => scope.risky).length > right[0].items.filter((scope) => scope.risky).length) {
+            sortedArr.push(left.shift());
+            // console.log('} else if (left[0].risky && !right[0].risky) {');
+        } else if (right[0].items.filter((scope) => scope.risky).length > left[0].items.filter((scope) => scope.risky).length) {
+            sortedArr.push(right.shift());
+            // console.log('} else if (!left[0].risky && right[0].risky) {');
+        } else if (left[0].items.length > right[0].items.length) {
+            sortedArr.push(left.shift());
+            // console.log('} else if (left[0].risky && !right[0].risky) {');
+        } else if (right[0].items.length > left[0].items.length) {
+            sortedArr.push(right.shift());
+            // console.log('} else if (!left[0].risky && right[0].risky) {');
+        } else {
+            sortedArr.push(right.shift());
+            console.log('else');
+        }
+        // console.log('...:', JSON.parse(JSON.stringify(sortedArr)));
+
+    }
+
+    // console.log('sortedArr:', JSON.parse(JSON.stringify(sortedArr)));
+    // use spread operator and create a new array, combining the three arrays
+    return [...sortedArr, ...left, ...right];
+}
+
+function mergeScopes(left, right, originalArr) {
+    let sortedArr = []; // the sorted elements will go here
+    while (left.length && right.length) {
+
+        // console.log('>>>>>>>>>>>>>>>>>>>>>>>>> right[0]:', right[0]);
+        // console.log('>>>>>>>>>>>>>>>>>>>>>>>>> left[0]:', left[0]);
+
+        if (left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id)) {
+            sortedArr.push(right.shift());
+            // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
+        } else if (right[0].dependsOn?.includes(left[0].id) && !left[0].dependsOn?.includes(right[0].id)) {
+            sortedArr.push(left.shift());
+            // console.log('} else if (right[0].dependsOn?.includes(left[0].id) && !left[0].dependsOn?.includes(right[0].id)) {');
+            // } else if (left[0].risky && !right[0].risky) {
+            //     sortedArr.push(left.shift());
+            //     // console.log('} else if (left[0].risky && !right[0].risky) {');
+            // } else if (!left[0].risky && right[0].risky) {
+            //     sortedArr.push(right.shift());
+            //     //     // console.log('} else if (!left[0].risky && right[0].risky) {');
+            // } else if (left[0].dependsOn?.length > right[0].dependsOn?.length) {
+            //     sortedArr.push(left.shift());
+            //     // console.log('} else if (left[0].dependsOn?.length > right[0].dependsOn?.length) {');
+            // } else if (left[0].dependsOn?.length < right[0].dependsOn?.length) {
+            //     sortedArr.push(right.shift());
+            //     // console.log('} else if (left[0].dependsOn?.length < right[0].dependsOn?.length) {');
+            // } else if (originalArr.filter((scope) => scope.dependsOn.includes(left[0].id)).length > originalArr.filter((scope) => scope.dependsOn.includes(right[0].id)).length) {
+            //     sortedArr.push(left.shift());
+            // } else if (originalArr.filter((scope) => scope.dependsOn.includes(left[0].id)).length < originalArr.filter((scope) => scope.dependsOn.includes(right[0].id)).length) {
+            //     sortedArr.push(right.shift());
+            // } else if (left[0].order > right[0].order) {
+            //     sortedArr.push(right.shift());
+            // } else if (right[0].order > left[0].order) {
+            //     sortedArr.push(left.shift());
+        } else {
+            sortedArr.push(right.shift());
+            console.log('else');
+        }
+        // console.log('...:', JSON.parse(JSON.stringify(sortedArr)));
+
+    }
+
+    // console.log('sortedArr:', JSON.parse(JSON.stringify(sortedArr)));
+    // use spread operator and create a new array, combining the three arrays
+    return [...sortedArr, ...left, ...right];
+}
+
+
+function mergeScopesRisky(left, right, originalArr) {
+    let sortedArr = []; // the sorted elements will go here
+    while (left.length && right.length) {
+
+        // console.log('>>>>>>>>>>>>>>>>>>>>>>>>> right[0]:', right[0]);
+        // console.log('>>>>>>>>>>>>>>>>>>>>>>>>> left[0]:', left[0]);
+
+        if (left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id)) {
+            sortedArr.push(right.shift());
+            // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
+        } else if (right[0].dependsOn?.includes(left[0].id) && !left[0].dependsOn?.includes(right[0].id)) {
+            sortedArr.push(left.shift());
+            // console.log('} else if (right[0].dependsOn?.includes(left[0].id) && !left[0].dependsOn?.includes(right[0].id)) {');
+        } else if (left[0].risky && !right[0].risky) {
+            sortedArr.push(left.shift());
+            // console.log('} else if (left[0].risky && !right[0].risky) {');
+        } else if (!left[0].risky && right[0].risky) {
+            sortedArr.push(right.shift());
+            //     // console.log('} else if (!left[0].risky && right[0].risky) {');
+            // } else if (left[0].dependsOn?.length > right[0].dependsOn?.length) {
+            //     sortedArr.push(left.shift());
+            //     // console.log('} else if (left[0].dependsOn?.length > right[0].dependsOn?.length) {');
+            // } else if (left[0].dependsOn?.length < right[0].dependsOn?.length) {
+            //     sortedArr.push(right.shift());
+            //     // console.log('} else if (left[0].dependsOn?.length < right[0].dependsOn?.length) {');
+            // } else if (originalArr.filter((scope) => scope.dependsOn.includes(left[0].id)).length > originalArr.filter((scope) => scope.dependsOn.includes(right[0].id)).length) {
+            //     sortedArr.push(left.shift());
+            // } else if (originalArr.filter((scope) => scope.dependsOn.includes(left[0].id)).length < originalArr.filter((scope) => scope.dependsOn.includes(right[0].id)).length) {
+            //     sortedArr.push(right.shift());
+            // } else if (left[0].order > right[0].order) {
+            //     sortedArr.push(right.shift());
+            // } else if (right[0].order > left[0].order) {
+            //     sortedArr.push(left.shift());
+        } else {
+            sortedArr.push(right.shift());
+            console.log('else');
+        }
+        // console.log('...:', JSON.parse(JSON.stringify(sortedArr)));
+
+    }
+
+    // console.log('sortedArr:', JSON.parse(JSON.stringify(sortedArr)));
+    // use spread operator and create a new array, combining the three arrays
+    return [...sortedArr, ...left, ...right];
+}
+
+function mergeSort(merger, arr, originalArr = []) {
+    if (originalArr.length === 0) {
+        arr = JSON.parse(JSON.stringify(arr));
+        originalArr = JSON.parse(JSON.stringify(arr));
+    }
+    // the base case is array length <=1
+    if (arr.length <= 1) {
+        return arr;
+    }
+    const half = arr.length / 2;
+    const left = arr.splice(0, half); // the first half of the array
+    const right = arr;
+    // console.log('left:', JSON.parse(JSON.stringify(left)));
+    // console.log('right:', JSON.parse(JSON.stringify(right)));
+    return merger(mergeSort(merger, left, originalArr), mergeSort(merger, right, originalArr), originalArr);
 }
