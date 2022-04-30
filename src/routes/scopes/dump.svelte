@@ -26,12 +26,12 @@
 			},
 			{
 				name: 'group',
-				text: 'Group those items in the scopes on the side asking: what items can be completed together in isolation of the other items?',
+				text: 'Group those items in the scopes on the right side asking: what items can be completed together in isolation of the other items?',
 				checked: $projectStore.some((scope) => scope.id !== 'bucket' && scope.items?.length > 0)
 			},
 			{
 				name: 'more',
-				text: 'Group in more than 1 scope',
+				text: 'Group items in more than 1 scope',
 				checked:
 					$projectStore
 						.filter((scope) => scope.id !== 'bucket')

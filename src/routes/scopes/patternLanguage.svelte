@@ -5,23 +5,87 @@
 	import SvgArrow from './svgArrow.svelte';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
 	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
+	import CopyToClipboard from '$lib/components/CopyToClipboard.svelte';
 
 	projectStore.sortScopesByPriority();
-
 	$: {
 		$sortedScopesDocumentation,
 			$sortedScopesDocumentation.map((s) => {
 				let scopeOriginal = $projectStore.find((s2) => s2.id === s.id);
-				console.log('scopeOriginal:', scopeOriginal);
 				scopeOriginal.title = s.title;
 				scopeOriginal.description = s.description;
 			});
 		$projectStore = $projectStore;
 	}
+
+	let exportText;
+	let autoNumber = false;
+
+	const flipDurationMs = 300;
+
+	let successfullyCopied = undefined;
+	const handleSuccessfullyCopied = (e) => {
+		successfullyCopied = true;
+	};
+
+	const handleFailedCopy = () => {
+		successfullyCopied = false;
+	};
+
+	function scopesToText(scopes) {
+		let text = '';
+		let textNumberTitle = 1;
+		scopes.forEach((scope, idx) => {
+			if (scope.title && scope.description) {
+				text = text.concat((autoNumber ? textNumberTitle + '. ' : '') + scope.title.trim() + '\n');
+				textNumberTitle;
+
+				let textNumberDescription = 1;
+				scope.description.split('\n').map((line) => {
+					text = text.concat(
+						'\t' +
+							(autoNumber ? textNumberTitle + '.' + textNumberDescription + '. ' : '') +
+							line +
+							'\n'
+					);
+					textNumberDescription++;
+				});
+			}
+		});
+
+		return text;
+	}
 </script>
 
 <NavigationScopes currentStep={4} let:currentStep>
-	<NavigationCheckList {currentStep} linkPreviousStep="/scopes/sequence" />
+	<NavigationCheckList {currentStep} linkPreviousStep="/scopes/sequence">
+		<div slot="buttons">
+			<label
+				for="modal-export"
+				class="btn btn-warning modal-button"
+				on:click={() => (exportText = scopesToText($projectStore))}>Export To Text</label
+			>
+			<!-- {#if showUpdate}
+				<label for="modal-update" class="btn btn-warning modal-update">Update</label>
+			{/if} -->
+		</div>
+	</NavigationCheckList>
+	<div
+		class="border-2 p-2 flex flex-col shadow-xl mb-6 text-lg align-middle content-center items-center"
+	>
+		<div>
+			<ul class="list-inside list-none text-lg align-middle content-center items-center">
+				<li class="text-lg align-middle content-center items-center m-2">
+					<label for="auto-number" class="mr-2">On export, auto-number each line.</label><input
+						type="checkbox"
+						id="auto-number"
+						class="toggle align-middle content-center items-center"
+						bind:checked={autoNumber}
+					/>
+				</li>
+			</ul>
+		</div>
+	</div>
 </NavigationScopes>
 
 <div class="w-full ">
@@ -43,11 +107,10 @@
 				</div>
 				<div slot="body">
 					<div class="grid grid-cols-3">
-						<div
-							class="col-span-2 border-dashed border-2 border-gray-300"
-							contenteditable
-							bind:innerHTML={scope.description}
+						<textarea
+							class="textarea textarea-bordered col-span-2 border-dashed text-lg"
 							placeholder="Write here the sections related to this group..."
+							bind:value={scope.description}
 						/>
 						<div class="p-2">
 							<div>
@@ -79,6 +142,64 @@
 			</div>
 		{/if}
 	{/each}
+</div>
+
+<input type="checkbox" id="modal-export" class="modal-toggle" />
+<div class="modal modal-bottom sm:modal-middle">
+	<div class="modal-box">
+		{#if successfullyCopied}
+			<div class="alert alert-success shadow-lg">
+				<div>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="stroke-current flex-shrink-0 h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						><path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+						/></svg
+					>
+					<span>Successfully copied to clipboard!</span>
+				</div>
+			</div>
+		{/if}
+		{#if successfullyCopied === false}
+			<div class="alert alert-error shadow-lg">
+				<div>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="stroke-current flex-shrink-0 h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						><path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+						/></svg
+					>
+					<span>Failed to copy to clipboard!</span>
+				</div>
+			</div>
+		{/if}
+		<div style="white-space: pre-wrap;" class="w-fit h-96 overflow-auto">
+			{exportText}
+		</div>
+		<div class="modal-action">
+			<label for="modal-export" class="btn">Close</label>
+			<CopyToClipboard
+				text={exportText}
+				let:copy
+				on:copy={handleSuccessfullyCopied}
+				on:fail={handleFailedCopy}
+			>
+				<label class="btn btn-warning" on:click={copy}>Copy to clipboard</label>
+			</CopyToClipboard>
+		</div>
+	</div>
 </div>
 
 <style>
