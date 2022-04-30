@@ -1,10 +1,7 @@
-<script>
+<script context="module">
 	import CopyToClipboard from '$lib/components/CopyToClipboard.svelte';
-	import {
-		projectStore,
-		sortedGroupedAndForkedScopes,
-		sortedScopesDocumentation
-	} from '$lib/stores/projectStore';
+	import { convertToNumberingScheme } from '$lib/utils/general';
+	import { projectStore, sortedGroupedAndForkedScopes } from '$lib/stores/projectStore';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 	import SvgArrow from './svgArrow.svelte';
@@ -15,15 +12,28 @@
 	import { dndzone } from 'svelte-dnd-action';
 	import { deepEqual } from '$lib/utils/comparison';
 	import Icon from 'svelte-awesome';
+	import { each } from 'svelte/internal';
 	// import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
-	let exportText;
 	let showUpdate = false;
-	$: {
-		$projectStore,
-			projectStore.sortScopesByPriority(),
-			(exportText = scopesToText($sortedGroupedAndForkedScopes));
-	}
+</script>
+
+<script>
+	let exportText;
+	exportText = scopesToText($sortedGroupedAndForkedScopes);
+
+	let orderMetaGroups = [
+		{
+			id: 1,
+			title: 'First things, first: RISKY scopes',
+			items: $sortedGroupedAndForkedScopes.filter((g) => g.risky)
+		},
+		{
+			id: 2,
+			title: 'Everything else',
+			items: $sortedGroupedAndForkedScopes.filter((g) => !g.risky)
+		}
+	];
 
 	const flipDurationMs = 300;
 
@@ -41,58 +51,59 @@
 		// console.log('groups: ', groups);
 		groups.forEach((group, idxGroup) => {
 			// console.log('group: ', group);
+			text = text.concat('\n- Sequence ' + group.id);
 			group.items.forEach((scope, idx) => {
-				// console.log('scope: ', scope);
-				// console.log('idx + 1:', idx + 1, 'group.items:', group.items);
-				// text = text.concat('\n- Step ' + (idx + 1) + ': Scope [' + scope.name + ']');
-				// text = text.concat(
-				// 	scope.forkedScopeId
-				// 		? '\n\t- WARNING: Do only the essential at this step to do the next scope [' +
-				// 				group.items[idx + 1].name +
-				// 				']'
-				// 		: ''
-				// );
-				// text = text.concat(
-				// 	scope.risky ? '\n\t- WARNING: This scope is RISKY because has UNKNOWNS' : ''
-				// );
+				console.log('scope: ', scope);
+				console.log('idx + 1:', idx + 1, 'group.items:', group.items);
+				text = text.concat('\n\t- Step ' + (idx + 1) + ': Scope [' + scope.name + ']');
+				text = text.concat(
+					scope.forkedScopeId
+						? '\n\t\t- WARNING: Do only the essential at this step to do the next scope [' +
+								group.items[idx + 1].name +
+								']'
+						: ''
+				);
+				text = text.concat(
+					scope.risky ? '\n\t\t- WARNING: This scope is RISKY because has UNKNOWNS' : ''
+				);
 				// if (scope.dependsOn?.length > 0) {
-				// 	text = text.concat('\n\t- Depends on:');
+				// 	text = text.concat('\n\t\t- Depends on:');
 				// 	scope.dependsOn.forEach((dependsOnId) => {
 				// 		let sDepend = group.items.find((s) => s.id === dependsOnId);
-				// 		text = text.concat('\n\t\t- ' + sDepend.name);
+				// 		text = text.concat('\n\t\t\t- ' + sDepend.name);
 				// 	});
 				// }
 				// let unlocksScopes = group.items.filter((s) => s.dependsOn?.includes(scope.id));
 				// if (unlocksScopes.length > 0) {
-				// 	text = text.concat('\n\t- Unlock scopes:');
+				// 	text = text.concat('\n\t\t- Unlock scopes:');
 				// 	unlocksScopes.forEach((s) => {
-				// 		text = text.concat('\n\t\t- ' + s.name);
+				// 		text = text.concat('\n\t\t\t- ' + s.name);
 				// 	});
 				// }
-				// let indispensableItems = scope.items?.filter((item) => item.indispensable);
-				// let niceToHave = scope.items?.filter((item) => !item.indispensable);
-				// if (indispensableItems?.length > 0) {
-				// 	text = text.concat('\n\t- Indispensable items:');
-				// 	indispensableItems.forEach((item) => {
-				// 		text = text.concat('\n\t\t- ' + item.name);
-				// 	});
-				// }
-				// if (niceToHave?.length > 0) {
-				// 	text = text.concat('\n\t- Nice to have items:');
-				// 	niceToHave.forEach((item) => {
-				// 		text = text.concat('\n\t\t- ' + item.name);
-				// 	});
-				// }
+				let indispensableItems = scope.items?.filter((item) => item.indispensable);
+				let niceToHave = scope.items?.filter((item) => !item.indispensable);
+				if (indispensableItems?.length > 0) {
+					text = text.concat('\n\t\t- Indispensable items:');
+					indispensableItems.forEach((item) => {
+						text = text.concat('\n\t\t\t- ' + item.name);
+					});
+				}
+				if (niceToHave?.length > 0) {
+					text = text.concat('\n\t\t- Nice to have items:');
+					niceToHave.forEach((item) => {
+						text = text.concat('\n\t\t\t- ' + item.name);
+					});
+				}
 			});
 		});
 		return text;
 	}
 
-	function handleDndConsider(e) {
-		sortedGroupedAndForkedScopes.set(e.detail.items);
+	function handleDndConsider(e, idxMetaGroup) {
+		orderMetaGroups[idxMetaGroup].items = e.detail.items;
 	}
-	function handleDndFinalize(e) {
-		sortedGroupedAndForkedScopes.set(e.detail.items);
+	function handleDndFinalize(e, idxMetaGroup) {
+		orderMetaGroups[idxMetaGroup].items = e.detail.items;
 	}
 	function proxyDndzone() {
 		return dndzone.apply(null, arguments);
@@ -139,100 +150,110 @@
 	</NavigationCheckList>
 </NavigationScopes>
 
-<section
-	class="overflow-auto p-2 border-2 flex flex-col w-full min-w-full"
-	use:proxyDndzone={{
-		items: $sortedGroupedAndForkedScopes,
-		flipDurationMs,
-		type: 'items',
-		dropTargetClasses: ['bg-green-50']
-	}}
-	on:consider={handleDndConsider}
-	on:finalize={handleDndFinalize}
->
-	{#each $sortedGroupedAndForkedScopes as group, idxGroup (group.id)}
-		<div
-			animate:flip={{ duration: flipDurationMs }}
-			class="card justify-start w-full flex flex-row border-2 p-2 m-2 overflow-auto align-middle content-center"
-		>
-			<div class="move cursor-grab align-middle content-center justify-items-center">
-				<svg viewBox="0 0 100 80" width="20" height="20">
-					<rect width="70" height="12" />
-					<rect y="20" width="70" height="12" />
-					<rect y="40" width="70" height="12" />
-				</svg>
-			</div>
-			<div class="align-middle content-center justify-items-center min-w-fit">
-				<h3 class="mt-2 ">Sequence {group.id}</h3>
-			</div>
-			{#each group.items as scope, idx (scope.id)}
-				<!-- {@const calculatedColor = calculateColor(scope, maxDependents)} -->
-				{@const nextOne = group[idx + 1] ? group[idx + 1] : { name: '' }}
-				{@const scopes = $sortedGroupedAndForkedScopes.reduce((acc, group, idx, arr) => {
-					acc.push(group.items);
-					return acc.flat(2);
-				}, [])}
-				<div class="m-2 justify-center flex">
-					<div class="justify-start content-start items-start">
-						<Scope {scope} editTitle={false} itemsScopeModal={scope.items} width="w-96" collapsable>
-							<div slot="badge">
-								<BadgeDependencies project={projectStore} {scopes} {scope} />
-							</div>
-							<div slot="header">
-								<div class="badge" class:hidden={!scope.indispensable}>Indispensable</div>
-								<div class="badge" class:hidden={!scope.forkedScopeId}>
-									<!-- <Icon data={faCircleExclamation} class="mr-2" />  -->
-									Do only the essential
-								</div>
-								<div class="badge" class:hidden={!scope.risky}>Risky</div>
-							</div>
-							<div slot="body">
-								{#if scope.forkedScopeId}
-									<div class="border-2 bg-yellow-50 p-2 text-left">
-										<p>
-											The sole intention at this step is allowing the execution of the next scope,
-											<span class="font-bold bg-yellow-300 p-2">
-												{nextOne.name || nextOne.placeholder}</span
-											>. Think about simulated ways to mimic the real tasks here.
-										</p>
-										<p>
-											In the world of development of software you can think about dummy objects,
-											fake objects, stubs and mocks.
-										</p>
-										<p>
-											<span class="font-bold bg-yellow-300 p-2"
-												>{scope.name || scope.placeholder}</span
-											>
-											will appear later on again, so you'll be able to execute fully.
-										</p>
-									</div>
-								{/if}
-								<h4>Indispensable:</h4>
-								<Items
-									bind:scope
-									maxHeight=""
-									items={scope.items.filter((item) => item.indispensable == true)}
-								/>
-								<h4>Nice to have:</h4>
-								<Items
-									bind:scope
-									maxHeight=""
-									items={scope.items.filter((item) => item.indispensable == false)}
-								/>
-							</div>
-							<div slot="headerScopeModal">Items of {scope.name}</div>
-						</Scope>
-					</div>
+{#each orderMetaGroups as metaGroup, idxMeta (metaGroup.id)}
+	<h3>{metaGroup.title}</h3>
+	<section
+		class="overflow-auto p-2 border-2 flex flex-row w-full min-w-full"
+		use:proxyDndzone={{
+			items: metaGroup.items,
+			flipDurationMs,
+			morphDisabled: false,
+			type: 'metaGroup' + metaGroup.id,
+			dropTargetClasses: ['bg-green-50']
+		}}
+		on:consider={(e) => handleDndConsider(e, idxMeta)}
+		on:finalize={(e) => handleDndFinalize(e, idxMeta)}
+	>
+		{#each metaGroup.items as group, idxGroup (group.id)}
+			<div
+				animate:flip={{ duration: flipDurationMs }}
+				class="card justify-start w-full flex flex-col border-2 p-2 m-2 overflow-auto align-middle content-center"
+			>
+				<div class="move cursor-grab align-middle content-center justify-items-center">
+					<svg viewBox="0 0 100 80" width="20" height="20">
+						<rect width="70" height="12" />
+						<rect y="20" width="70" height="12" />
+						<rect y="40" width="70" height="12" />
+					</svg>
 				</div>
-				{#if idx + 1 < group.length}
-					<div class="flex justify-center">
-						<SvgArrow />
+				<div class="align-middle content-center justify-items-center min-w-fit">
+					<h3 class="mt-2 ">Sequence {convertToNumberingScheme(group.id)}</h3>
+				</div>
+				{#each group.items as scope, idx (scope.id)}
+					<!-- {@const calculatedColor = calculateColor(scope, maxDependents)} -->
+					{@const nextOne = group.items[idx + 1] ? group.items[idx + 1] : { name: '' }}
+					{@const scopes = $sortedGroupedAndForkedScopes.reduce((acc, group, idx, arr) => {
+						acc.push(group.items);
+						return acc.flat(2);
+					}, [])}
+					<div class="m-2 justify-center flex">
+						<div class="justify-start content-start items-start">
+							<Scope
+								{scope}
+								editTitle={false}
+								itemsScopeModal={scope.items}
+								width="w-96"
+								collapsable
+							>
+								<div slot="badge">
+									<BadgeDependencies project={projectStore} {scopes} {scope} />
+								</div>
+								<div slot="header">
+									<div class="badge" class:hidden={!scope.indispensable}>Indispensable</div>
+									<div class="badge" class:hidden={!scope.forkedScopeId}>
+										<!-- <Icon data={faCircleExclamation} class="mr-2" />  -->
+										Do only the essential
+									</div>
+									<div class="badge" class:hidden={!scope.risky}>Risky</div>
+								</div>
+								<div slot="body">
+									{#if scope.forkedScopeId}
+										<div class="border-2 bg-yellow-50 p-2 text-left">
+											<p>
+												The sole intention at this step is allowing the execution of the next scope,
+												<span class="font-bold bg-yellow-300 p-2">
+													{nextOne.name || nextOne.placeholder}</span
+												>. Think about simulated ways to mimic the real tasks here.
+											</p>
+											<p>
+												In the world of development of software you can think about dummy objects,
+												fake objects, stubs and mocks.
+											</p>
+											<p>
+												<span class="font-bold bg-yellow-300 p-2"
+													>{scope.name || scope.placeholder}</span
+												>
+												will appear later on again, so you'll be able to execute fully.
+											</p>
+										</div>
+									{/if}
+									<h4>Indispensable:</h4>
+									<Items
+										bind:scope
+										maxHeight=""
+										items={scope.items.filter((item) => item.indispensable == true)}
+									/>
+									<h4>Nice to have:</h4>
+									<Items
+										bind:scope
+										maxHeight=""
+										items={scope.items.filter((item) => item.indispensable == false)}
+									/>
+								</div>
+								<div slot="headerScopeModal">Items of {scope.name}</div>
+							</Scope>
+						</div>
 					</div>
-				{/if}
-			{/each}
-		</div>
-	{/each}
-</section>
+					{#if idx + 1 < group.length}
+						<div class="flex justify-center">
+							<SvgArrow />
+						</div>
+					{/if}
+				{/each}
+			</div>
+		{/each}
+	</section>
+{/each}
 
 <input type="checkbox" id="modal-export" class="modal-toggle" />
 <div class="modal modal-bottom sm:modal-middle">

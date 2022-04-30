@@ -39,7 +39,7 @@
 						<div
 							class="col-span-2 border-dashed border-2 border-gray-300"
 							contenteditable
-							bind:textContent={scope.description}
+							bind:innerHTML={scope.description}
 							placeholder="Write here the sections related to this group..."
 						/>
 						<div class="p-2">
