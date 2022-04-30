@@ -13,7 +13,6 @@
 <div class="w-full  ">
 	<div>
 		<Header />
-
 		<main class="prose p-2 mx-auto max-w-screen-2xl items-center">
 			{#if $navigating}
 				Loading...
@@ -21,7 +20,6 @@
 				<slot />
 			{/if}
 		</main>
-
-		<Footer />
 	</div>
 </div>
+<Footer />
