@@ -41,15 +41,28 @@
 		<a href="https://world.hey.com/rjs/. ">Ryan Singer</a>'s (kudos!) material on digital product
 		development. You can consult his texts here:
 		<a href="https://world.hey.com/rjs/">https://world.hey.com/rjs/</a>.
+		<h2 class="mt-8 mb-4">Potential</h2>
+		<ul>
+			<li>allow share a url for current project with other people</li>
+			<li>
+				allow users to create a personal account and save data in the cloud to manager several
+				projects
+			</li>
+			<li>embed excalidraw to allow draw flows and shapes</li>
+			<li>allow integration with zapier or make</li>
+			<li>manage releases of scopes inspired by something like Story Map</li>
+			<li>etc</li>
+		</ul>
 		<h2 class="mt-8 mb-4">Data</h2>
-		All data is being stored in your own browser, using localStorage.
-		<h2 class="mt-8 mb-4">Technology</h2>
+		Currently, all data is being stored in your own browser, using localStorage.
+		<h2 class="mt-8 mb-4">Context and learning</h2>
 		<p>To develop this product I'm using Svelte + SvelteKit.</p>
 		<p>
 			I made this first version while relearning how to develop software and at the same time
-			learning how to develop using Svelte, after many years without developing.
+			learning Svelte and SvelteKit, after many years without developing.
 		</p>
-		<p>In recent year I worked as:</p>
+		<p>There were mixed days of excitement, frustration, study, and trial and error.</p>
+		<p>In recent years I worked as:</p>
 		<ul>
 			<li>Product Manager</li>
 			<li>HR Manager</li>

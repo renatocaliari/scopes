@@ -7,10 +7,6 @@
 	import { goto } from '$app/navigation';
 </script>
 
-<svelte:head>
-	<title>Scope Funnel | {import.meta.env.VITE_APP_TITLE}</title>
-</svelte:head>
-
 This template uses and has:
 <ul>
 	<li>DaisyUI & TailwindCSS</li>

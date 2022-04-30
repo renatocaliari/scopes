@@ -4,6 +4,10 @@
 	export let currentStep = 0;
 </script>
 
+<svelte:head>
+	<title>{$stepsStore[currentStep].h1} | Scopefully</title>
+</svelte:head>
+
 <h1>{$stepsStore[currentStep].h1}</h1>
 
 <div class="btn-group justify-center my-4">
@@ -19,9 +23,9 @@
 	{/each}
 </div>
 
+<slot {currentStep} />
+<slot {currentStep} name="checkList" />
+
 {#if $stepsStore[currentStep].h2}
 	<h2>{$stepsStore[currentStep].h2}</h2>
 {/if}
-
-<slot {currentStep} />
-<slot {currentStep} name="checkList" />
