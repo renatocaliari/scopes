@@ -1,15 +1,16 @@
-<script>
+<script context="module">
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import Items from '$lib/components/Scopes/Items.svelte';
 	import { projectStore } from '$lib/stores/projectStore';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
 	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
-	import { localStorageStore } from 'fractils';
 
 	function addItem(scope, value, indispensable) {
 		projectStore.scopeAddItem(scope, value, indispensable);
 	}
+</script>
 
+<script>
 	let importText;
 	let scopeBucket;
 	let checkList;
@@ -17,7 +18,6 @@
 	$: {
 		$projectStore, console.log('$projectStore:', $projectStore);
 		scopeBucket = $projectStore.find((scope) => scope.id === 'bucket');
-		console.log('atualizou a store no dump');
 		checkList = [
 			{
 				name: 'dump',
@@ -103,7 +103,7 @@
 			<Scope bind:scope={scopeBucket} width="w-80">
 				<div slot="header">
 					<label for="modal-clear-bucket" class="btn btn-warning modal-button">Clear</label>
-					<label for="modal-import" class="btn btn-primary modal-button">Import</label>
+					<label for="modal-import" class="btn btn-primary modal-button">Bulk Insert</label>
 				</div>
 				<div slot="body">
 					<div>Brain drump:</div>
@@ -180,8 +180,8 @@
 <input type="checkbox" id="modal-import" class="modal-toggle" />
 <div class="modal modal-bottom sm:modal-middle">
 	<div class="modal-box">
-		<h3 class="font-bold text-lg">Import list of items into Bucket</h3>
-		<div style="white-space: pre-wrap;" class="w-96 overflow-auto">
+		<h3 class="font-bold text-lg">Bulk insert of items into Bucket</h3>
+		<div style="white-space: pre-wrap;" class="w-full overflow-auto">
 			<textarea
 				placeholder="type here your items, one per line."
 				class="w-full textarea textarea-bordered

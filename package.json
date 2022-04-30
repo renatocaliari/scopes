@@ -24,7 +24,6 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-svelte3": "^3.2.1",
-    "fractils": "^1.0.16",
     "postcss": "^8.4.12",
     "prettier": "^2.5.1",
     "prettier-plugin-svelte": "^2.5.0",
@@ -48,6 +47,7 @@
     "dotenv": "^16.0.0",
     "svelte-actions": "^0.2.2",
     "svelte-awesome": "^2.4.6",
+    "svelte-local-storage-store": "^0.2.6",
     "uuid": "^8.3.2"
   }
 }

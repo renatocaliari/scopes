@@ -13,7 +13,7 @@ export async function externalFetch(request) {
 export const handle = async ({ event, resolve }) => {
 
   let response = await resolve(event, {
-    ssr: true,
+    ssr: false,
   });
   return response;
 };

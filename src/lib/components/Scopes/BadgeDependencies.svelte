@@ -13,12 +13,12 @@
 		scopes = $project;
 	}
 
-	console.log('BADGE scopes:', scopes);
+	// console.log('BADGE scopes:', scopes);
 	let unlockDependencies = project
 		.scopeUnlocksDependencies(scope, scopes)
 		.filter((item) => item != null);
 
-	console.log('scope.dependsOn:', scope.dependsOn);
+	// console.log('scope.dependsOn:', scope.dependsOn);
 	let dependsOn = scopes.filter(
 		(s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
 	);

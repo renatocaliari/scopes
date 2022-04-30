@@ -1,52 +1,54 @@
 
-import { get, writable } from "svelte/store"
+import { get } from "svelte/store"
 import ScopeItem from "$lib/classes/ScopeItem";
 import { dev } from '$app/env';
+import { writable } from 'svelte-local-storage-store'
 
 //do
 // import { persistentWritable } from "$lib/stores/persistentStore";
 import { v4 as uuidv4 } from 'uuid';
 
-import { localStorageStore } from 'fractils'
+// import { localStorageStore } from 'fractils'
+import { convertToNumberingScheme } from "$lib/utils/general";
 
 // based on:
 // a. without store: https://svelte.dev/repl/243498124f354af59070ae52da38d82f?version=3.44.2
 // b. with store: https://svelte.dev/repl/164f13f5d99b46e7a8f4cb9627db2aee?version=3.44.1
 
 // let store = localStorageStore("scopes", []);
-let store = writable([]);
+// let store = writable([]);
+
+let store = writable("scopes", []);
 
 export let projectStore = ProjectStore();
-// export let sortedGroupedScopes = localStorageStore('scopesSorted', []);
-// export let sortedGroupedAndForkedScopes = localStorageStore('groupedAndForkedScopes', []);
-// export let sortedScopesDocumentation = localStorageStore('scopesSortedDocumentation', []);
-export let sortedGroupedScopes = writable([]);
-export let sortedGroupedAndForkedScopes = writable([]);
-export let sortedScopesDocumentation = writable([]);
-
-projectStore.sortScopesByPriority();
-
-
+// console.log('store:', JSON.stringify(get(store)));
+export let sortedGroupedScopes = writable('scopesSorted', []);
+export let sortedGroupedAndForkedScopes = writable('groupedAndForkedScopes', []);
+export let sortedScopesDocumentation = writable('scopesSortedDocumentation', []);
+// export let sortedGroupedScopes = writable([]);
+// export let sortedGroupedAndForkedScopes = writable([]);
+// export let sortedScopesDocumentation = writable([]);
 
 export function ProjectStore() {
     // let store = persistentWritable("scopes", []);
     // let store = localStorageStore("scopes", []);
+    // console.log('store:', JSON.stringify(get(store)));
 
     const { set, subscribe, update } = store;
 
     function reset() {
-        console.log('reseting...');
+        // console.log('reseting...');
         set([]);
         createInitialData(true, 9, false);
     }
 
     if (get(store).length === 0) {
-        console.log('creating initial data')
+        // console.log('creating initial data')
         createInitialData(true, 9, true);
     }
 
-    function createInitialData(hasBucket, totalScopes, sampleData, idxSample = 3) {
-        console.log('store empty')
+    function createInitialData(hasBucket, totalScopes, sampleData, idxSample = 1) {
+        // console.log('store empty')
         if (hasBucket) {
             addBucketScope('Bucket');
         }
@@ -71,7 +73,7 @@ export function ProjectStore() {
                         case 3:
                             name = 'scope-3'
                             dependsOn = ['scope-2', 'scope-7'];
-                            risky = true;
+                            // risky = true;
                             break;
                         case 4:
                             name = 'scope-4'
@@ -90,7 +92,7 @@ export function ProjectStore() {
                             // indispensable = true;
                             break;
                         case 7:
-                            name = 'scope-7'
+                            // name = 'scope-7'
                             // indispensable = true;
                             break;
                         case 8:
@@ -371,36 +373,28 @@ export function ProjectStore() {
     function sortScopesinGroupForkingByRisky(groupsScopes) {
         let indexLastRisky = 0;
 
+        // console.log('groupsScopes:', groupsScopes);
         let copyGroupsScopes = JSON.parse(JSON.stringify(groupsScopes));
         let itemsRemainingOfRiskyGroups = [];
         let idxGroupRisky = 0;
         copyGroupsScopes.map((group, idx) => {
             indexLastRisky = lastIndexOf(group.items, 'risky', true);
             group.risky = indexLastRisky > -1;
-            if (!group.risky) {
-                idxGroupRisky = idx;
+            if (indexLastRisky > -1) {
+                generateForkingScopesBasedOnRiskyScopes(group.items, indexLastRisky, itemsRemainingOfRiskyGroups);
             }
-            console.log('group:', idxGroupRisky);
-            console.log('group obj:', group);
-            let forkedScopes = generateForkingScopesBasedOnRiskyScopes(group.items, indexLastRisky, itemsRemainingOfRiskyGroups);
             group.items = group.items.filter((s) => !s.remove);
-
-            console.log('group.items:', group.items);
-            // let scopesBeforeLastRisky = group.items.slice(0, indexLastRisky + 1);
-            // let scopesAfterLastRisky = group.items.slice(indexLastRisky + 1);
-            // scopesAfterLastRisky = scopesAfterLastRisky.concat(forkedScopes);
-            // scopesAfterLastRisky = mergeSort(mergeScopesRisky, scopesAfterLastRisky);
-            // group.items = scopesBeforeLastRisky.concat(scopesAfterLastRisky);
         })
 
-        console.log('idxGroupRisky:', idxGroupRisky);
-        let groupOfItemsRemainingOfRiskyGroups = { id: -1, risky: false, items: itemsRemainingOfRiskyGroups };
-        copyGroupsScopes.splice(lastIndexOf(copyGroupsScopes, 'risky', true) + 1, 0, groupOfItemsRemainingOfRiskyGroups);
+        if (itemsRemainingOfRiskyGroups.length) {
+            let groupOfItemsRemainingOfRiskyGroups = { id: -1, risky: false, items: itemsRemainingOfRiskyGroups };
+            copyGroupsScopes.splice(lastIndexOf(copyGroupsScopes, 'risky', true) + 1, 0, groupOfItemsRemainingOfRiskyGroups);
+        }
+        // console.log('copyGroupsScopes:', JSON.parse(JSON.stringify(copyGroupsScopes)));
         return copyGroupsScopes;
     }
 
     function sortScopesByPriority() {
-        console.log('chamou...');
         // it needed to copy elements from store instead of assign directly
         // based on this idea: https://svelte.dev/repl/44f170d0cd43440ca8dd8e2bff341bda?version=3.17.1
         // another idea with slice: https://github.com/sveltejs/svelte/issues/6071
@@ -410,23 +404,20 @@ export function ProjectStore() {
         let groupedScopes = groupScopes(copyFilteredStore);
         let groupedSortedScopes = mergeSort(mergeGroupScopes, groupedScopes);
 
-        console.log('groupedSortedScopes:', groupedSortedScopes);
-
         let sortedScopesinGroupForkingByRisky = sortScopesinGroupForkingByRisky(groupedSortedScopes);
+        // console.log('sortedScopesinGroupForkingByRisky:', JSON.parse(JSON.stringify(sortedScopesinGroupForkingByRisky)));
+
         let remainingItemsGroup = sortedScopesinGroupForkingByRisky.find((g) => g.id === -1);
         let splittedGroupRemainingItems = splitGroupRemainingItems(remainingItemsGroup.items);
 
         sortedScopesinGroupForkingByRisky = sortedScopesinGroupForkingByRisky.filter((g) => g.id !== -1).concat(splittedGroupRemainingItems);
         sortedScopesinGroupForkingByRisky = generateIdForGroups(sortedScopesinGroupForkingByRisky);
 
+        // console.log('groupedSortedScopes:', groupedSortedScopes);
+        // console.log('sortedScopesinGroupForkingByRisky:', sortedScopesinGroupForkingByRisky);
         sortedGroupedScopes.set(groupedSortedScopes);
         sortedGroupedAndForkedScopes.set(sortedScopesinGroupForkingByRisky);
         sortedScopesDocumentation.set(mergeSort(mergeScopes, copyFilteredStore));
-
-        console.log('>>>> sortedGroupedAndForkedScopes:', get(sortedGroupedAndForkedScopes));
-        // console.log('splittedGroupRemainingItems:', splittedGroupRemainingItems);
-
-        // console.log('>>>> sortedScopesDocumentation:', get(sortedScopesDocumentation));
 
         return {
             sortedGroupedScopes: get(sortedGroupedScopes),
@@ -441,40 +432,50 @@ export function ProjectStore() {
         let forkedScopes = [];
         let scopesGroupedInRisky = []
 
+        // console.log('generateForkingScopesBasedOnRiskyScopes scopes:', scopes);
         scopes.map((scope, index) => {
             scope.order = index;
             // console.log('scopes[indexLastRisky]):', scopes[indexLastRisky]);
             // console.log('scope:', scope);
-
+            // console.log('indexLastRisky:', indexLastRisky);
             if (index <= indexLastRisky) {
                 scopesGroupedInRisky.push(scope);
                 let previousId = scope.id;
+                // console.log('forkedScopes scope:', scope);
+                // console.log('forkedScopes pre:', forkedScopes);
                 if (!scope.risky) {
                     let forkedScope = JSON.parse(JSON.stringify(scope));
                     forkedScope.id = previousId;
                     forkedScopes = [...forkedScopes, forkedScope];
+                    // console.log('forkedScopes post 1:', JSON.parse(JSON.stringify(forkedScopes)));
                     scope.forkedScopeId = scope.id;
 
                     let scopeRandomId = uuidv4();
                     scope.id = scope.id + '-' + scopeRandomId;
                 }
                 scope.freezeOrder = true;
-            } else if (scopesGroupedInRisky.some((s) => scope.dependsOn.includes(s.id))) {
+                // } else if (scopesGroupedInRisky.some((s) => scope.dependsOn.includes(s.id))) {
+                //     itemsRemainingOfRiskyGroups.push(scope);
+                //     scope.remove = true;
+                //     // scope.freezeOrder = true;
+            } else {
                 itemsRemainingOfRiskyGroups.push(scope);
                 scope.remove = true;
-                // scope.freezeOrder = true;
-            } else {
                 scope.freezeOrder = false;
             }
             return scope;
         });
 
+
         forkedScopes.map((s) => {
             itemsRemainingOfRiskyGroups.push(s);
             s.remove = true
+            s.freezeOrder = false;
         });
 
-        console.log('forkedScopes:', forkedScopes);
+        // console.log('forkedScopes post 2:', JSON.parse(JSON.stringify(forkedScopes)));
+        // console.log('forkedScopes scopes:', JSON.parse(JSON.stringify(scopes)));
+
         updateDependenciesOfScopesGeneratedByFork(scopes);
 
         return forkedScopes;
@@ -503,19 +504,16 @@ export function ProjectStore() {
 
 
     function splitGroupRemainingItems(group) {
-        console.log('groupScopes(group):', groupScopes(group));
         return groupScopes(group);
     }
 
 
     function generateIdForGroups(groups) {
-        console.log('id groups:', groups);
         let newArrGroups = JSON.parse(JSON.stringify(groups));
         newArrGroups.forEach((g, idx) => {
             // let groupRandomId = uuidv4();
-            g.id = idx + 1;
+            g.id = convertToNumberingScheme(idx + 1);
         });
-        console.log('newArrGroups:', newArrGroups);
         return newArrGroups;
     }
 
@@ -559,8 +557,6 @@ export function ProjectStore() {
             }
         }
 
-        console.log('......groupsScopes:', JSON.parse(JSON.stringify(groupsScopes)));
-
         var idx = 0;
         var result = groupsScopes.map(function (group) {
             let dependencyPackage = false;
@@ -589,8 +585,6 @@ export function ProjectStore() {
             return { risky: risky, dependencyPackage: dependencyPackage, items: mergeSort(mergeScopesRisky, scopes) };
         });
 
-        console.log('......groupsScopes:', JSON.parse(JSON.stringify(groupsScopes)));
-
         return result;
     }
 
@@ -616,7 +610,6 @@ export function ProjectStore() {
                 // console.log('} else if (!left[0].risky && right[0].risky) {');
             } else {
                 sortedArr.push(right.shift());
-                console.log('else');
             }
             // console.log('...:', JSON.parse(JSON.stringify(sortedArr)));
 
@@ -662,7 +655,6 @@ export function ProjectStore() {
                 //     sortedArr.push(left.shift());
             } else {
                 sortedArr.push(right.shift());
-                console.log('else');
             }
             // console.log('...:', JSON.parse(JSON.stringify(sortedArr)));
 
@@ -709,7 +701,6 @@ export function ProjectStore() {
                 //     sortedArr.push(left.shift());
             } else {
                 sortedArr.push(right.shift());
-                console.log('else');
             }
             // console.log('...:', JSON.parse(JSON.stringify(sortedArr)));
 

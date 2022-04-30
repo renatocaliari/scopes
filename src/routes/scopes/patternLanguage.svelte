@@ -8,9 +8,16 @@
 
 	projectStore.sortScopesByPriority();
 
-	let maxDependents = $projectStore.reduce((prev, curr) => {
-		return Math.max(prev, curr.dependsOn?.length);
-	}, 0);
+	$: {
+		$sortedScopesDocumentation,
+			$sortedScopesDocumentation.map((s) => {
+				let scopeOriginal = $projectStore.find((s2) => s2.id === s.id);
+				console.log('scopeOriginal:', scopeOriginal);
+				scopeOriginal.title = s.title;
+				scopeOriginal.description = s.description;
+			});
+		$projectStore = $projectStore;
+	}
 </script>
 
 <NavigationScopes currentStep={4} let:currentStep>

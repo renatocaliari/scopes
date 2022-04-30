@@ -9,7 +9,10 @@
 	import Items from '$lib/components/Scopes/Items.svelte';
 	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
 	import { flip } from 'svelte/animate';
-	import { dndzone } from 'svelte-dnd-action';
+	import { dndzone, SHADOW_ITEM_MARKER_PROPERTY_NAME } from 'svelte-dnd-action';
+	import { fade } from 'svelte/transition';
+	// notice - fade in works fine but don't add svelte's fade-out (known issue)
+	import { cubicIn } from 'svelte/easing';
 	import { deepEqual } from '$lib/utils/comparison';
 	import Icon from 'svelte-awesome';
 	import { each } from 'svelte/internal';
@@ -19,8 +22,7 @@
 </script>
 
 <script>
-	let exportText;
-	exportText = scopesToText($sortedGroupedAndForkedScopes);
+	projectStore.sortScopesByPriority();
 
 	let orderMetaGroups = [
 		{
@@ -35,6 +37,8 @@
 		}
 	];
 
+	let exportText;
+
 	const flipDurationMs = 300;
 
 	let successfullyCopied = undefined;
@@ -46,56 +50,76 @@
 		successfullyCopied = false;
 	};
 
-	function scopesToText(groups) {
+	function scopesToText(metaGroup) {
 		let text = '';
-		// console.log('groups: ', groups);
-		groups.forEach((group, idxGroup) => {
-			// console.log('group: ', group);
-			text = text.concat('\n- Sequence ' + group.id);
-			group.items.forEach((scope, idx) => {
-				console.log('scope: ', scope);
-				console.log('idx + 1:', idx + 1, 'group.items:', group.items);
-				text = text.concat('\n\t- Step ' + (idx + 1) + ': Scope [' + scope.name + ']');
-				text = text.concat(
-					scope.forkedScopeId
-						? '\n\t\t- WARNING: Do only the essential at this step to do the next scope [' +
-								group.items[idx + 1].name +
-								']'
-						: ''
-				);
-				text = text.concat(
-					scope.risky ? '\n\t\t- WARNING: This scope is RISKY because has UNKNOWNS' : ''
-				);
-				// if (scope.dependsOn?.length > 0) {
-				// 	text = text.concat('\n\t\t- Depends on:');
-				// 	scope.dependsOn.forEach((dependsOnId) => {
-				// 		let sDepend = group.items.find((s) => s.id === dependsOnId);
-				// 		text = text.concat('\n\t\t\t- ' + sDepend.name);
-				// 	});
-				// }
-				// let unlocksScopes = group.items.filter((s) => s.dependsOn?.includes(scope.id));
-				// if (unlocksScopes.length > 0) {
-				// 	text = text.concat('\n\t\t- Unlock scopes:');
-				// 	unlocksScopes.forEach((s) => {
-				// 		text = text.concat('\n\t\t\t- ' + s.name);
-				// 	});
-				// }
-				let indispensableItems = scope.items?.filter((item) => item.indispensable);
-				let niceToHave = scope.items?.filter((item) => !item.indispensable);
-				if (indispensableItems?.length > 0) {
-					text = text.concat('\n\t\t- Indispensable items:');
-					indispensableItems.forEach((item) => {
-						text = text.concat('\n\t\t\t- ' + item.name);
-					});
-				}
-				if (niceToHave?.length > 0) {
-					text = text.concat('\n\t\t- Nice to have items:');
-					niceToHave.forEach((item) => {
-						text = text.concat('\n\t\t\t- ' + item.name);
-					});
-				}
+
+		metaGroup.forEach((metaGroup) => {
+			text = text.concat('\n============================');
+			text = text.concat('\n' + metaGroup.title);
+			text = text.concat('\n============================');
+			// console.log('groups: ', groups);
+			metaGroup.items.forEach((group, idxGroup) => {
+				// console.log('group: ', group);
+				text = text.concat('\n- Sequence ' + group.id);
+				group.items.forEach((scope, idx) => {
+					// console.log('scope: ', scope);
+					// console.log('idx + 1:', idx + 1, 'group.items:', group.items);
+					text = text.concat('\n\t- Step ' + (idx + 1) + ': Scope [' + scope.name + ']');
+					text = text.concat(
+						scope.forkedScopeId
+							? '\n\t\t- WARNING: Do only the essential at this step to do the next scope [' +
+									group.items[idx + 1].name +
+									']'
+							: ''
+					);
+					text = text.concat(
+						scope.risky ? '\n\t\t- WARNING: This scope is RISKY because it has UNKNOWNS' : ''
+					);
+
+					let unlockDependencies = projectStore
+						.scopeUnlocksDependencies(scope, group.items)
+						.filter((item) => item != null);
+
+					let scopes = $sortedGroupedAndForkedScopes.reduce((acc, group, idx, arr) => {
+						acc.push(group.items);
+						return acc.flat(2);
+					}, []);
+					let dependsOn = scopes.filter(
+						(s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
+					);
+
+					if (dependsOn?.length > 0) {
+						text = text.concat('\n\t\t- Depends on:');
+						dependsOn.forEach((s) => {
+							text = text.concat('\n\t\t\t- ' + s.name);
+						});
+					}
+					// let unlocksScopes = group.items.filter((s) => s.dependsOn?.includes(scope.id));
+					if (unlockDependencies.length > 0) {
+						text = text.concat('\n\t\t- Unlock scopes:');
+						unlockDependencies.forEach((s) => {
+							text = text.concat('\n\t\t\t- ' + s.name);
+						});
+					}
+
+					let indispensableItems = scope.items?.filter((item) => item.indispensable);
+					let niceToHave = scope.items?.filter((item) => !item.indispensable);
+					if (indispensableItems?.length > 0) {
+						text = text.concat('\n\t\t- Indispensable items:');
+						indispensableItems.forEach((item) => {
+							text = text.concat('\n\t\t\t- ' + item.name);
+						});
+					}
+					if (niceToHave?.length > 0) {
+						text = text.concat('\n\t\t- Nice to have items:');
+						niceToHave.forEach((item) => {
+							text = text.concat('\n\t\t\t- ' + item.name);
+						});
+					}
+				});
 			});
 		});
+
 		return text;
 	}
 
@@ -140,12 +164,14 @@
 		linkPreviousStep="/scopes/unknowns"
 	>
 		<div slot="buttons">
-			{#if exportText && exportText.trim().length > 0}
-				<label for="modal-export" class="btn btn-warning modal-button">Export To Text</label>
-			{/if}
-			{#if showUpdate}
+			<label
+				for="modal-export"
+				class="btn btn-warning modal-button"
+				on:click={() => (exportText = scopesToText(orderMetaGroups))}>Export To Text</label
+			>
+			<!-- {#if showUpdate}
 				<label for="modal-update" class="btn btn-warning modal-update">Update</label>
-			{/if}
+			{/if} -->
 		</div>
 	</NavigationCheckList>
 </NavigationScopes>
@@ -177,7 +203,7 @@
 					</svg>
 				</div>
 				<div class="align-middle content-center justify-items-center min-w-fit">
-					<h3 class="mt-2 ">Sequence {convertToNumberingScheme(group.id)}</h3>
+					<h3 class="mt-2 ">Sequence {group.id}</h3>
 				</div>
 				{#each group.items as scope, idx (scope.id)}
 					<!-- {@const calculatedColor = calculateColor(scope, maxDependents)} -->
@@ -244,12 +270,15 @@
 							</Scope>
 						</div>
 					</div>
-					{#if idx + 1 < group.length}
+					<!-- {#if idx + 1 < group.length}
 						<div class="flex justify-center">
 							<SvgArrow />
 						</div>
-					{/if}
+					{/if} -->
 				{/each}
+				{#if group[SHADOW_ITEM_MARKER_PROPERTY_NAME]}
+					<div in:fade={{ duration: 200, easing: cubicIn }} class="custom-shadow-item" />
+				{/if}
 			</div>
 		{/each}
 	</section>
@@ -330,6 +359,18 @@
 <style>
 	:global(*) {
 		box-sizing: border-box;
+		margin: 0;
+	}
+	.custom-shadow-item {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		visibility: visible;
+		border: 1px dashed grey;
+		background: lightblue;
+		opacity: 0.5;
 		margin: 0;
 	}
 </style>
