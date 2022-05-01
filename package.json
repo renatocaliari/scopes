@@ -45,6 +45,7 @@
     "@types/uuid": "^8.3.4",
     "daisyui": "^2.13.0",
     "dotenv": "^16.0.0",
+    "mixpanel-browser": "^2.45.0",
     "svelte-actions": "^0.2.2",
     "svelte-awesome": "^2.4.6",
     "svelte-local-storage-store": "^0.2.6",

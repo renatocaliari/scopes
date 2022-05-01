@@ -19,7 +19,7 @@
 	$: {
 		$projectStore, (scopeBucket = $projectStore.find((scope) => scope.id === 'bucket'));
 		checkList = {
-			title: 'Tasks',
+			title: 'Tasks to proceed',
 			items: [
 				{
 					name: 'dump',

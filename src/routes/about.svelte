@@ -3,7 +3,7 @@
 
 <div class="flex flex-col justify-center items-center">
 	<h1>About</h1>
-	<div class="text-2xl md:w-2/3 p-4">
+	<div class="text-2xl sm:w-4/5  p-4">
 		<span>
 			Hi! I'm Cali (Renato Caliari) from Brazil.
 			<span
@@ -53,8 +53,18 @@
 			<li>manage releases of scopes inspired by something like Story Map</li>
 			<li>etc</li>
 		</ul>
-		<h2 class="mt-8 mb-4">Data</h2>
-		Currently, all data is being stored in your own browser, using localStorage.
+		<h2 class="mt-8 mb-4">Data & Analytics</h2>
+		<p>Currently, all data is being stored in your own browser, using localStorage.</p>
+		<p>
+			I installed Mixpanel only to know about pages visited and actions executed, without any
+			personal information. I don't track any other data.
+		</p>
+		<p>
+			You can set your browser to <a
+				href="https://support.google.com/chrome/answer/2790761?hl=en&co=GENIE.Platform%3DDesktop"
+				>"Do Not Track"</a
+			> anything.
+		</p>
 		<h2 class="mt-8 mb-4">Context and learning</h2>
 		<p>To develop this product I'm using Svelte + SvelteKit.</p>
 		<p>

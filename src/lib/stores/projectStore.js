@@ -3,6 +3,7 @@ import { get } from "svelte/store"
 import ScopeItem from "$lib/classes/ScopeItem";
 import { dev } from '$app/env';
 import { writable } from 'svelte-local-storage-store'
+import mixpanel from 'mixpanel-browser';
 
 //do
 // import { persistentWritable } from "$lib/stores/persistentStore";
@@ -281,6 +282,8 @@ export function ProjectStore() {
             }
             return s;
         }));
+        mixpanel.track('scope:dependencies:update');
+
         store = store;
         // }
     }
@@ -292,6 +295,7 @@ export function ProjectStore() {
             }
             return s;
         }));
+        mixpanel.track('scopes:risky:update');
         store = store;
     }
 
@@ -302,8 +306,8 @@ export function ProjectStore() {
             }
             return s;
         }));
+        mixpanel.track('scope:indispensable:update');
         store = store;
-
     }
 
     function scopeRemoveItem(scope, item) {
@@ -311,7 +315,7 @@ export function ProjectStore() {
             scopes.find((s) => s.id === scope.id)
                 .items.filter((i) => i.id !== item.id));
         store = store;
-
+        mixpanel.track('scope:item:remove');
     }
 
     function itemUpdateIndispensable(scope, item, indispensable) {
@@ -325,6 +329,7 @@ export function ProjectStore() {
             }
             return s;
         }));
+        mixpanel.track('scope:item:indispensable:update');
         store = store;
 
     }
@@ -336,6 +341,8 @@ export function ProjectStore() {
             }
             return s;
         }));
+        mixpanel.track('scope:item:add');
+
         store = store;
 
     }

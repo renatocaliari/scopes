@@ -7,11 +7,18 @@
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import { notificationData } from '$lib/stores/notificationStore';
+	import { dev } from '$app/env';
+
+	import mixpanel from 'mixpanel-browser';
+
+	// Enabling the debug mode flag is useful during implementation,
+	// but it's recommended you remove it for production
+	mixpanel.init('17ecea84c6ac6d69cd43193b7d046e9b', { debug: dev });
 </script>
 
 <LoadingPageProgressBar />
 <div
-	class="sm:flex sm:flex-col w-full content-center items-center justify-center	"
+	class="sm:flex sm:flex-col md:flex md:flex-col w-full content-center items-center justify-center	"
 	data-theme="cmyk"
 >
 	<div class="flex flex-col lg:w-4/5 " data-theme="cmyk">
