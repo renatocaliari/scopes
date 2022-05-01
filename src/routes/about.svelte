@@ -22,7 +22,14 @@
 				>
 			</li>
 			<li>
-				follow me on Twitter: <a href="https://twitter.com/renatocaliari/">@renatocaliari</a>
+				follow me or send me a DM on Twitter: <a href="https://twitter.com/renatocaliari/"
+					>@renatocaliari</a
+				>
+			</li>
+			<li>
+				comment on the announcement thread about the Scopefully on Twitter: <a
+					href="https://twitter.com/renatocaliari/">@renatocaliari</a
+				>
 			</li>
 			<li>
 				connecto on LinkedIn: <a href="https://linkedin.com/in/renatocaliari/"
