@@ -52,7 +52,7 @@
 				},
 				{
 					name: 'indispensable',
-					text: 'Uncheck nice-to-have items. The ones checked will be considered indispensable to execute',
+					text: 'Uncheck nice-to-have items. The items checked will be considered indispensable',
 					optional: true,
 					checked:
 						$projectStore.filter((scope) => scope.id !== 'bucket' && scope.items?.length > 0)
