@@ -10,7 +10,10 @@
 </script>
 
 <LoadingPageProgressBar />
-<div class="flex flex-col w-full content-center items-center justify-center	" data-theme="cmyk">
+<div
+	class="sm:flex sm:flex-col w-full content-center items-center justify-center	"
+	data-theme="cmyk"
+>
 	<div class="flex flex-col lg:w-4/5 " data-theme="cmyk">
 		<div>
 			<Header />
