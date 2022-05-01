@@ -7,9 +7,12 @@
 		<span>
 			Hi! I'm Cali (Renato Caliari) from Brazil.
 			<span
-				>I created <span class="font-bold">Scopefully</span> with the intention of making our projects
+				>I created <span class="font-bold">Scopefully*</span> with the intention of making our projects
 				planning and execution more intentional.
 			</span>
+			<p>
+				<span class="font-bold">*</span>You can suggest better names as the product evolves. :)
+			</p>
 		</span>
 		<p>You can:</p>
 		<ul>
@@ -32,9 +35,6 @@
 				>
 			</li>
 		</ul>
-		<p>
-			<span class="font-bold">*</span>You can suggest better names as the product evolves. :)
-		</p>
 
 		<h2 class="mt-4 mb-4">Inspiration and credit</h2>
 		This product was inspired by
