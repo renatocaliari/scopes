@@ -4,7 +4,6 @@
 	import Icon from 'svelte-awesome';
 	// import { faCircleCheck as check } from '@fortawesome/free-solid-svg-icons';
 	// import { faCircleCheck as uncheck } from '@fortawesome/free-regular-svg-icons';
-	import { projectStore } from '$lib/stores/projectStore';
 	import { stepsStore } from '$lib/stores/stepsStore';
 
 	export let linkPreviousStep = undefined;
