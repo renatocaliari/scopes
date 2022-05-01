@@ -1,7 +1,13 @@
 <script>
 	import { stepsStore } from '$lib/stores/stepsStore';
+	import { onMount } from 'svelte';
 
 	export let currentStep = 0;
+
+	let lastLinkBreadcrumb;
+	onMount(async () => {
+		lastLinkBreadcrumb.scrollIntoView();
+	});
 </script>
 
 <svelte:head>
@@ -10,7 +16,28 @@
 
 <h1>{$stepsStore[currentStep].h1}</h1>
 
-<div class="btn-group justify-center my-4">
+<div class="text-sm flex sm:hidden breadcrumbs">
+	{#each $stepsStore as btn, idx}
+		{#if currentStep > 1 && idx === currentStep - 1}
+			&#60;<a class="ml-2" href={btn.link}>{btn.linkText}</a>
+		{/if}
+	{/each}
+</div>
+<div class="text-sm hidden sm:flex breadcrumbs">
+	<ul>
+		{#each $stepsStore as btn, idx}
+			{#if idx <= currentStep}
+				{#if idx === currentStep}
+					<li bind:this={lastLinkBreadcrumb}><a href={btn.link}>{btn.linkText}</a></li>
+				{:else}
+					<li><a href={btn.link}>{btn.linkText}</a></li>
+				{/if}
+			{/if}
+		{/each}
+	</ul>
+</div>
+
+<div class="hidden lg:flex btn-group justify-center my-4">
 	{#each $stepsStore as btn, idx}
 		<a
 			class="btn"

@@ -1,5 +1,6 @@
 <script>
 	import ItemDragDrop from '$lib/components/Scopes/ItemDragDrop.svelte';
+	import { projectStore } from '$lib/stores/projectStore';
 	import { fly } from 'svelte/transition';
 
 	import { v4 as uuidv4 } from 'uuid';
@@ -13,24 +14,30 @@
 		scopes = $project;
 	}
 
-	// console.log('BADGE scopes:', scopes);
-	let unlockDependencies = project
-		.scopeUnlocksDependencies(scope, scopes)
-		.filter((item) => item != null);
+	let unlockDependencies;
+	let dependsOn;
 
-	// console.log('scope.dependsOn:', scope.dependsOn);
-	let dependsOn = scopes.filter(
-		(s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
-	);
+	$: {
+		$projectStore,
+			// console.log('BADGE scopes:', scopes);
+			(unlockDependencies = project
+				.scopeUnlocksDependencies(scope, scopes)
+				.filter((item) => item != null));
+
+		// console.log('scope.dependsOn:', scope.dependsOn);
+		dependsOn = scopes.filter(
+			(s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
+		);
+	}
 </script>
 
-<div class="inline-flex  flex-wrap: nowrap;">
+<div class="inline-flex flex-wrap: nowrap;">
 	<label for="scope-unlocks-{scope.id}-{randomId}" class="link link-hover">
 		<div
 			data-tip="This scope unlocks {project
 				.scopeUnlocksDependencies(scope, scopes)
 				.filter((item) => item != null).length} scope(s)"
-			class="tooltip badge badge-success mr-2"
+			class="tooltip badge bg-green-500 border-green-500 text-white mr-2"
 		>
 			{#key unlockDependencies.length}
 				<span class="display: inline-block" in:fly={{ y: -20 }}>
@@ -43,7 +50,7 @@
 	<label for="scope-depends-{scope.id}-{randomId}" class="link link-hover">
 		<div
 			data-tip="{dependsOn.length} scope(s) depend(s) on [{scope.name || scope.placeholder}]"
-			class="tooltip badge badge-error"
+			class="tooltip badge bg-red-500 border-red-500 text-white"
 		>
 			{#key dependsOn.length}
 				<span class="display: inline-block" in:fly={{ y: -20 }}> {dependsOn.length} </span>

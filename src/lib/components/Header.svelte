@@ -2,14 +2,13 @@
 	import { page, session } from '$app/stores';
 </script>
 
-<div class="navbar bg-base-100">
+<div class="navbar navbar-center bg-base-100">
 	<div class="flex-1">
-		<a class="btn btn-ghost normal-case text-xl" sveltekit:prefetch href="/">Home</a>
+		<a class="btn btn-ghost normal-case text-xl" href="/">Home</a>
 	</div>
 	<div class="flex-none" />
 	<ul class="menu menu-horizontal p-0">
-		<li><a href="/scopes/dump">Scopes</a></li>
-		<li><a href="/about">About</a></li>
+		<li><a class="btn btn-outline" href="/about" sveltekit:prefetch>About</a></li>
 		<!-- <li><a href="/test/alopage1">Alo Page 1 (fetch manually)</a></li>
 			<li><a sveltekit:prefetch href="/test/alopage2">Alo Page 2 (load auto)</a></li>
 			<li><a href="/test/aloendpoint">Alo endpoint</a></li>

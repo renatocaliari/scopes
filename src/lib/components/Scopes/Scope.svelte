@@ -22,6 +22,20 @@
 				!scope.name || scope.name.trim().length === 0 ? 'Scope ' + scope.id.split('-')[1] : '';
 		}
 	}
+
+	function handlePaste(e) {
+		var clipboardData, pastedData;
+
+		// Stop data actually bein	g pasted into div
+		e.stopPropagation();
+		e.preventDefault();
+
+		// Get pasted data via clipboard API
+		clipboardData = e.clipboardData || window.clipboardData;
+		pastedData = clipboardData.getData('Text');
+
+		e.target.textContent = pastedData;
+	}
 </script>
 
 <div
@@ -34,9 +48,10 @@
 			<div class="flex flex-col w-full">
 				<div class="inline-flex w-full">
 					{#if editTitle}
-						<div class="w-full flex flex-nowrap whitespace-nowrap">
+						<div class="w-full flex flex-wrap break-all">
 							<svelte:element
 								this="h3"
+								on:paste|preventDefault|stopPropagation={handlePaste}
 								contenteditable
 								on:keypress={(e) => {
 									if (e.code === 'Enter') {
@@ -54,9 +69,9 @@
 							</div>
 						{/if}
 					{:else}
-						<div class="card-title w-full min-h-8">
+						<div class="card-title w-full min-h-8 flex flex-wrap break-all">
 							<label for="modal-{scope.id}" class="mr-2 link link-hover prose"
-								><h3 class="inline-flex align-middle content-center items-center">
+								><h3 class="align-middle content-center items-center">
 									{#if icon}
 										<Icon data={icon} class=" mr-2" />
 									{/if}

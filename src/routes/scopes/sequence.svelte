@@ -38,8 +38,19 @@
 	];
 
 	let exportText;
-
 	const flipDurationMs = 300;
+	let reordered = false;
+
+	$: checkList = {
+		items: [
+			{
+				name: 'sequence',
+				optional: true,
+				text: 'Re-order the sequence',
+				checked: reordered
+			}
+		]
+	};
 
 	let successfullyCopied = undefined;
 	const handleSuccessfullyCopied = (e) => {
@@ -52,6 +63,7 @@
 
 	function scopesToText(metaGroup) {
 		let text = '';
+		let idxGlobal = 0;
 
 		metaGroup.forEach((metaGroup) => {
 			text = text.concat('\n============================');
@@ -60,20 +72,31 @@
 			// console.log('groups: ', groups);
 			metaGroup.items.forEach((group, idxGroup) => {
 				// console.log('group: ', group);
-				text = text.concat('\n- Sequence ' + group.id);
 				group.items.forEach((scope, idx) => {
+					idxGlobal++;
+
 					// console.log('scope: ', scope);
 					// console.log('idx + 1:', idx + 1, 'group.items:', group.items);
-					text = text.concat('\n\t- Step ' + (idx + 1) + ': Scope [' + scope.name + ']');
+					text = text.concat('\n- Step ' + idxGlobal + ': Scope [' + scope.name + ']');
+					if (scope.forkedScopeId) {
+						text = text.concat(
+							'\n\t- WARNING: Do only the essential at this step to do the next scope [' +
+								group.items[idx + 1].name +
+								']'
+						);
+						text = text.concat(
+							'\n\t\t-The sole intention at this step is allowing the execution of [' +
+								group.items[idx + 1].name +
+								'].' +
+								'\n\t\t-Think about simulated ways to mimic the real behavior of the tasks here.' +
+								'\n\t\t-In the world of development of software you can think about dummy objects, fake objects, stubs and mocks.' +
+								'\n\t\t-' +
+								scope.name +
+								" will appear on the [Everything else] section below, so you'll be able to execute fully."
+						);
+					}
 					text = text.concat(
-						scope.forkedScopeId
-							? '\n\t\t- WARNING: Do only the essential at this step to do the next scope [' +
-									group.items[idx + 1].name +
-									']'
-							: ''
-					);
-					text = text.concat(
-						scope.risky ? '\n\t\t- WARNING: This scope is RISKY because it has UNKNOWNS' : ''
+						scope.risky ? '\n\t- WARNING: This scope is RISKY because it has UNKNOWNS' : ''
 					);
 
 					let unlockDependencies = projectStore
@@ -89,31 +112,31 @@
 					);
 
 					if (dependsOn?.length > 0) {
-						text = text.concat('\n\t\t- Depends on:');
+						text = text.concat('\n\t- This scope depends on the following scopes:');
 						dependsOn.forEach((s) => {
-							text = text.concat('\n\t\t\t- ' + s.name);
+							text = text.concat('\n\t\t- ' + s.name);
 						});
 					}
 					// let unlocksScopes = group.items.filter((s) => s.dependsOn?.includes(scope.id));
 					if (unlockDependencies.length > 0) {
-						text = text.concat('\n\t\t- Unlock scopes:');
+						text = text.concat('\n\t- This scope unlocks on the following scopes:');
 						unlockDependencies.forEach((s) => {
-							text = text.concat('\n\t\t\t- ' + s.name);
+							text = text.concat('\n\t\t- ' + s.name);
 						});
 					}
 
 					let indispensableItems = scope.items?.filter((item) => item.indispensable);
 					let niceToHave = scope.items?.filter((item) => !item.indispensable);
 					if (indispensableItems?.length > 0) {
-						text = text.concat('\n\t\t- Indispensable items:');
+						text = text.concat('\n\t- Indispensable items:');
 						indispensableItems.forEach((item) => {
-							text = text.concat('\n\t\t\t- ' + item.name);
+							text = text.concat('\n\t\t- ' + item.name);
 						});
 					}
 					if (niceToHave?.length > 0) {
-						text = text.concat('\n\t\t- Nice to have items:');
+						text = text.concat('\n\t- Nice to have items:');
 						niceToHave.forEach((item) => {
-							text = text.concat('\n\t\t\t- ' + item.name);
+							text = text.concat('\n\t\t- ' + item.name);
 						});
 					}
 				});
@@ -125,9 +148,11 @@
 
 	function handleDndConsider(e, idxMetaGroup) {
 		orderMetaGroups[idxMetaGroup].items = e.detail.items;
+		reordered = true;
 	}
 	function handleDndFinalize(e, idxMetaGroup) {
 		orderMetaGroups[idxMetaGroup].items = e.detail.items;
+		reordered = true;
 	}
 	function proxyDndzone() {
 		return dndzone.apply(null, arguments);
@@ -160,26 +185,29 @@
 <NavigationScopes currentStep={3} let:currentStep>
 	<NavigationCheckList
 		{currentStep}
-		linkNextStep="/scopes/patternLanguage"
+		{checkList}
+		optional={true}
+		linkNextStep="/scopes/documentation"
 		linkPreviousStep="/scopes/unknowns"
 	>
 		<div slot="buttons">
 			<label
 				for="modal-export"
-				class="btn btn-warning modal-button"
+				class="btn btn-outline modal-button"
 				on:click={() => (exportText = scopesToText(orderMetaGroups))}>Export To Text</label
 			>
 			<!-- {#if showUpdate}
-				<label for="modal-update" class="btn btn-warning modal-update">Update</label>
+				<label for="modal-update" class="btn btn-primary modal-update">Update</label>
 			{/if} -->
 		</div>
 	</NavigationCheckList>
 </NavigationScopes>
 
 {#each orderMetaGroups as metaGroup, idxMeta (metaGroup.id)}
-	<h3>{metaGroup.title}</h3>
+	<div class="divider" />
+	<h3 class="mt-16">{metaGroup.title}</h3>
 	<section
-		class="overflow-auto p-2 border-2 flex flex-row w-full min-w-full"
+		class="overflow-auto p-2 border-2 flex flex-col w-full min-w-full"
 		use:proxyDndzone={{
 			items: metaGroup.items,
 			flipDurationMs,
@@ -193,7 +221,7 @@
 		{#each metaGroup.items as group, idxGroup (group.id)}
 			<div
 				animate:flip={{ duration: flipDurationMs }}
-				class="card justify-start w-full flex flex-col border-2 p-2 m-2 overflow-auto align-middle content-center"
+				class="card justify-start w-full flex flex-row border-2 p-2 m-2 overflow-auto align-middle content-center"
 			>
 				<div class="move cursor-grab align-middle content-center justify-items-center">
 					<svg viewBox="0 0 100 80" width="20" height="20">
@@ -212,8 +240,8 @@
 						acc.push(group.items);
 						return acc.flat(2);
 					}, [])}
-					<div class="m-2 justify-center flex">
-						<div class="justify-start content-start items-start">
+					<div class="m-2 justify-center flex flex-row align-middle">
+						<div class="flex justify-start content-start items-start">
 							<Scope
 								{scope}
 								editTitle={false}
@@ -249,7 +277,8 @@
 												<span class="font-bold bg-yellow-300 p-2"
 													>{scope.name || scope.placeholder}</span
 												>
-												will appear later on again, so you'll be able to execute fully.
+												will appear on the [Everything else] section below, so you'll be able to execute
+												fully.
 											</p>
 										</div>
 									{/if}
@@ -269,12 +298,16 @@
 								<div slot="headerScopeModal">Items of {scope.name}</div>
 							</Scope>
 						</div>
+						{#if idx + 1 < group.items.length}
+							<div class=" flex items-center justify-center ml-4">
+								<svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+									><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+										d="M512 256c0-141.4-114.6-256-256-256S0 114.6 0 256c0 141.4 114.6 256 256 256S512 397.4 512 256zM265.9 382.8C259.9 380.3 256 374.5 256 368v-64H160c-17.67 0-32-14.33-32-32v-32c0-17.67 14.33-32 32-32h96v-64c0-6.469 3.891-12.31 9.875-14.78c5.984-2.484 12.86-1.109 17.44 3.469l112 112c6.248 6.248 6.248 16.38 0 22.62l-112 112C278.7 383.9 271.9 385.3 265.9 382.8z"
+									/></svg
+								>
+							</div>
+						{/if}
 					</div>
-					<!-- {#if idx + 1 < group.length}
-						<div class="flex justify-center">
-							<SvgArrow />
-						</div>
-					{/if} -->
 				{/each}
 				{#if group[SHADOW_ITEM_MARKER_PROPERTY_NAME]}
 					<div in:fade={{ duration: 200, easing: cubicIn }} class="custom-shadow-item" />
@@ -336,7 +369,7 @@
 				on:copy={handleSuccessfullyCopied}
 				on:fail={handleFailedCopy}
 			>
-				<label class="btn btn-warning" on:click={copy}>Copy to clipboard</label>
+				<label class="btn btn-primary" on:click={copy}>Copy to clipboard</label>
 			</CopyToClipboard>
 		</div>
 	</div>
@@ -351,7 +384,7 @@
 		</h3>
 		<div class="modal-action">
 			<label for="modal-update" class="btn">Cancel</label>
-			<label for="modal-update" class="btn btn-warning" on:click={confirmUpdate}>Confirm</label>
+			<label for="modal-update" class="btn btn-primary" on:click={confirmUpdate}>Confirm</label>
 		</div>
 	</div>
 </div>

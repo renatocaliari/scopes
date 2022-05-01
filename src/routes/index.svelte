@@ -13,11 +13,4 @@ This template uses and has:
 	<li>svelte-actions: https://github.com/sw-yx/svelte-actions</li>
 	<li>svelte-mount: https://github.com/ghostdevv/svelte-mount</li>
 	<li>uuid v4: to generate id</li>
-	<li>argon2: hash password</li>
-	<li>
-		fractils: <a
-			href="https://github.com/FractalHQ/fractils/blob/2221ee1be49c8ab98f8f661741659e2c5a64ba49/src/lib/utils/localStorageStore.ts"
-			>localStorageStore</a
-		>
-	</li>
 </ul>

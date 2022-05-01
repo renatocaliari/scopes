@@ -17,13 +17,16 @@
 				.filter((scope) => scope.id !== 'bucket')
 				.filter((scope) => scope.items.length > 0));
 	}
-	$: checkList = [
-		{
-			name: 'dependencies',
-			text: 'Optionally, set which scopes have risky unknowns (vs routine work)',
-			checked: sortedScopes.some((scope) => scope.risky)
-		}
-	];
+	$: checkList = {
+		items: [
+			{
+				name: 'unknowns',
+				optional: true,
+				text: 'Set which scopes have risky unknowns (vs routine work)',
+				checked: sortedScopes.some((scope) => scope.risky)
+			}
+		]
+	};
 </script>
 
 <NavigationScopes currentStep={2} let:currentStep>
@@ -36,7 +39,9 @@
 	/>
 </NavigationScopes>
 
-<div class={'grid grid-rows-2 grid-cols-3 grid-flow-row gap-4 place-content-around'}>
+<div
+	class={'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 grid-flow-row gap-4 place-content-around'}
+>
 	{#each sortedScopes as scope}
 		{@const itemsNiceToHave = projectStore.scopeFilterItemsNiceToHave(scope)}
 

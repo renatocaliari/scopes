@@ -1,14 +1,14 @@
 <script>
 </script>
 
-<h1>About</h1>
 <div class="flex flex-col justify-center items-center">
-	<div class="text-2xl w-1/2 ">
+	<h1>About</h1>
+	<div class="text-2xl md:w-2/3 p-4">
 		<span>
 			Hi! I'm Cali (Renato Caliari) from Brazil.
 			<span
 				>I created <span class="font-bold">Scopefully</span> with the intention of making our projects
-				execution easier.
+				planning and execution more intentional.
 			</span>
 		</span>
 		<p>You can:</p>
@@ -41,7 +41,7 @@
 		<a href="https://world.hey.com/rjs/. ">Ryan Singer</a>'s (kudos!) material on digital product
 		development. You can consult his texts here:
 		<a href="https://world.hey.com/rjs/">https://world.hey.com/rjs/</a>.
-		<h2 class="mt-8 mb-4">Potential</h2>
+		<h2 class="mt-8 mb-4">Potential for the future</h2>
 		<ul>
 			<li>allow share a url for current project with other people</li>
 			<li>

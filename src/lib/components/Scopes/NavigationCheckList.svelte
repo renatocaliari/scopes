@@ -9,44 +9,97 @@
 
 	export let linkPreviousStep = undefined;
 	export let linkNextStep = undefined;
-	export let checkList = [];
+	export let checkList = { name: 'Tasks', items: [] };
 	export let optional = false;
 
 	export let currentStep;
 
 	let completed;
 	$: {
-		completed = optional || checkList.every((item) => item.checked);
+		completed = optional || checkList.items.every((item) => item.checked || item.optional);
 		$stepsStore[currentStep].completed = completed;
 	}
 </script>
 
-<div class="border-2 p-2 flex flex-col  shadow-xl mb-6">
-	{#if checkList.length > 0}
+<div class="border-2 p-2 flex flex-col shadow-xl mb-6">
+	{#if checkList.items?.length > 0}
 		<div>
-			<ul class="list-inside list-none text-lg align-middle content-center items-center">
-				{#each checkList as item, idx (item.name)}
+			<span class="text-base sm:text-2xl font-bold m-2">{checkList.title || 'Tasks'}:</span>
+			<ul class="list-inside list-none align-middle content-center items-center">
+				{#each checkList.items as item, idx (item.name)}
 					<li>
-						<div class="inline-flex items-center">
+						<div class="inline-flex items-center text-base sm:text-xl  my-1">
+							<div>
+								{#if item.checked}
+									<svg
+										class="w-5 h-5 mr-2"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 512 512"
+										preserveAspectRatio="xMidYMin meet"
+										><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+											d="M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM371.8 211.8C382.7 200.9 382.7 183.1 371.8 172.2C360.9 161.3 343.1 161.3 332.2 172.2L224 280.4L179.8 236.2C168.9 225.3 151.1 225.3 140.2 236.2C129.3 247.1 129.3 264.9 140.2 275.8L204.2 339.8C215.1 350.7 232.9 350.7 243.8 339.8L371.8 211.8z"
+										/></svg
+									>
+								{:else}
+									<svg
+										class="w-5 h-5 mr-1"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 512 512"
+										preserveAspectRatio="xMidYMin meet"
+										><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+											d="M243.8 339.8C232.9 350.7 215.1 350.7 204.2 339.8L140.2 275.8C129.3 264.9 129.3 247.1 140.2 236.2C151.1 225.3 168.9 225.3 179.8 236.2L224 280.4L332.2 172.2C343.1 161.3 360.9 161.3 371.8 172.2C382.7 183.1 382.7 200.9 371.8 211.8L243.8 339.8zM512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256zM256 48C141.1 48 48 141.1 48 256C48 370.9 141.1 464 256 464C370.9 464 464 370.9 464 256C464 141.1 370.9 48 256 48z"
+										/></svg
+									>{/if}
+							</div>
 							<!-- <Icon data={item.checked ? check : uncheck} class="mr-2" />{item.text} -->
-							{item.checked ? '✅ ' : '⭕ '}{item.text}
+							{item.optional ? '(Optional) ' : ''}{item.text}
 						</div>
 					</li>
 				{/each}
 			</ul>
 		</div>
 	{/if}
-	<div class="w-full flex flex-row justify-between p-4">
-		<div class="m-0 ">
-			{#if linkPreviousStep}
-				<a href={linkPreviousStep} class="btn btn-outline">Previous step</a>
-			{/if}
-			{#if linkNextStep}
-				<a href={linkNextStep} class="btn" class:btn-disabled={!completed}>Next step</a>
-			{/if}
-		</div>
-		<div class="m-0">
+	<div class="w-full p-4">
+		<div class="m-0 w-full p-2 mb-4">
 			<slot name="buttons" />
+		</div>
+		<div class="divider" />
+		<div class="flex flex-col sm:flex-row w-full justify-between">
+			<div>
+				{#if linkPreviousStep}<div>
+						<a href={linkPreviousStep} class="btn btn-primary w-full sm:w-auto"
+							><svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"
+								><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+									d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"
+								/></svg
+							>Previous step</a
+						>
+					</div>
+				{/if}
+			</div>
+			<div class="w-full sm:w-auto">
+				{#if linkNextStep}<div>
+						<div class="form-control w-full sm:max-w-xs mt-2 sm:m-0">
+							<a href={linkNextStep} class="btn btn-primary" class:btn-disabled={!completed}
+								>Next step <svg
+									class="w-4 h-4 ml-2"
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 256 512"
+									><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+										d="M64 448c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L178.8 256L41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"
+									/></svg
+								></a
+							>
+							<label class="label">
+								<span class="label-text-alt" />
+								<span class="label-text-alt"
+									>To proceed to the next steps, check if there are any pending tasks.</span
+								>
+							</label>
+						</div>
+					</div>
+				{/if}
+			</div>
 		</div>
 	</div>
 </div>

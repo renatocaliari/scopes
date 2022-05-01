@@ -26,6 +26,9 @@
 	let submit = false;
 	let value;
 
+	let fieldAddText;
+	$: items.length === 0 && fieldAddText ? fieldAddText.focus() : null;
+
 	const dispatch = createEventDispatcher();
 
 	const flipDurationMs = 300;
@@ -47,6 +50,8 @@
 
 	const handleSubmit = (event) => {
 		submit = true;
+		addItem(event);
+		return false;
 	};
 
 	function addItem(event) {
@@ -88,6 +93,7 @@
 		<input
 			class="input input-bordered mb-2 rounded-none"
 			use:autoFocus={focusAdd}
+			bind:this={fieldAddText}
 			id="task"
 			name="task"
 			placeholder="type new task here and press ENTER"
@@ -117,7 +123,7 @@
 <section
 	class="overflow-auto {minHeight} {maxHeight}"
 	use:proxyDndzone={{
-		items: items,
+		items: items.filter((i) => i.name || i.placeholder),
 		flipDurationMs,
 		type: 'items',
 		dropTargetClasses: ['bg-green-50']

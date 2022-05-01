@@ -35,7 +35,7 @@ export const stepsStore = writable([
         linkText: 'Create Documentation',
         h1: 'Documentation',
         h2: 'Create documentation to other people that will execute it',
-        link: '/scopes/patternLanguage',
+        link: '/scopes/documentation',
         active: false,
         completed: true
     }

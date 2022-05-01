@@ -53,6 +53,7 @@
 			}
 		});
 
+		exportText = text;
 		return text;
 	}
 </script>
@@ -62,30 +63,14 @@
 		<div slot="buttons">
 			<label
 				for="modal-export"
-				class="btn btn-warning modal-button"
-				on:click={() => (exportText = scopesToText($projectStore))}>Export To Text</label
-			>
+				class="btn btn-outline modal-button mr-2"
+				on:click={() => scopesToText($projectStore)}>Export To Text</label
+			>You will be able to choose to auto number each line written in the export option.
 			<!-- {#if showUpdate}
-				<label for="modal-update" class="btn btn-warning modal-update">Update</label>
+				<label for="modal-update" class="btn btn-primary modal-update">Update</label>
 			{/if} -->
 		</div>
 	</NavigationCheckList>
-	<div
-		class="border-2 p-2 flex flex-col shadow-xl mb-6 text-lg align-middle content-center items-center"
-	>
-		<div>
-			<ul class="list-inside list-none text-lg align-middle content-center items-center">
-				<li class="text-lg align-middle content-center items-center m-2">
-					<label for="auto-number" class="mr-2">On export, auto-number each line.</label><input
-						type="checkbox"
-						id="auto-number"
-						class="toggle align-middle content-center items-center"
-						bind:checked={autoNumber}
-					/>
-				</li>
-			</ul>
-		</div>
-	</div>
 </NavigationScopes>
 
 <div class="w-full ">
@@ -106,12 +91,14 @@
 					/>
 				</div>
 				<div slot="body">
-					<div class="grid grid-cols-3">
-						<textarea
-							class="textarea textarea-bordered col-span-2 border-dashed text-lg"
-							placeholder="Write here the sections related to this group..."
-							bind:value={scope.description}
-						/>
+					<div class="w-full flex flex-col-reverse sm:flex-row">
+						<div class="w-full grow">
+							<textarea
+								class="textarea textarea-bordered w-full h-full text-lg"
+								placeholder="Write here the sections related to this group..."
+								bind:value={scope.description}
+							/>
+						</div>
 						<div class="p-2">
 							<div>
 								<h4 class="mt-0">Indispensable:</h4>
@@ -185,6 +172,14 @@
 				</div>
 			</div>
 		{/if}
+		<label for="auto-number" class="mr-2">Auto-number each line.</label><input
+			type="checkbox"
+			id="auto-number"
+			class="toggle align-middle content-center items-center"
+			bind:checked={autoNumber}
+			on:change={() => scopesToText($projectStore)}
+		/>
+		<div class="divider" />
 		<div style="white-space: pre-wrap;" class="w-fit h-96 overflow-auto">
 			{exportText}
 		</div>
@@ -196,7 +191,7 @@
 				on:copy={handleSuccessfullyCopied}
 				on:fail={handleFailedCopy}
 			>
-				<label class="btn btn-warning" on:click={copy}>Copy to clipboard</label>
+				<label class="btn btn-primary" on:click={copy}>Copy to clipboard</label>
 			</CopyToClipboard>
 		</div>
 	</div>

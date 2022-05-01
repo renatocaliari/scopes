@@ -1,8 +1,8 @@
-<footer class="footer items-center p-4 bg-neutral text-neutral-content">
+<footer class="footer inline-flex items-center p-4 bg-neutral text-neutral-content justify-between">
 	<div class="items-center grid-flow-col">
-		<p>Made with ❤️ by Cali</p>
+		<p><a href="/about">Made with ❤️ by Cali</a></p>
 	</div>
-	<div class="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
+	<div class="md:place-self-center md:justify-self-end">
 		<a href="https://twitter.com/renatocaliari"
 			><svg
 				xmlns="http://www.w3.org/2000/svg"
