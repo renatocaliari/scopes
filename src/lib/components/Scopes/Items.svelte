@@ -27,7 +27,7 @@
 	let value;
 
 	let fieldAddText;
-	$: items.length === 0 && fieldAddText ? fieldAddText.focus() : null;
+	// $: items.length === 0 && fieldAddText ? fieldAddText.focus() : null;
 
 	const dispatch = createEventDispatcher();
 
