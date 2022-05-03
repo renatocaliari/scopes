@@ -202,9 +202,10 @@ export function ProjectStore() {
                             break;
                     }
                 }
-            }
-            if (name) {
-                items = [ScopeItem.createItem("item 1 - describing some details to break line and test limits", true), ScopeItem.createItem("item 2", true), ScopeItem.createItem("nice to have 1", false), ScopeItem.createItem("nice to have 2", false)];
+                if (name) {
+                    items = [ScopeItem.createItem("item 1 - describing some details to break line and test limits", true), ScopeItem.createItem("item 2", true), ScopeItem.createItem("nice to have 1", false), ScopeItem.createItem("nice to have 2", false)];
+                }
+
             }
             addScopeAutoId(name, items, dependsOn, risky, indispensable, i);
         }
@@ -411,11 +412,15 @@ export function ProjectStore() {
         let groupedScopes = groupScopes(copyFilteredStore);
         let groupedSortedScopes = mergeSort(mergeGroupScopes, groupedScopes);
 
+        // console.log("groupedScopes:", groupedScopes);
+        // console.log("groupedSortedScopes:", groupedSortedScopes);
+
         let sortedScopesinGroupForkingByRisky = sortScopesinGroupForkingByRisky(groupedSortedScopes);
         // console.log('sortedScopesinGroupForkingByRisky:', JSON.parse(JSON.stringify(sortedScopesinGroupForkingByRisky)));
 
         let remainingItemsGroup = sortedScopesinGroupForkingByRisky.find((g) => g.id === -1);
-        let splittedGroupRemainingItems = splitGroupRemainingItems(remainingItemsGroup.items);
+
+        let splittedGroupRemainingItems = splitGroupRemainingItems(remainingItemsGroup ? remainingItemsGroup.items : []);
 
         sortedScopesinGroupForkingByRisky = sortedScopesinGroupForkingByRisky.filter((g) => g.id !== -1).concat(splittedGroupRemainingItems);
         sortedScopesinGroupForkingByRisky = generateIdForGroups(sortedScopesinGroupForkingByRisky);

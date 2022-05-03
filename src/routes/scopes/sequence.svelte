@@ -23,15 +23,16 @@
 <script>
 	projectStore.sortScopesByPriority();
 
+	let riskyItems = $sortedGroupedAndForkedScopes.filter((g) => g.risky);
 	let orderMetaGroups = [
 		{
 			id: 1,
 			title: 'First things, first: RISKY scopes',
-			items: $sortedGroupedAndForkedScopes.filter((g) => g.risky)
+			items: riskyItems
 		},
 		{
 			id: 2,
-			title: 'Everything else',
+			title: riskyItems.length ? 'Everything else' : 'Sequence',
 			items: $sortedGroupedAndForkedScopes.filter((g) => !g.risky)
 		}
 	];
@@ -204,117 +205,120 @@
 </NavigationScopes>
 
 {#each orderMetaGroups as metaGroup, idxMeta (metaGroup.id)}
-	<div class="divider" />
-	<h3 class="mt-16">{metaGroup.title}</h3>
-	<section
-		class="overflow-auto p-2 border-2 flex flex-col w-full min-w-full"
-		use:proxyDndzone={{
-			items: metaGroup.items,
-			flipDurationMs,
-			morphDisabled: false,
-			type: 'metaGroup' + metaGroup.id,
-			dropTargetClasses: ['bg-green-50']
-		}}
-		on:consider={(e) => handleDndConsider(e, idxMeta)}
-		on:finalize={(e) => handleDndFinalize(e, idxMeta)}
-	>
-		{#each metaGroup.items as group, idxGroup (group.id)}
-			<div
-				animate:flip={{ duration: flipDurationMs }}
-				class="card justify-start w-full flex flex-row border-2 p-2 m-2 overflow-auto align-middle content-center"
-			>
-				<div class="move cursor-grab align-middle content-center justify-items-center">
-					<svg viewBox="0 0 100 80" width="20" height="20">
-						<rect width="70" height="12" />
-						<rect y="20" width="70" height="12" />
-						<rect y="40" width="70" height="12" />
-					</svg>
-				</div>
-				<div class="align-middle content-center justify-items-center min-w-fit">
-					<h3 class="mt-2 ">Sequence {group.id}</h3>
-				</div>
-				{#each group.items as scope, idx (scope.id)}
-					<!-- {@const calculatedColor = calculateColor(scope, maxDependents)} -->
-					{@const nextOne = group.items[idx + 1] ? group.items[idx + 1] : { name: '' }}
-					{@const scopes = $sortedGroupedAndForkedScopes.reduce((acc, group, idx, arr) => {
-						acc.push(group.items);
-						return acc.flat(2);
-					}, [])}
-					<div class="m-2 justify-center flex flex-row align-middle">
-						<div class="flex justify-start content-start items-start">
-							<Scope
-								{scope}
-								editTitle={false}
-								itemsScopeModal={scope.items}
-								width="w-96"
-								collapsable
-							>
-								<div slot="badge">
-									<BadgeDependencies project={projectStore} {scopes} {scope} />
-								</div>
-								<div slot="header">
-									<div class="badge" class:hidden={!scope.indispensable}>Indispensable</div>
-									<div class="badge" class:hidden={!scope.forkedScopeId}>
-										<!-- <Icon data={faCircleExclamation} class="mr-2" />  -->
-										Do only the essential
-									</div>
-									<div class="badge" class:hidden={!scope.risky}>Risky</div>
-								</div>
-								<div slot="body">
-									{#if scope.forkedScopeId}
-										<div class="border-2 bg-yellow-50 p-2 text-left">
-											<p>
-												The sole intention at this step is allowing the execution of the next scope,
-												<span class="font-bold bg-yellow-300 p-2">
-													{nextOne.name || nextOne.placeholder}</span
-												>. Think about simulated ways to mimic the real tasks here.
-											</p>
-											<p>
-												In the world of development of software you can think about dummy objects,
-												fake objects, stubs and mocks.
-											</p>
-											<p>
-												<span class="font-bold bg-yellow-300 p-2"
-													>{scope.name || scope.placeholder}</span
-												>
-												will appear on the [Everything else] section below, so you'll be able to execute
-												fully.
-											</p>
-										</div>
-									{/if}
-									<h4>Indispensable:</h4>
-									<Items
-										bind:scope
-										maxHeight=""
-										items={scope.items.filter((item) => item.indispensable == true)}
-									/>
-									<h4>Nice to have:</h4>
-									<Items
-										bind:scope
-										maxHeight=""
-										items={scope.items.filter((item) => item.indispensable == false)}
-									/>
-								</div>
-								<div slot="headerScopeModal">Items of {scope.name}</div>
-							</Scope>
-						</div>
-						{#if idx + 1 < group.items.length}
-							<div class=" flex items-center justify-center ml-4">
-								<svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-									><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
-										d="M512 256c0-141.4-114.6-256-256-256S0 114.6 0 256c0 141.4 114.6 256 256 256S512 397.4 512 256zM265.9 382.8C259.9 380.3 256 374.5 256 368v-64H160c-17.67 0-32-14.33-32-32v-32c0-17.67 14.33-32 32-32h96v-64c0-6.469 3.891-12.31 9.875-14.78c5.984-2.484 12.86-1.109 17.44 3.469l112 112c6.248 6.248 6.248 16.38 0 22.62l-112 112C278.7 383.9 271.9 385.3 265.9 382.8z"
-									/></svg
-								>
-							</div>
-						{/if}
+	{#if metaGroup.items.length}
+		<div class="divider" />
+		<h3 class="mt-16">{metaGroup.title}</h3>
+		<section
+			class="overflow-auto p-2 border-2 flex flex-col w-full min-w-full"
+			use:proxyDndzone={{
+				items: metaGroup.items,
+				flipDurationMs,
+				morphDisabled: false,
+				type: 'metaGroup' + metaGroup.id,
+				dropTargetClasses: ['bg-green-50']
+			}}
+			on:consider={(e) => handleDndConsider(e, idxMeta)}
+			on:finalize={(e) => handleDndFinalize(e, idxMeta)}
+		>
+			{#each metaGroup.items as group, idxGroup (group.id)}
+				<div
+					animate:flip={{ duration: flipDurationMs }}
+					class="card justify-start w-full flex flex-row border-2 p-2 m-2 overflow-auto align-middle content-center"
+				>
+					<div class="move cursor-grab align-middle content-center justify-items-center">
+						<svg viewBox="0 0 100 80" width="20" height="20">
+							<rect width="70" height="12" />
+							<rect y="20" width="70" height="12" />
+							<rect y="40" width="70" height="12" />
+						</svg>
 					</div>
-				{/each}
-				{#if group[SHADOW_ITEM_MARKER_PROPERTY_NAME]}
-					<div in:fade={{ duration: 200, easing: cubicIn }} class="custom-shadow-item" />
-				{/if}
-			</div>
-		{/each}
-	</section>
+					<div class="align-middle content-center justify-items-center min-w-fit">
+						<h3 class="mt-2 ">Sequence {group.id}</h3>
+					</div>
+					{#each group.items as scope, idx (scope.id)}
+						<!-- {@const calculatedColor = calculateColor(scope, maxDependents)} -->
+						{@const nextOne = group.items[idx + 1] ? group.items[idx + 1] : { name: '' }}
+						{@const scopes = $sortedGroupedAndForkedScopes.reduce((acc, group, idx, arr) => {
+							acc.push(group.items);
+							return acc.flat(2);
+						}, [])}
+						<div class="m-2 justify-center flex flex-row align-middle">
+							<div class="flex justify-start content-start items-start">
+								<Scope
+									{scope}
+									editTitle={false}
+									itemsScopeModal={scope.items}
+									width="w-96"
+									collapsable
+								>
+									<div slot="badge">
+										<BadgeDependencies project={projectStore} {scopes} {scope} />
+									</div>
+									<div slot="header">
+										<div class="badge" class:hidden={!scope.indispensable}>Indispensable</div>
+										<div class="badge" class:hidden={!scope.forkedScopeId}>
+											<!-- <Icon data={faCircleExclamation} class="mr-2" />  -->
+											Do only the essential
+										</div>
+										<div class="badge" class:hidden={!scope.risky}>Risky</div>
+									</div>
+									<div slot="body">
+										{#if scope.forkedScopeId}
+											<div class="border-2 bg-yellow-50 p-2 text-left">
+												<p>
+													The sole intention at this step is allowing the execution of the next
+													scope,
+													<span class="font-bold bg-yellow-300 p-2">
+														{nextOne.name || nextOne.placeholder}</span
+													>. Think about simulated ways to mimic the real tasks here.
+												</p>
+												<p>
+													In the world of development of software you can think about dummy objects,
+													fake objects, stubs and mocks.
+												</p>
+												<p>
+													<span class="font-bold bg-yellow-300 p-2"
+														>{scope.name || scope.placeholder}</span
+													>
+													will appear on the [Everything else] section below, so you'll be able to execute
+													fully.
+												</p>
+											</div>
+										{/if}
+										<h4>Indispensable:</h4>
+										<Items
+											bind:scope
+											maxHeight=""
+											items={scope.items.filter((item) => item.indispensable == true)}
+										/>
+										<h4>Nice to have:</h4>
+										<Items
+											bind:scope
+											maxHeight=""
+											items={scope.items.filter((item) => item.indispensable == false)}
+										/>
+									</div>
+									<div slot="headerScopeModal">Items of {scope.name}</div>
+								</Scope>
+							</div>
+							{#if idx + 1 < group.items.length}
+								<div class=" flex items-center justify-center ml-4">
+									<svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+										><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+											d="M512 256c0-141.4-114.6-256-256-256S0 114.6 0 256c0 141.4 114.6 256 256 256S512 397.4 512 256zM265.9 382.8C259.9 380.3 256 374.5 256 368v-64H160c-17.67 0-32-14.33-32-32v-32c0-17.67 14.33-32 32-32h96v-64c0-6.469 3.891-12.31 9.875-14.78c5.984-2.484 12.86-1.109 17.44 3.469l112 112c6.248 6.248 6.248 16.38 0 22.62l-112 112C278.7 383.9 271.9 385.3 265.9 382.8z"
+										/></svg
+									>
+								</div>
+							{/if}
+						</div>
+					{/each}
+					{#if group[SHADOW_ITEM_MARKER_PROPERTY_NAME]}
+						<div in:fade={{ duration: 200, easing: cubicIn }} class="custom-shadow-item" />
+					{/if}
+				</div>
+			{/each}
+		</section>
+	{/if}
 {/each}
 
 <input type="checkbox" id="modal-export" class="modal-toggle" />
