@@ -2,21 +2,37 @@
 	import { projectStore, sortedScopesDocumentation } from '$lib/stores/projectStore';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
-	import SvgArrow from './svgArrow.svelte';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
 	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
 	import CopyToClipboard from '$lib/components/CopyToClipboard.svelte';
+	import { flip } from 'svelte/animate';
+	import { dndzone } from 'svelte-dnd-action';
+	import { fade } from 'svelte/transition';
+	// notice - fade in works fine but don't add svelte's fade-out (known issue)
+	import { cubicIn } from 'svelte/easing';
+
+	let reordered = false;
+	let moving = false;
 
 	projectStore.sortScopesByPriority();
+
 	$: {
-		$sortedScopesDocumentation,
-			$sortedScopesDocumentation.map((s) => {
-				let scopeOriginal = $projectStore.find((s2) => s2.id === s.id);
-				scopeOriginal.title = s.title;
-				scopeOriginal.description = s.description;
-			});
-		$projectStore = $projectStore;
+		if ($sortedScopesDocumentation && !moving) {
+			saveDataIntoOriginalStore();
+		}
 	}
+
+	$: checkList = {
+		name: 'Tasks',
+		items: [
+			{
+				name: 'documentation',
+				optional: true,
+				text: 'Re-order the blocks',
+				checked: reordered
+			}
+		]
+	};
 
 	let exportText;
 	let autoNumber = false;
@@ -56,15 +72,39 @@
 		exportText = text;
 		return text;
 	}
+
+	function handleDndConsider(e) {
+		$sortedScopesDocumentation = e.detail.items;
+		reordered = true;
+		moving = true;
+	}
+	function handleDndFinalize(e) {
+		$sortedScopesDocumentation = e.detail.items;
+		reordered = true;
+		moving = false;
+		saveDataIntoOriginalStore();
+	}
+	function proxyDndzone() {
+		return dndzone.apply(null, arguments);
+	}
+
+	function saveDataIntoOriginalStore() {
+		$sortedScopesDocumentation.map((s) => {
+			let scopeOriginal = $projectStore.find((s2) => s2.id === s.id);
+			scopeOriginal.title = s.title;
+			scopeOriginal.description = s.description;
+		});
+		$projectStore = $projectStore;
+	}
 </script>
 
 <NavigationScopes currentStep={4} let:currentStep>
-	<NavigationCheckList {currentStep} linkPreviousStep="/scopes/sequence">
+	<NavigationCheckList {checkList} {currentStep} linkPreviousStep="/scopes/sequence">
 		<div slot="buttons">
 			<label
 				for="modal-export"
 				class="btn btn-outline modal-button mr-2"
-				on:click={() => scopesToText($projectStore)}>Export To Text</label
+				on:click={() => scopesToText($sortedScopesDocumentation)}>Export To Text</label
 			>You will be able to choose to auto number each line written in the export option.
 			<!-- {#if showUpdate}
 				<label for="modal-update" class="btn btn-primary modal-update">Update</label>
@@ -73,12 +113,23 @@
 	</NavigationCheckList>
 </NavigationScopes>
 
-<div class="w-full ">
+<div
+	class="w-full"
+	use:proxyDndzone={{
+		items: $sortedScopesDocumentation,
+		flipDurationMs,
+		morphDisabled: false,
+		dropTargetClasses: ['bg-green-50']
+	}}
+	on:consider={(e) => handleDndConsider(e)}
+	on:finalize={(e) => handleDndFinalize(e)}
+>
 	{#each $sortedScopesDocumentation as scope, idx (scope.id)}
-		<div class="m-2 flex justify-center ">
+		<div class="m-2 flex justify-center mb-8" animate:flip={{ duration: flipDurationMs }}>
 			<Scope bind:scope itemsScopeModal={scope.items} width="w-full">
-				<div slot="badge" class="w-full ">
+				<div slot="badge" class="w-full inline-flex items-center align-middle">
 					<BadgeDependencies project={projectStore} bind:scope />
+					<div class="move cursor-grab align-middle content-center justify-items-center" />
 				</div>
 				<div slot="header" class="w-full">
 					<div class="badge" class:hidden={!scope.indispensable}>Indispensable</div>
@@ -123,11 +174,6 @@
 				<div slot="headerScopeModal">Items of {scope.name}</div>
 			</Scope>
 		</div>
-		{#if idx + 1 < $sortedScopesDocumentation.length}
-			<div class="flex justify-center">
-				<SvgArrow />
-			</div>
-		{/if}
 	{/each}
 </div>
 
@@ -202,6 +248,11 @@
 		box-sizing: border-box;
 		margin: 0;
 	}
+
+	:is([contenteditable], [placeholder]) {
+		cursor: text;
+	}
+
 	[contenteditable]:empty:before {
 		content: attr(placeholder);
 		display: block;
