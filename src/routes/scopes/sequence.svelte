@@ -13,7 +13,6 @@
 	import { fade } from 'svelte/transition';
 	// notice - fade in works fine but don't add svelte's fade-out (known issue)
 	import { cubicIn } from 'svelte/easing';
-	import { deepEqual } from '$lib/utils/comparison';
 	import Icon from 'svelte-awesome';
 	import { each } from 'svelte/internal';
 	// import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
@@ -42,6 +41,7 @@
 	let reordered = false;
 
 	$: checkList = {
+		name: 'Tasks',
 		items: [
 			{
 				name: 'sequence',

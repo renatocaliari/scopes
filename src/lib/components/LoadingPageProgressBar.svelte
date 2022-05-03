@@ -72,7 +72,7 @@
 	}
 	.progress-sliver {
 		width: var(--width);
-		background-color: var(--primary);
+		background-color: #000000;
 		height: 100%;
 	}
 </style>

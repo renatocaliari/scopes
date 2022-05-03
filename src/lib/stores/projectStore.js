@@ -45,7 +45,7 @@ export function ProjectStore() {
 
     if (get(store).length === 0) {
         // console.log('creating initial data')
-        createInitialData(true, 9, true);
+        createInitialData(true, 9, false);
     }
 
     function createInitialData(hasBucket, totalScopes, sampleData, idxSample = 1) {

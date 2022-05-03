@@ -13,6 +13,8 @@
 
 	export let currentStep;
 
+	console.log('entrou aqui');
+
 	let completed;
 	$: {
 		completed = optional || checkList.items?.every((item) => item.checked || item.optional);
