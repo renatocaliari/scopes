@@ -1,4 +1,5 @@
 <script>
+	import mixpanel from 'mixpanel-browser';
 	import screenshotDump from '$lib/assets/dump.png';
 	let src = '/static/dump.png';
 </script>
@@ -11,7 +12,9 @@
 				<p class="text-2xl">
 					The tool to help you understand your next project and its execution before start it.
 				</p>
-				<a href="/scopes/dump" class="btn btn-primary">Get Started - FREE</a>
+				<a href="/scopes/dump" class="btn btn-primary" on:click={mixpanel.track('home:get-started')}
+					>Get Started for FREE</a
+				>
 				<p class="text-lg">All the information will be <br />stored locally in your browser.</p>
 			</div>
 		</div>
