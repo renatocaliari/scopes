@@ -14,7 +14,8 @@
 				</p>
 				<a href="/scopes/dump" class="btn btn-primary" on:click={mixpanel.track('home:get-started')}
 					>Get Started for FREE</a
-				>
+				> <a href="/scopes/dump" class="btn btn-outline ml-4">About</a>
+
 				<p class="text-lg">All the information will be <br />stored locally in your browser.</p>
 			</div>
 		</div>

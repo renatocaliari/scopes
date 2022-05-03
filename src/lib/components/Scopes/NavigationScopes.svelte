@@ -14,8 +14,6 @@
 	<title>{$stepsStore[currentStep].h1} | Scopefully</title>
 </svelte:head>
 
-<h1>{$stepsStore[currentStep].h1}</h1>
-
 <div class="text-sm flex sm:hidden breadcrumbs">
 	{#each $stepsStore as btn, idx}
 		{#if currentStep > 1 && idx === currentStep - 1}
@@ -36,6 +34,8 @@
 		{/each}
 	</ul>
 </div>
+
+<h1>{$stepsStore[currentStep].h1}</h1>
 
 <div class="hidden lg:flex btn-group justify-center my-4">
 	{#each $stepsStore as btn, idx}
