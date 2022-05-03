@@ -49,6 +49,7 @@
     "svelte-actions": "^0.2.2",
     "svelte-awesome": "^2.4.6",
     "svelte-local-storage-store": "^0.2.6",
+    "theme-change": "^2.0.2",
     "uuid": "^8.3.2"
   }
 }

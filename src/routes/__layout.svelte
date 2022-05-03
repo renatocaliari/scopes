@@ -18,10 +18,9 @@
 
 <LoadingPageProgressBar />
 <div
-	class="sm:flex sm:flex-col md:flex md:flex-col w-full content-center items-center justify-center	"
-	data-theme="cmyk"
+	class="sm:flex sm:flex-col md:flex md:flex-col w-full content-center items-center justify-center"
 >
-	<div class="flex flex-col lg:w-4/5 " data-theme="cmyk">
+	<div class="flex flex-col lg:w-4/5 ">
 		<div>
 			<Header />
 			<main class="prose p-2 mx-auto max-w-screen-2xl items-center">

@@ -36,6 +36,16 @@
 
 		e.target.textContent = pastedData;
 	}
+
+	let mouseIsOver = false;
+	function mouseOver(e) {
+		mouseIsOver = true;
+	}
+
+	function mouseOut(e) {
+		mouseIsOver = false;
+		e.target.blur();
+	}
 </script>
 
 <div
@@ -52,15 +62,19 @@
 							<svelte:element
 								this="h3"
 								on:paste|preventDefault|stopPropagation={handlePaste}
-								contenteditable
+								on:mouseenter={mouseOver}
+								on:mouseout={mouseOut}
 								on:keypress={(e) => {
 									if (e.code === 'Enter') {
 										e.preventDefault();
 									}
 								}}
+								contenteditable
 								placeholder={textPlaceholder}
 								bind:textContent={scope.name}
-								class="mr-2 mt-0 mb-0 w-full min-h-8 border-dashed border-2 border-slate-200 inline"
+								class="mr-2 mt-0 mb-0 w-full min-h-8  border-slate-200 inline"
+								class:border-2={!scope.name || mouseIsOver}
+								class:border-dashed={!scope.name || mouseIsOver}
 							/>
 						</div>
 						{#if $$slots.badge}

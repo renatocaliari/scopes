@@ -1,5 +1,21 @@
-<script lang="ts">
+<script>
+	import { onMount } from 'svelte';
+	import { themeChange } from 'theme-change';
 	import { page, session } from '$app/stores';
+
+	let toggleTheme;
+	let toogleThemeChecked = false;
+	// NOTE: the element that is using one of the theme attributes must be in the DOM on mount
+	onMount(() => {
+		themeChange(false);
+		// 👆 false parameter is required for svelte
+
+		var themesList = toggleTheme.getAttribute('data-toggle-theme');
+		if (themesList) {
+			var themesArray = themesList.split(',');
+			toogleThemeChecked = document.documentElement.getAttribute('data-theme') == themesArray[0];
+		}
+	});
 </script>
 
 <div class="navbar navbar-center bg-base-100">
@@ -7,6 +23,48 @@
 		<a class="btn btn-ghost normal-case text-xl" href="/">Home</a>
 	</div>
 	<div class="flex-none" />
+	<div class="navbar-end space-x-2 mr-8">
+		<!-- sun - heroicon.dev -->
+		<svg
+			class="w-6 h-6"
+			fill="none"
+			stroke="currentColor"
+			viewBox="0 0 24 24"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="2"
+				d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+			/>
+		</svg>
+		<!-- https://github.com/saadeghi/theme-change -->
+		<input
+			type="checkbox"
+			class="toggle"
+			bind:this={toggleTheme}
+			checked={toogleThemeChecked}
+			id="theme-toggle"
+			data-toggle-theme="dark,light"
+			data-act-class="ACTIVECLASS"
+		/>
+		<!-- moon - heroicon.dev -->
+		<svg
+			class="w-6 h-6"
+			fill="none"
+			stroke="currentColor"
+			viewBox="0 0 24 24"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="2"
+				d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+			/>
+		</svg>
+	</div>
 	<ul class="menu menu-horizontal p-0">
 		<li><a class="btn btn-outline" href="/about" sveltekit:prefetch>About</a></li>
 		<!-- <li><a href="/test/alopage1">Alo Page 1 (fetch manually)</a></li>

@@ -68,7 +68,9 @@
 		{/if}
 		{#if allowEditItem}
 			<span
-				class="w-full items-center border-2 border-dotted m-1 break-words"
+				class="w-full items-center m-1 break-words"
+				class:border-2={mouseIsOver}
+				class:border-dashed={mouseIsOver}
 				class:line-clamp-2={!mouseIsOver}
 				on:mouseenter={mouseOver}
 				on:mouseout={mouseOut}

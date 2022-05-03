@@ -10,7 +10,6 @@
 	 *
 	 * As this component is absolutely position, you can put it at any part of your __layout.svelte.
 	 */
-	import { onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
