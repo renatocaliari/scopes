@@ -15,7 +15,7 @@
 
 	let completed;
 	$: {
-		completed = optional || checkList.items.every((item) => item.checked || item.optional);
+		completed = optional || checkList.items?.every((item) => item.checked || item.optional);
 		$stepsStore[currentStep].completed = completed;
 	}
 </script>
