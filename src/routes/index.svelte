@@ -1,10 +1,19 @@
 <script>
-	import { browser } from '$app/env';
-
-	if (browser) {
-		goto('/scopes/dump	');
-	}
-	import { goto } from '$app/navigation';
+	import screenshotDump from '$lib/assets/dump.png';
+	let src = '/static/dump.png';
 </script>
 
-Here will be a landing page :)
+<div class="flex flex-col justify-center items-center">
+	<div class="hero min-h-screen">
+		<div class="hero-content text-center">
+			<div class="max-w-md">
+				<h1 class="text-8xl mb-2 font-bold">Scopefully</h1>
+				<p class="text-2xl">
+					The tool to help you understand your next project and its execution before start it.
+				</p>
+				<a href="/scopes/dump" class="btn btn-primary">Get Started - FREE</a>
+				<p class="text-lg">All the information will be <br />stored locally in your browser.</p>
+			</div>
+		</div>
+	</div>
+</div>
