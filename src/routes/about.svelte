@@ -62,10 +62,10 @@
 		</ul>
 		<h2 class="mt-8 mb-4">Data & Analytics</h2>
 		<p>Currently, all data is being stored in your own browser, using localStorage.</p>
-		<p>
+		<!-- <p>
 			I installed Mixpanel only to know about pages visited and actions executed, without any
 			personal information. I don't track any other data.
-		</p>
+		</p> -->
 		<p>
 			You can set your browser to <a
 				href="https://support.google.com/chrome/answer/2790761?hl=en&co=GENIE.Platform%3DDesktop"

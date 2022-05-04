@@ -150,7 +150,7 @@
 								bind:value={scope.description}
 							/>
 						</div>
-						<div class="p-2">
+						<div class="p-2 min-w-fit">
 							<div>
 								<h4 class="mt-0">Indispensable:</h4>
 								<ul>

@@ -1,7 +1,9 @@
 <script>
-	import mixpanel from 'mixpanel-browser';
-	import screenshotDump from '$lib/assets/dump.png';
-	let src = '/static/dump.png';
+	// import mixpanel from 'mixpanel-browser';
+
+	let mixpanel = {
+		track: () => {}
+	};
 </script>
 
 <div class="flex flex-col justify-center items-center">
@@ -12,9 +14,8 @@
 				<p class="text-2xl">
 					The tool to help you understand your next project and its execution before start it.
 				</p>
-				<a href="/scopes/dump" class="btn btn-primary" on:click={mixpanel.track('home:get-started')}
-					>Get Started for FREE</a
-				> <a href="/scopes/dump" class="btn btn-outline ml-4">About</a>
+				<a href="/scopes/dump" class="btn btn-primary">Get Started for FREE</a>
+				<a href="/scopes/dump" class="btn btn-outline ml-4">About</a>
 
 				<p class="text-lg">All the information will be <br />stored locally in your browser.</p>
 			</div>

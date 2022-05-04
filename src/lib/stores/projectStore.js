@@ -3,7 +3,9 @@ import { get } from "svelte/store"
 import ScopeItem from "$lib/classes/ScopeItem";
 import { dev } from '$app/env';
 import { writable } from 'svelte-local-storage-store'
-import mixpanel from 'mixpanel-browser';
+// import mixpanel from 'mixpanel-browser';
+
+let mixpanel = { track: () => { } };
 
 //do
 // import { persistentWritable } from "$lib/stores/persistentStore";
