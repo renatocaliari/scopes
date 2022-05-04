@@ -23,7 +23,7 @@
 			items: [
 				{
 					name: 'dump',
-					text: 'In Bucket, dump all you think is needed to do or solve',
+					text: 'In the Bucket below, dump all you think is needed to do or solve',
 					checked: $projectStore.some((scope) => scope.items?.length > 0)
 				},
 				{
