@@ -429,9 +429,7 @@
 			}}
 		/>
 		<span class="label-text-alt"
-			>(experimentally and temporarily, in format used by <a
-				href="https://logseq.com/"
-				target="_blank">Logseq</a
+			>(experimentally in format used by <a href="https://logseq.com/" target="_blank">Logseq</a
 			>)</span
 		>
 		<div class="divider" />
