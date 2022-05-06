@@ -53,19 +53,21 @@
 		let textNumberTitle = 1;
 		scopes.forEach((scope, idx) => {
 			if (scope.title && scope.description) {
-				text = text.concat((autoNumber ? textNumberTitle + '. ' : '') + scope.title.trim() + '\n');
-				textNumberTitle;
+				text = text.concat(
+					'- ### ' + (autoNumber ? textNumberTitle + '. ' : '') + scope.title.trim() + '\n'
+				);
 
 				let textNumberDescription = 1;
 				scope.description.split('\n').map((line) => {
 					text = text.concat(
-						'\t' +
+						'\t- ' +
 							(autoNumber ? textNumberTitle + '.' + textNumberDescription + '. ' : '') +
 							line +
 							'\n'
 					);
 					textNumberDescription++;
 				});
+				textNumberTitle++;
 			}
 		});
 
@@ -104,7 +106,7 @@
 			<label
 				for="modal-export"
 				class="btn btn-outline modal-button mr-2"
-				on:click={() => scopesToText($sortedScopesDocumentation)}>Export To Text</label
+				on:click={() => scopesToText($sortedScopesDocumentation)}>Export To Text [Markdown]</label
 			>You will be able to choose to auto number each line written in the export option.
 			<!-- {#if showUpdate}
 				<label for="modal-update" class="btn btn-primary modal-update">Update</label>

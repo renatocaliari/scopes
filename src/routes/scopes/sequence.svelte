@@ -21,6 +21,7 @@
 	// import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
 	let showUpdate = false;
+	let autoTodo = false;
 </script>
 
 <script>
@@ -75,25 +76,39 @@
 	};
 
 	function scopesToText(metaGroup) {
+		console.log('autoTodo:', autoTodo);
 		let text = '';
 		let idxGlobal = 0;
+
+		let priorities = ['#A', '#B', '#C'];
+		let idxPriority = 0;
 
 		metaGroup.forEach((metaGroup, idxMetaGroup) => {
 			if (metaGroup.items.length) {
 				if (idxMetaGroup > 0) {
+					idxPriority++;
 					text = text.concat('\n');
 				}
 				text = text.concat('- # ' + metaGroup.title);
 			}
 			// console.log('groups: ', groups);
 			metaGroup.items.forEach((group, idxGroup) => {
-				// console.log('group: ', group);
+				console.log('group: ', group);
 				group.items.forEach((scope, idx) => {
 					idxGlobal++;
 
 					// console.log('scope: ', scope);
 					// console.log('idx + 1:', idx + 1, 'group.items:', group.items);
-					text = text.concat('\n- ### Step ' + idxGlobal + ': Scope [**' + scope.name + '**]');
+					text = text.concat(
+						'\n- ### ' +
+							(autoTodo ? (scope.indispensable ? 'NOW ' : 'LATER ') : '') +
+							'Step ' +
+							idxGlobal +
+							': **' +
+							scope.name +
+							'**' +
+							(scope.forkedScopeId ? '(do only the essential at this step)' : '')
+					);
 
 					let unlockDependencies = projectStore
 						.scopeUnlocksDependencies(scope, group.items)
@@ -113,11 +128,11 @@
 						dependsOn?.length ||
 						unlockDependencies.length
 					) {
-						text = text.concat('\n- Info:');
+						text = text.concat('\n\t- Info:');
 
 						if (scope.forkedScopeId) {
 							text = text.concat(
-								'\n\t- WARNING: Do only the essential at this step to do the next scope [' +
+								'\n\t\t- WARNING: Do only the essential at this step to do the next scope [' +
 									group.items[idx + 1].name +
 									']'
 							);
@@ -158,7 +173,13 @@
 					if (indispensableItems?.length > 0) {
 						text = text.concat('\n- Indispensable Tasks:');
 						indispensableItems.forEach((item) => {
-							text = text.concat('\n\t- ' + item.name);
+							text = text.concat(
+								'\n\t- ' +
+									(autoTodo
+										? 'NOW' + (idxPriority <= 3 ? ' ' + priorities[idxPriority] + ' ' : '')
+										: '') +
+									item.name
+							);
 						});
 					}
 				});
@@ -170,15 +191,16 @@
 			$sortedScopesDocumentation.forEach((scope) => {
 				if (scope.items.some((item) => !item.indispensable)) {
 					idxGlobal++;
-					text = text.concat('\n- Step ' + idxGlobal + ': Scope [**' + scope.name + '**]');
+					text = text.concat('\n- Step ' + idxGlobal + ': **' + scope.name + '**');
 					let niceToHaveItems = scope.items.filter((item) => !item.indispensable);
 					niceToHaveItems.forEach((item) => {
-						text = text.concat('\n\t- ' + item.name);
+						text = text.concat('\n\t- ' + (autoTodo === true ? 'LATER' + ' ' : '') + item.name);
 					});
 				}
 			});
 		}
 
+		exportText = text;
 		return text;
 	}
 
@@ -230,7 +252,8 @@
 			<label
 				for="modal-export"
 				class="btn btn-outline modal-button"
-				on:click={() => (exportText = scopesToText(orderMetaGroups))}>Export To Text</label
+				on:click={() => (exportText = scopesToText(orderMetaGroups))}
+				>Export To Text [Markdown]</label
 			>
 			<!-- {#if showUpdate}
 				<label for="modal-update" class="btn btn-primary modal-update">Update</label>
@@ -396,6 +419,23 @@
 				</div>
 			</div>
 		{/if}
+		<label for="auto-number" class="mr-2">Put NOW/LATER* at the beginning of the tasks</label><input
+			type="checkbox"
+			id="auto-number"
+			class="toggle align-middle content-center items-center"
+			bind:checked={autoTodo}
+			on:change={() => {
+				scopesToText(orderMetaGroups);
+			}}
+		/>
+		<span class="label-text-alt"
+			>(experimentally and temporarily, in format used by <a
+				href="https://logseq.com/"
+				target="_blank">Logseq</a
+			>)</span
+		>
+		<div class="divider" />
+
 		<div style="white-space: pre-wrap;" class="w-fit h-96 overflow-auto">
 			{exportText}
 		</div>

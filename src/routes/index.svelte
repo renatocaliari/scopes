@@ -160,7 +160,7 @@
 					<h4 class="text-xl font-medium text-gray-700">Sequence of execution</h4>
 					<p class="grow text-base text-center text-gray-500">
 						Discover an optimal sequence to execute your scopes based on previous steps. Scopefully
-						do that automatically. You can export to text.
+						do that automatically. You can export to text in markdown format.
 					</p>
 				</div>
 
@@ -200,7 +200,7 @@
 		</h2>
 		<div>
 			Accelerating or skipping the mapping of a project to be executed causes many obstacles to be
-			discovered only later, blocking execution, and many tasks needing to be re-planned or redone.
+			discovered only later, blocking execution, or many tasks needing to be re-planned or redone.
 			That is, you end up delaying the entire project or not being able to complete it in the
 			desired period.
 		</div>
@@ -241,6 +241,14 @@
 				<li><span class="bg-primary p-0.5 text-white">whatever</span> you want</li>
 			</ul>
 		</div>
+		<h2 class="text-4xl font-bold tracking-tight text-center">Export to Text [Markdown]</h2>
+		<div>
+			Export the results of sequence and documentation to text in markdown format. So, you can paste
+			it on you note taking tool like <a href="https://logseq.com/" target="_blank">Logseq</a>,
+			<a href="https://obsidian.md/" target="_blank">Obsidian</a>
+			or <a href="https://roamresearch.com/" target="_blank">Roam</a>.
+		</div>
+
 		<h2 class="text-4xl font-bold tracking-tight text-center">What Scopefully is not about?</h2>
 		<div>
 			Scopefully is not a tool to manager continuous & infinite backlog and tasks. For it you can
