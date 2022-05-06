@@ -83,10 +83,10 @@
 					/>
 				</div>
 				<div slot="body">
-					<h4>Indispensable items:</h4>
-					<Items bind:scope items={scope.items.filter((i) => i.indispensable)} />
 					<h4>Nice to have items:</h4>
 					<Items bind:scope items={scope.items.filter((i) => !i.indispensable)} />
+					<h4>Indispensable items:</h4>
+					<Items bind:scope items={scope.items.filter((i) => i.indispensable)} />
 				</div>
 			</Scope>
 		</div>
