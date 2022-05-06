@@ -76,7 +76,6 @@
 	};
 
 	function scopesToText(metaGroup) {
-		console.log('autoTodo:', autoTodo);
 		let text = '';
 		let idxGlobal = 0;
 

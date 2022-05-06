@@ -393,8 +393,8 @@ export function ProjectStore() {
         let itemsRemainingOfIndispensableGroups = [];
         let forkedScope = [];
         copyGroupsScopes.map((group, idx) => {
-            console.log('idx:', idx);
-            console.log('group.items:', group.items);
+            // console.log('idx:', idx);
+            // console.log('group.items:', group.items);
             let sortedGroup = mergeSort(mergeScopes, group.items);
 
             if (forkByRisky) {
@@ -403,8 +403,8 @@ export function ProjectStore() {
                 if (group.risky) {
                     ({ forkedScope, itemsRemaining } = (generateForkingScopesBasedOnProperty(sortedGroup, 'risky', indexLastRisky, 'indispensable')));
                     itemsRemainingOfRiskyGroups.push(...itemsRemaining);
-                    console.log('-- itemsRemaining:', JSON.parse(JSON.stringify(itemsRemaining)));
-                    console.log('-- itemsRemainingOfRiskyGroups:', JSON.parse(JSON.stringify(itemsRemainingOfRiskyGroups)));
+                    // console.log('-- itemsRemaining:', JSON.parse(JSON.stringify(itemsRemaining)));
+                    // console.log('-- itemsRemainingOfRiskyGroups:', JSON.parse(JSON.stringify(itemsRemainingOfRiskyGroups)));
                 }
             }
             if (forkByIndispensable) {
@@ -413,8 +413,8 @@ export function ProjectStore() {
                 if (group.indispensable) {
                     ({ forkedScope, itemsRemaining } = (generateForkingScopesBasedOnProperty(sortedGroup, 'indispensable', indexLastIndispensable)));
                     itemsRemainingOfIndispensableGroups.push(...itemsRemaining);
-                    console.log('-- itemsRemaining:', JSON.parse(JSON.stringify(itemsRemaining)));
-                    console.log('-- itemsRemainingOfIndispensableGroups:', JSON.parse(JSON.stringify(itemsRemainingOfIndispensableGroups)));
+                    // console.log('-- itemsRemaining:', JSON.parse(JSON.stringify(itemsRemaining)));
+                    // console.log('-- itemsRemainingOfIndispensableGroups:', JSON.parse(JSON.stringify(itemsRemainingOfIndispensableGroups)));
                 }
             }
             group.items = sortedGroup.filter((s) => !s.remove);
@@ -430,12 +430,13 @@ export function ProjectStore() {
         }
 
         if (forkByIndispensable) {
-            if (itemsRemainingOfIndispensableGroups?.length && itemsRemainingOfIndispensableGroups.filter((s) => !itemsRemainingOfRiskyGroups.some((s2) => s2.id === s.id)).length) {
+            if (itemsRemainingOfIndispensableGroups?.length && itemsRemainingOfIndispensableGroups.filter((s) => !itemsRemainingOfRiskyGroups?.some((s2) => s2.id === s.id)).length) {
                 // console.log('itemsRemainingOfIndispensableGroups:', itemsRemainingOfIndispensableGroups);
-                let groupOfItemsRemainingOfIndispensableGroups = { id: -1, indispensable: false, risky: itemsRemainingOfRiskyGroups.every((s) => s.risky), items: itemsRemainingOfIndispensableGroups.filter((s) => !itemsRemainingOfRiskyGroups.some((s2) => s2.id === s.id)) };
+                let groupOfItemsRemainingOfIndispensableGroups = { id: -1, indispensable: false, risky: itemsRemainingOfRiskyGroups.every((s) => s.risky), items: itemsRemainingOfIndispensableGroups.filter((s) => !itemsRemainingOfRiskyGroups?.some((s2) => s2.id === s.id)) };
                 copyGroupsScopes.splice(lastIndexOf(copyGroupsScopes, 'indispensable', true) + 1, 0, groupOfItemsRemainingOfIndispensableGroups);
                 // console.log('copyGroupsScopes:', JSON.parse(JSON.stringify(copyGroupsScopes)));
             }
+            // console.log('copyGroupsScopes:', copyGroupsScopes);
         }
 
         // console.log('itemsRemainingOfRiskyGroups:', itemsRemainingOfRiskyGroups);
@@ -639,7 +640,7 @@ export function ProjectStore() {
 
             risky = scopes.every((s) => s.risky);
             indispensable = scopes.every((s) => s.indispensable);
-            let newGroup = { risky: risky, indispensable: indispensable, dependencyPackage: dependencyPackage, items: mergeSort(mergeScopesRisky, scopes) };
+            let newGroup = { id: -1, risky: risky, indispensable: indispensable, dependencyPackage: dependencyPackage, items: mergeSort(mergeScopesRisky, scopes) };
 
             return newGroup;
         });
