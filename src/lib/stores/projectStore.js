@@ -421,7 +421,7 @@ export function ProjectStore() {
         })
 
         if (forkByRisky) {
-            if (itemsRemainingOfRiskyGroups && itemsRemainingOfRiskyGroups.length) {
+            if (itemsRemainingOfRiskyGroups?.length && itemsRemainingOfRiskyGroups.length) {
                 // console.log('itemsRemainingOfRiskyGroups:', itemsRemainingOfRiskyGroups);
                 let groupOfItemsRemainingOfRiskyGroups = { id: -1, risky: false, indispensable: itemsRemainingOfRiskyGroups.every((s) => s.indispensable), items: itemsRemainingOfRiskyGroups };
                 copyGroupsScopes.splice(lastIndexOf(copyGroupsScopes, 'risky', true) + 1, 0, groupOfItemsRemainingOfRiskyGroups);
@@ -430,7 +430,7 @@ export function ProjectStore() {
         }
 
         if (forkByIndispensable) {
-            if (itemsRemainingOfIndispensableGroups && itemsRemainingOfIndispensableGroups.filter((s) => !itemsRemainingOfRiskyGroups.some((s2) => s2.id === s.id)).length) {
+            if (itemsRemainingOfIndispensableGroups?.length && itemsRemainingOfIndispensableGroups.filter((s) => !itemsRemainingOfRiskyGroups.some((s2) => s2.id === s.id)).length) {
                 // console.log('itemsRemainingOfIndispensableGroups:', itemsRemainingOfIndispensableGroups);
                 let groupOfItemsRemainingOfIndispensableGroups = { id: -1, indispensable: false, risky: itemsRemainingOfRiskyGroups.every((s) => s.risky), items: itemsRemainingOfIndispensableGroups.filter((s) => !itemsRemainingOfRiskyGroups.some((s2) => s2.id === s.id)) };
                 copyGroupsScopes.splice(lastIndexOf(copyGroupsScopes, 'indispensable', true) + 1, 0, groupOfItemsRemainingOfIndispensableGroups);
