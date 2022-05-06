@@ -75,7 +75,7 @@
 						bind:scope
 						bind:checked={scope.risky}
 						cssClass="toggle-accent"
-						checkText="Scope with risky unknowns based only on the indispensable items"
+						checkText="Scope with risky unknowns based on the indispensable items below"
 						on:checkItem={(e) => {
 							projectStore.scopeUpdateRisky(e.detail.item, e.detail.checked);
 							$projectStore = $projectStore;
