@@ -22,7 +22,7 @@
 			{
 				name: 'unknowns',
 				optional: true,
-				text: 'Set which scopes have risky unknowns (vs routine work)',
+				text: 'Check which scopes have risky unknowns (vs routine work)',
 				checked: sortedScopes.some((scope) => scope.risky)
 			}
 		]
@@ -75,7 +75,7 @@
 						bind:scope
 						bind:checked={scope.risky}
 						cssClass="toggle-accent"
-						checkText="Risky unknowns on the indispensable items"
+						checkText="Scope with risky unknowns based only on the indispensable items"
 						on:checkItem={(e) => {
 							projectStore.scopeUpdateRisky(e.detail.item, e.detail.checked);
 							$projectStore = $projectStore;
@@ -83,9 +83,6 @@
 					/>
 				</div>
 				<div slot="body">
-					<h4>Nice to have items:</h4>
-					<Items bind:scope items={scope.items.filter((i) => !i.indispensable)} />
-					<h4>Indispensable items:</h4>
 					<Items bind:scope items={scope.items.filter((i) => i.indispensable)} />
 				</div>
 			</Scope>
