@@ -21,7 +21,10 @@
 				<a href="/scopes/dump" class="btn btn-primary">Get Started for FREE</a>
 				<a href="/about" class="btn btn-outline ml-4">About</a>
 
-				<p class="text-lg">All the information will be <br />stored locally in your browser.</p>
+				<p class="text-lg">
+					All the information will be <br />stored locally in your browser. <br /><br /> You can export
+					the final result.
+				</p>
 			</div>
 		</div>
 	</div>
@@ -202,7 +205,7 @@
 		</div>
 
 		<h2 class="text-4xl font-bold tracking-tight text-center">
-			In which cases can I use Scopefully?
+			For which cases can you use Scopefully?
 		</h2>
 		<div>
 			You can use it to things like:
