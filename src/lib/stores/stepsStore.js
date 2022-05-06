@@ -11,14 +11,15 @@ export const stepsStore = writable([
     },
     {
         linkText: '2. Indispensable',
-        h1: 'Set which scopes and items are indispensable',
+        h1: 'Indispensable',
         link: '/scopes/indispensable',
         active: false,
         completed: false
     },
     {
         linkText: '3. Risky Unknowns',
-        h1: 'Set scopes with risky unknowns',
+        h1: 'Risky Unknowns',
+        h2: 'Set scopes with risky unknowns',
         link: '/scopes/unknowns',
         active: false,
         completed: false
@@ -32,7 +33,7 @@ export const stepsStore = writable([
     },
     {
         linkText: '5. Sequence',
-        h1: 'Generate Sequence',
+        h1: 'Sequence',
         h2: 'Sequence for execution',
         link: '/scopes/sequence',
         active: false,

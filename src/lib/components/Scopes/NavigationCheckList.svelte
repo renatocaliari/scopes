@@ -71,7 +71,7 @@
 								><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
 									d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"
 								/></svg
-							>Previous step</a
+							>{$stepsStore[currentStep - 1]?.h1}</a
 						>
 					</div>
 				{/if}
@@ -81,7 +81,7 @@
 						<div class="form-control w-full sm:max-w-xs mt-2 sm:m-0">
 							<!-- class:btn-disabled={!completed} -->
 							<a href={linkNextStep} class="btn btn-primary"
-								>Next step <svg
+								>{$stepsStore[currentStep + 1]?.h1}<svg
 									class="w-4 h-4 ml-2"
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 256 512"

@@ -15,6 +15,7 @@
 		<div class="hero-content text-center">
 			<div class="max-w-md">
 				<h1 class="text-8xl mb-2 font-bold">Scopefully</h1>
+				<span class="text-3xl">(Beta v0.0.1)</span>
 				<p class="text-2xl">
 					The tool to help you understand the execution of your next project before start it.
 				</p>
@@ -253,7 +254,7 @@
 		<div class="mt-4">
 			In the case you use other tool to manage all your tasks, instead of dump the items from you
 			brain, you can copy the name of items in text format from the tool you use and import in the
-			Scopefully.
+			Scopefully. And, after you follow the steps on Scopefully, you can export the result.
 		</div>
 	</div>
 </div>
