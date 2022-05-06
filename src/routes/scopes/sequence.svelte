@@ -418,15 +418,15 @@
 				</div>
 			</div>
 		{/if}
-		<label for="auto-number" class="mr-2">Put NOW/LATER* at the beginning of the tasks</label><input
+		<input
 			type="checkbox"
 			id="auto-number"
-			class="toggle align-middle content-center items-center"
+			class="toggle align-middle content-center items-center mr-2"
 			bind:checked={autoTodo}
 			on:change={() => {
 				scopesToText(orderMetaGroups);
 			}}
-		/>
+		/><label for="auto-number" class="mr-2">Put NOW/LATER* at the beginning of the tasks</label>
 		<span class="label-text-alt"
 			>(*experimentally in format used by <a href="https://logseq.com/" target="_blank">Logseq</a
 			>)</span
