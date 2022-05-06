@@ -17,7 +17,7 @@
 		<p>You can:</p>
 		<ul>
 			<li>
-				know more about me on my site (pt-BR): <a href="https://renatocaliari.com"
+				know more about me on my personal site (pt-BR): <a href="https://renatocaliari.com"
 					>https://renatocaliari.com</a
 				>
 			</li>
@@ -32,7 +32,7 @@
 				>
 			</li>
 			<li>
-				connecto on LinkedIn: <a href="https://linkedin.com/in/renatocaliari/"
+				connect on LinkedIn: <a href="https://linkedin.com/in/renatocaliari/"
 					>https://linkedin.com/in/renatocaliari/</a
 				>
 			</li>
