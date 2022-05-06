@@ -107,7 +107,7 @@
 				for="modal-export"
 				class="btn btn-outline modal-button mr-2"
 				on:click={() => scopesToText($sortedScopesDocumentation)}>Export To Text [Markdown]</label
-			>You will be able to choose to auto number each line written in the export option.
+			>You will be able to choose to auto number each line written.
 			<!-- {#if showUpdate}
 				<label for="modal-update" class="btn btn-primary modal-update">Update</label>
 			{/if} -->
