@@ -16,8 +16,7 @@
 			<div class="max-w-md">
 				<h1 class="text-8xl mb-2 font-bold">Scopefully</h1>
 				<p class="text-2xl">
-					The tool to help you understand the execution of your next project, goal, product version
-					or cycle before start it.
+					The tool to help you understand the execution of your next project before start it.
 				</p>
 				<a href="/scopes/dump" class="btn btn-primary">Get Started for FREE</a>
 				<a href="/about" class="btn btn-outline ml-4">About</a>
