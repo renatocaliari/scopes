@@ -1,4 +1,4 @@
-function themeToggle() {
+export function themeToggle() {
     var toggleEl = document.querySelector("[data-toggle-theme]");
     (function (theme = localStorage.getItem("theme")) {
         if (localStorage.getItem("theme")) {
@@ -11,7 +11,7 @@ function themeToggle() {
         }
     })();
     if (toggleEl) {
-        [...document.querySelectorAll("[data-toggle-theme]")].forEach((el) => {
+        [...document.querySelectorAll("[data-toggle-theme]")].forEach((el, idx) => {
             el.addEventListener("click", function () {
                 var themesList = el.getAttribute('data-toggle-theme');
                 if (themesList) {
@@ -29,7 +29,7 @@ function themeToggle() {
                         localStorage.setItem("theme", themesArray[0]);
                     }
                 }
-                [...document.querySelectorAll("[data-toggle-theme]")].forEach((el) => {
+                [...document.querySelectorAll("[data-toggle-theme]")].forEach((el, idx) => {
                     el.classList.toggle(this.getAttribute('data-act-class'));
                 });
             });

@@ -7,29 +7,36 @@ export const stepsStore = writable([
         h1: 'Dump & Cluster',
         link: '/scopes/dump',
         active: true,
-        completed: true
+        completed: false
     },
     {
-        linkText: 'Set Dependencies',
+        linkText: 'Indispensable',
+        h1: 'Set which scopes and items are indispensable',
+        link: '/scopes/indispensable',
+        active: false,
+        completed: false
+    },
+    {
+        linkText: 'Risky Unknowns',
+        h1: 'Set scopes with risky unknowns',
+        link: '/scopes/unknowns',
+        active: false,
+        completed: false
+    },
+    {
+        linkText: 'Dependencies',
         h1: 'Set Dependencies',
         link: '/scopes/dependencies',
         active: false,
-        completed: true
+        completed: false
     },
     {
-        linkText: 'Set Risky Unknowns',
-        h1: 'Set Risky Unknowns',
-        link: '/scopes/unknowns',
-        active: false,
-        completed: true
-    },
-    {
-        linkText: 'Generate Sequence',
+        linkText: 'Sequence',
         h1: 'Generate Sequence',
         h2: 'Sequence for execution',
         link: '/scopes/sequence',
         active: false,
-        completed: true
+        completed: false
     },
     {
         linkText: 'Create Documentation',
@@ -37,7 +44,7 @@ export const stepsStore = writable([
         h2: 'Create documentation to other people that will execute it',
         link: '/scopes/documentation',
         active: false,
-        completed: true
+        completed: false
     }
 ])
 

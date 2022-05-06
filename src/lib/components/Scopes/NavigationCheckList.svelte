@@ -79,7 +79,8 @@
 			<div class="w-full sm:w-auto">
 				{#if linkNextStep}<div>
 						<div class="form-control w-full sm:max-w-xs mt-2 sm:m-0">
-							<a href={linkNextStep} class="btn btn-primary" class:btn-disabled={!completed}
+							<!-- class:btn-disabled={!completed} -->
+							<a href={linkNextStep} class="btn btn-primary"
 								>Next step <svg
 									class="w-4 h-4 ml-2"
 									xmlns="http://www.w3.org/2000/svg"

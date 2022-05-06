@@ -8,6 +8,7 @@
 	export let readOnly = false;
 	export let dragAndDrop = false;
 	export let checkbox = false;
+	export let fnDisableCheckbox = undefined;
 	export let checked = false;
 	export let allowRemoveItem = false;
 	export let allowEditItem = false;
@@ -57,14 +58,23 @@
 				</svg>
 			</div>
 		{/if}
-
 		{#if checkbox}
-			<input
-				on:change={(e) => checkItem(e, e.target.checked)}
-				type="checkbox"
-				class="checkbox mr-2"
-				{checked}
-			/>
+			{#if fnDisableCheckbox && fnDisableCheckbox(item)}
+				<input
+					on:change={(e) => checkItem(e, e.currentTarget.checked)}
+					type="checkbox"
+					disabled={true}
+					class="checkbox mr-2"
+					{checked}
+				/>
+			{:else}
+				<input
+					on:change={(e) => checkItem(e, e.currentTarget.checked)}
+					type="checkbox"
+					class="checkbox mr-2"
+					{checked}
+				/>
+			{/if}
 		{/if}
 		{#if allowEditItem}
 			<span
@@ -114,29 +124,28 @@
 			</button>
 		{/if}
 	{/if}
+	<slot name="badges" />
+</div>
 
-	<input type="checkbox" id="modal-item-{item.id}" class="modal-toggle" />
-	<div class="modal">
-		<div class="modal-box relative">
-			<label for="modal-item-{item.id}" class="btn btn-sm btn-circle absolute right-2 top-2"
-				>✕</label
-			>
-			{#if $$slots.headerModal}
-				<h3 class="text-lg font-bold"><slot name="headerModal" /></h3>
-			{/if}
-			{#if $$slots.bodyModal}
-				<slot name="bodyModal" />
-			{/if}
-			{#if itemsModal}
-				{#each itemsModal as itemModal}
-					{#if itemModal['name']}
-						<ul>
-							<li>{itemModal.name}</li>
-						</ul>
-					{/if}
-				{/each}
-			{/if}
-		</div>
+<input type="checkbox" id="modal-item-{item.id}" class="modal-toggle" />
+<div class="modal">
+	<div class="modal-box relative">
+		<label for="modal-item-{item.id}" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+		{#if $$slots.headerModal}
+			<h3 class="text-lg font-bold"><slot name="headerModal" /></h3>
+		{/if}
+		{#if $$slots.bodyModal}
+			<slot name="bodyModal" />
+		{/if}
+		{#if itemsModal}
+			{#each itemsModal as itemModal}
+				{#if itemModal['name']}
+					<ul>
+						<li>{itemModal.name}</li>
+					</ul>
+				{/if}
+			{/each}
+		{/if}
 	</div>
 </div>
 

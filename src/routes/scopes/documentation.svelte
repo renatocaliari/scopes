@@ -98,7 +98,7 @@
 	}
 </script>
 
-<NavigationScopes currentStep={4} let:currentStep>
+<NavigationScopes currentStep={5} let:currentStep>
 	<NavigationCheckList {checkList} {currentStep} linkPreviousStep="/scopes/sequence">
 		<div slot="buttons">
 			<label
@@ -143,14 +143,14 @@
 				</div>
 				<div slot="body">
 					<div class="w-full flex flex-col-reverse sm:flex-row">
-						<div class="w-full grow">
+						<div class="w-full grow max-w-5xl">
 							<textarea
 								class="textarea textarea-bordered w-full h-full text-lg"
 								placeholder="Write here the sections related to this group..."
 								bind:value={scope.description}
 							/>
 						</div>
-						<div class="p-2 min-w-fit">
+						<div class="p-2 w-full sm:w-96">
 							<div>
 								<h4 class="mt-0">Indispensable:</h4>
 								<ul>

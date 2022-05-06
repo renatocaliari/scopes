@@ -35,13 +35,13 @@
 	}
 </script>
 
-<NavigationScopes currentStep={1} let:currentStep>
+<NavigationScopes currentStep={3} let:currentStep>
 	<NavigationCheckList
 		{checkList}
 		{currentStep}
 		optional={true}
-		linkNextStep="/scopes/unknowns"
-		linkPreviousStep="/scopes/dump"
+		linkNextStep="/scopes/sequence"
+		linkPreviousStep="/scopes/unknowns"
 	>
 		<div slot="buttons">
 			<label
@@ -67,13 +67,43 @@
 				<div slot="badge">
 					<BadgeDependencies project={projectStore} bind:scope />
 				</div>
-				<div slot="subTitle">Depends on scopes:</div>
+				<div slot="header">
+					<div class="badge badge-accent text-white" class:hidden={!scope.risky}>Risky</div>
+					<div class="badge badge-success text-white" class:hidden={!scope.indispensable}>
+						Indispensable
+					</div>
+				</div>
+
+				<div slot="subTitle">
+					{#if scope.indispensable}
+						<ul
+							class="text-sm
+						"
+						>
+							<li>it cannot depends on nice-to-have scopes</li>
+							<li>it cannot depends on scopes that already depends on this scope</li>
+						</ul>
+					{:else}
+						<ul
+							class="text-sm
+						"
+						>
+							<li>it cannot depends on scopes that already depends on this scope</li>
+						</ul>
+					{/if}
+
+					<span class="font-bold">Depends on scopes:</span>
+				</div>
 				<div slot="body">
 					<Items
 						emptyState="No Scope"
+						badgeNiceToHave
 						bind:scope
 						items={projectStore.filterScopesWithItemsExcludingThisAndBucket(scope)}
 						checkbox
+						fnDisableCheckbox={(s) => {
+							return s.dependsOn.includes(scope.id) || (scope.indispensable && !s.indispensable);
+						}}
 						fnSetChecked={(s) => {
 							return scope.dependsOn.includes(s.id);
 						}}
@@ -92,9 +122,6 @@
 								projectStore.updateDependencies(s, item, checked);
 							}
 							$projectStore = $projectStore;
-						}}
-						fnItemsModal={(scope) => {
-							return scope.items;
 						}}
 					/>
 				</div>

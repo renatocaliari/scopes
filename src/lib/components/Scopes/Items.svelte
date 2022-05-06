@@ -14,6 +14,8 @@
 	export let focusAdd = false;
 	export let allowEditItem = false;
 	export let checkbox = false;
+	export let badgeNiceToHave = false;
+	export let fnDisableCheckbox = undefined;
 	export let emptyState = 'No items';
 	export let fnItemsModal = (item) => {
 		return [];
@@ -57,7 +59,8 @@
 	function addItem(event) {
 		if (event.target.value.trim() !== '') {
 			dispatch('addItem', {
-				value: event.target.value
+				value: event.target.value,
+				indispensable: false
 			});
 		}
 
@@ -121,7 +124,7 @@
 	</section> -->
 <!-- {:else} -->
 <section
-	class="overflow-auto {minHeight} {maxHeight}"
+	class="overflow-y-scroll {minHeight} {maxHeight}"
 	use:proxyDndzone={{
 		items: items.filter((i) => i.name || i.placeholder),
 		flipDurationMs,
@@ -133,7 +136,7 @@
 >
 	{#each items.filter((i) => i.name || i.placeholder) as item (item.id)}
 		<div
-			class="w-auto text-xs min-h-8 p-2 my-2"
+			class="w-auto text-xs min-h-8 p-2 my-2 "
 			class:border-b-2={item.name || item.placeholder}
 			animate:flip={{ duration: flipDurationMs }}
 		>
@@ -141,6 +144,7 @@
 				bind:item
 				{dragAndDrop}
 				{checkbox}
+				{fnDisableCheckbox}
 				checked={fnSetChecked(item)}
 				{allowEditItem}
 				{allowRemoveItem}
@@ -151,6 +155,12 @@
 				on:removeItem={(event) => removeItem(event.detail.item.id)}
 			>
 				<div slot="headerModal">Items of {item.name}</div>
+
+				<div slot="badges" class="inline-flex flex-wrap">
+					{#if !item.indispensable && badgeNiceToHave}
+						<div class="badge badge-ghost m-1">Nice to have</div>
+					{/if}
+				</div>
 			</ItemDragDrop>
 		</div>
 	{/each}

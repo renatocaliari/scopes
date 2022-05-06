@@ -49,8 +49,8 @@
 </script>
 
 <div
-	name="scope-{scope.id}"
-	class="rounded-md border-[0.1em] border-slate-300 shadow-xl p-4 {width} max-h-screen {classColor}"
+	name="scope-{scope.i}"
+	class="rounded-md border-[0.1em] border-slate-300 shadow-xl p-4 {width} max-h-screen h-full {classColor}"
 >
 	<div class:collapse={collapsable} class:collapse-arrow={collapsable}>
 		<input type="checkbox" class:hidden={!collapsable} />
@@ -85,7 +85,7 @@
 					{:else}
 						<div class="card-title w-full min-h-8 flex flex-wrap break-all">
 							<label for="modal-{scope.id}" class="mr-2 link link-hover prose"
-								><h3 class="align-middle content-center items-center">
+								><h2 class="align-middle content-center items-center break-normal">
 									{#if icon}
 										<Icon data={icon} class=" mr-2" />
 									{/if}
@@ -95,7 +95,7 @@
 									{!scope?.name || scope?.name?.trim().length === 0
 										? 'Scope ' + scope?.id?.split('-')[1]
 										: scope?.name}
-								</h3></label
+								</h2></label
 							>
 						</div>
 						{#if $$slots.badge}
@@ -115,7 +115,7 @@
 				<div class="flex-none"><slot name="subTitle" /></div>
 			{/if}
 		</div>
-		<div class:collapse-content={collapsable}>
+		<div class:collapse-content={collapsable} class="overflow-visible">
 			{#if $$slots.body}
 				<slot name="body" />
 			{/if}

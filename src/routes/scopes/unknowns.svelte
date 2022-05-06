@@ -34,8 +34,8 @@
 		optional={true}
 		{currentStep}
 		{checkList}
-		linkNextStep="/scopes/sequence"
-		linkPreviousStep="/scopes/dependencies"
+		linkNextStep="/scopes/dependencies"
+		linkPreviousStep="/scopes/indispensable"
 	/>
 </NavigationScopes>
 
@@ -50,10 +50,14 @@
 				icon={scope.risky ? '' : undefined}
 				classColor={scope.risky ? 'bg-red-50' : undefined}
  -->
-			<Scope bind:scope classColor={scope.risky ? 'bg-accent' : undefined}>
-				<div slot="badge">
+			<Scope
+				bind:scope
+				classColor={scope.risky ? 'border-accent border-4' : undefined}
+				itemsScopeModal={scope.items}
+			>
+				<!-- <div slot="badge">
 					<BadgeDependencies project={projectStore} {scope} />
-				</div>
+				</div> -->
 
 				<div
 					slot="header"
@@ -70,7 +74,8 @@
 					<ToggleScope
 						bind:scope
 						bind:checked={scope.risky}
-						checkText="Risky unknowns"
+						cssClass="toggle-accent"
+						checkText="Risky unknowns on the indispensable items"
 						on:checkItem={(e) => {
 							projectStore.scopeUpdateRisky(e.detail.item, e.detail.checked);
 							$projectStore = $projectStore;
@@ -78,8 +83,10 @@
 					/>
 				</div>
 				<div slot="body">
-					<h4>Indispensable (hiding Nice To Have):</h4>
-					<Items bind:scope items={projectStore.scopeFilterItemsIndispensable(scope)} />
+					<h4>Indispensable items:</h4>
+					<Items bind:scope items={scope.items.filter((i) => i.indispensable)} />
+					<h4>Nice to have items:</h4>
+					<Items bind:scope items={scope.items.filter((i) => !i.indispensable)} />
 				</div>
 			</Scope>
 		</div>

@@ -39,12 +39,8 @@
 
 <div class="hidden lg:flex btn-group justify-center my-4">
 	{#each $stepsStore as btn, idx}
-		<a
-			class="btn"
-			class:btn-active={currentStep == idx}
-			class:btn-disabled={!$stepsStore[0].completed}
-			href={btn.link}
-			sveltekit:prefetch
+		<!-- class:btn-disabled={!$stepsStore[0].completed} -->
+		<a class="btn" class:btn-active={currentStep == idx} href={btn.link} sveltekit:prefetch
 			>{btn.linkText}
 		</a>
 	{/each}

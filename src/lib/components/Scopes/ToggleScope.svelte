@@ -4,11 +4,13 @@
 	export let scope;
 	export let checked = false;
 	export let checkText = '';
+	export let cssClass = 'toggle-primary';
 
 	const dispatch = createEventDispatcher();
 
-	function checkItem(scope, checked) {
+	function checkItem(e, scope, checked) {
 		dispatch('checkItem', {
+			element: e.currentTarget,
 			item: scope,
 			checked: checked
 		});
@@ -20,9 +22,9 @@
 		<span class="label-text mr-2">{checkText}</span>
 		<input
 			type="checkbox"
-			class="toggle toggle-primary"
+			class="toggle {cssClass}"
 			{checked}
-			on:change={(e) => checkItem(scope, e.target.checked)}
+			on:change={(e) => checkItem(e, scope, e.currentTarget.checked)}
 		/>
 	</label>
 </div>

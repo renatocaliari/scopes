@@ -23,7 +23,7 @@
 			items: [
 				{
 					name: 'dump',
-					text: 'In the Bucket below, dump all you think is needed to do or solve',
+					text: 'In the Bucket below, dump all you think is needed to do or solve in the next cycle',
 					checked: $projectStore.some((scope) => scope.items?.length > 0)
 				},
 				{
@@ -49,17 +49,6 @@
 						$projectStore
 							.filter((scope) => scope.id !== 'bucket')
 							.filter((scope) => scope.items?.length > 0 && scope.name.length === 0).length === 0
-				},
-				{
-					name: 'indispensable',
-					text: 'Uncheck nice-to-have items. The items checked will be considered indispensable',
-					optional: true,
-					checked:
-						$projectStore.filter((scope) => scope.id !== 'bucket' && scope.items?.length > 0)
-							.length > 0 &&
-						$projectStore
-							.filter((scope) => scope.id !== 'bucket' && scope.items?.length > 0)
-							.every((scope) => scope.items?.some((item) => item.indispensable))
 				}
 			]
 		};
@@ -87,7 +76,7 @@
 
 <NavigationScopes currentStep={0} let:currentStep>
 	<div slot="checkList">
-		<NavigationCheckList {currentStep} {checkList} linkNextStep="/scopes/dependencies">
+		<NavigationCheckList {currentStep} {checkList} linkNextStep="/scopes/indispensable">
 			<div slot="buttons">
 				<label
 					for="modal-clear"
@@ -121,12 +110,12 @@
 					><label for="modal-import" class="btn btn-secondary modal-button m-0">Bulk Insert</label>
 				</div>
 				<div slot="body">
-					<div>Brain drump:</div>
+					<div>Brain dump:</div>
 					<Items
 						bind:scope={scopeBucket}
 						bind:items={scopeBucket.items}
 						on:addItem={(e) => {
-							addItem(scopeBucket, e.detail.value, false);
+							addItem(scopeBucket, e.detail.value, e.detail.indispensable);
 						}}
 						maxHeight="max-h-96"
 						minHeight="h-screen"
@@ -156,20 +145,7 @@
 
 				<Scope editTitle bind:scope width="w-80">
 					<div slot="body">
-						<Items
-							bind:scope
-							bind:items={scope.items}
-							allowEditItem
-							dragAndDrop={true}
-							checkbox
-							fnSetChecked={(item) => {
-								return !item.indispensable;
-							}}
-							fnOnCheckItem={(e, scope, i, checked) => {
-								projectStore.itemUpdateIndispensable(scope, i, checked);
-								$projectStore = $projectStore;
-							}}
-						/>
+						<Items bind:scope bind:items={scope.items} allowEditItem dragAndDrop={true} />
 					</div></Scope
 				>
 			</div>
