@@ -220,13 +220,13 @@
 				</div>
 			</div>
 		{/if}
-		<label for="auto-number" class="mr-2">Auto-number each line.</label><input
+		<input
 			type="checkbox"
 			id="auto-number"
-			class="toggle align-middle content-center items-center"
+			class="toggle align-middle content-center items-center mr-2"
 			bind:checked={autoNumber}
 			on:change={() => scopesToText($projectStore)}
-		/>
+		/><label for="auto-number">Auto-number each line</label>
 		<div class="divider" />
 		<div style="white-space: pre-wrap;" class="w-fit h-96 overflow-auto">
 			{exportText}
