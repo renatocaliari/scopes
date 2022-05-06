@@ -52,7 +52,7 @@
 		<ul>
 			<li>allow share a url for current project with other people</li>
 			<li>
-				allow users to create a personal account and save data in the cloud to manager several
+				allow users to create a personal account and save data in the cloud to manage several
 				projects
 			</li>
 			<li>embed excalidraw to allow draw flows and shapes</li>
@@ -66,12 +66,12 @@
 			I installed Mixpanel only to know about pages visited and actions executed, without any
 			personal information. I don't track any other data.
 		</p> -->
-		<p>
+		<!-- <p>
 			You can set your browser to <a
 				href="https://support.google.com/chrome/answer/2790761?hl=en&co=GENIE.Platform%3DDesktop"
 				>"Do Not Track"</a
 			> anything.
-		</p>
+		</p> -->
 		<h2 class="mt-8 mb-4">Context and learning</h2>
 		<p>To develop this product I'm using Svelte + SvelteKit.</p>
 		<p>
