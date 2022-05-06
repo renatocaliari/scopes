@@ -53,7 +53,7 @@ export function ProjectStore() {
     function createInitialData(hasBucket, totalScopes, sampleData, idxSample = 1) {
         // console.log('store empty')
         if (hasBucket) {
-            addBucketScope('Bucket of the next cycle');
+            addBucketScope('Bucket');
         }
         for (let i = 1; i <= totalScopes; i++) {
             let name = "";
