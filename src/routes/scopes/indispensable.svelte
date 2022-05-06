@@ -25,14 +25,8 @@
 			{
 				name: 'indispensable',
 				optional: false,
-				text: 'Set which scopes are indispensable. The remaining ones will be considered nice-to-have at this moment.',
+				text: 'Check which scopes or items are indispensable. The remaining ones will be considered nice-to-have for this cycle.',
 				checked: sortedScopes.some((scope) => scope.indispensable)
-			},
-			{
-				name: 'indispensable-items',
-				optional: false,
-				text: 'Set which items are indispensable. The remaining ones will be considered nice-to-have at this moment.',
-				checked: sortedScopes.some((scope) => scope.items.some((item) => item.indispensable))
 			}
 		]
 	};
@@ -73,7 +67,7 @@
 							bind:this={toggle}
 							bind:scope
 							bind:checked={scope.indispensable}
-							checkText="Scope Indispensable"
+							checkText="Indispensable Scope"
 							on:checkItem={(e) => {
 								if (!e.detail.checked) {
 									let scopesDependsOnThat = $projectStore.filter(
