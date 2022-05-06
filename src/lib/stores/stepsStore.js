@@ -3,35 +3,35 @@ import { writable } from "svelte/store";
 
 export const stepsStore = writable([
     {
-        linkText: 'Dump & Cluster',
+        linkText: '1. Dump & Cluster',
         h1: 'Dump & Cluster',
         link: '/scopes/dump',
         active: true,
         completed: false
     },
     {
-        linkText: 'Indispensable',
+        linkText: '2. Indispensable',
         h1: 'Set which scopes and items are indispensable',
         link: '/scopes/indispensable',
         active: false,
         completed: false
     },
     {
-        linkText: 'Risky Unknowns',
+        linkText: '3. Risky Unknowns',
         h1: 'Set scopes with risky unknowns',
         link: '/scopes/unknowns',
         active: false,
         completed: false
     },
     {
-        linkText: 'Dependencies',
+        linkText: '4. Dependencies',
         h1: 'Set Dependencies',
         link: '/scopes/dependencies',
         active: false,
         completed: false
     },
     {
-        linkText: 'Sequence',
+        linkText: '5. Sequence',
         h1: 'Generate Sequence',
         h2: 'Sequence for execution',
         link: '/scopes/sequence',
@@ -39,7 +39,7 @@ export const stepsStore = writable([
         completed: false
     },
     {
-        linkText: 'Create Documentation',
+        linkText: '6. Create Documentation',
         h1: 'Documentation',
         h2: 'Create documentation to other people that will execute it',
         link: '/scopes/documentation',
