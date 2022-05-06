@@ -244,7 +244,7 @@
 		<h2 class="text-4xl font-bold tracking-tight text-center">Export to Text [Markdown]</h2>
 		<div>
 			Export the results of sequence and documentation to text in markdown format. So, you can paste
-			it on you note taking tool like <a href="https://logseq.com/" target="_blank">Logseq</a>,
+			it on your note taking tool like <a href="https://logseq.com/" target="_blank">Logseq</a>,
 			<a href="https://obsidian.md/" target="_blank">Obsidian</a>
 			or <a href="https://roamresearch.com/" target="_blank">Roam</a>.
 		</div>
