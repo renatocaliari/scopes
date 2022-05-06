@@ -27,11 +27,6 @@
 				>
 			</li>
 			<li>
-				comment on the announcement thread about the Scopefully on Twitter: <a
-					href="https://twitter.com/renatocaliari/">@renatocaliari</a
-				>
-			</li>
-			<li>
 				connect on LinkedIn: <a href="https://linkedin.com/in/renatocaliari/"
 					>https://linkedin.com/in/renatocaliari/</a
 				>
@@ -39,7 +34,7 @@
 			<li>
 				follow me on medium (pt-BR): <a href="https://medium.com/@renatocaliari"
 					>https://medium.com/@renatocaliari</a
-				>
+				>. There I write about organizational culture, product development and lifestyle
 			</li>
 		</ul>
 
