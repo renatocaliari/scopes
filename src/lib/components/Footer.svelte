@@ -1,4 +1,6 @@
-<footer class="footer inline-flex items-center p-4 bg-neutral text-neutral-content justify-between">
+<footer
+	class="mt-4 footer inline-flex items-center p-4 bg-neutral text-neutral-content justify-between"
+>
 	<div class="items-center grid-flow-col">
 		<p><a href="/about">Made with ❤️ by Cali</a></p>
 	</div>

@@ -61,7 +61,8 @@
 		<input type="checkbox" class:hidden={!collapsable} />
 		<div
 			class:collapse-title={collapsable}
-			class="mb-2 w-full"
+			class="w-full"
+			class:mb-2={headerHighlighted}
 			class:p-2={headerHighlighted}
 			class:bg-slate-200={headerHighlighted}
 		>

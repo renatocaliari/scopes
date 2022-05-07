@@ -355,7 +355,7 @@
 					<div
 						animate:flip={{ duration: flipDurationMs }}
 						class="card justify-start w-fit flex flex-col border-2 p-2 m-2 overflow-auto align-middle content-center"
-						class:bg-orange-50={group.dependencyPackage}
+						class:border-slate-400={group.dependencyPackage}
 					>
 						{#if metaGroup.items.length > 1}
 							<div class="move cursor-grab align-middle content-center justify-items-center">
