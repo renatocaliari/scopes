@@ -250,7 +250,9 @@
 			$sortedScopesDocumentation.forEach((scope) => {
 				if (scope.items.some((item) => !item.indispensable)) {
 					idxGlobal++;
-					text = text.concat('\n- Step ' + idxGlobal + ': **' + scope.name + '**');
+					text = text.concat(
+						'\n- Step ' + idxGlobal + ': **' + (scope.name || scope.placeholder) + '**'
+					);
 					let niceToHaveItems = scope.items.filter((item) => !item.indispensable);
 					niceToHaveItems.forEach((item) => {
 						text = text.concat(
