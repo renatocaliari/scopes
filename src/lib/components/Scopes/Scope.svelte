@@ -7,6 +7,7 @@
 	export let editTitle = false;
 	export let icon = undefined;
 	export let classColor = '';
+	export let headerHighlighted = false;
 	export let width = '';
 	export let collapsable = false;
 
@@ -50,12 +51,21 @@
 
 <div
 	name="scope-{scope.i}"
-	class="rounded-md border-[0.1em] border-slate-300 shadow-xl p-4 {width} max-h-screen h-full {classColor}"
+	class="rounded-md border-[0.1em] border-slate-300 shadow-xl {width} max-h-screen h-full {classColor}"
 >
-	<div class:collapse={collapsable} class:collapse-arrow={collapsable}>
+	<div
+		class:collapse={collapsable}
+		class:collapse-arrow={collapsable}
+		class:p-4={!headerHighlighted}
+	>
 		<input type="checkbox" class:hidden={!collapsable} />
-		<div class:collapse-title={collapsable} class="mb-2 w-full">
-			<div class="flex flex-col w-full">
+		<div
+			class:collapse-title={collapsable}
+			class="mb-2 w-full"
+			class:p-2={headerHighlighted}
+			class:bg-slate-200={headerHighlighted}
+		>
+			<div class="flex flex-col w-full ">
 				<div class="inline-flex w-full">
 					{#if editTitle}
 						<div class="w-full flex flex-wrap break-all">
@@ -115,7 +125,7 @@
 				<div class="flex-none"><slot name="subTitle" /></div>
 			{/if}
 		</div>
-		<div class:collapse-content={collapsable} class="overflow-visible">
+		<div class:collapse-content={collapsable} class="overflow-visible p-2">
 			{#if $$slots.body}
 				<slot name="body" />
 			{/if}

@@ -54,6 +54,7 @@
  -->
 			<Scope
 				bind:scope
+				headerHighlighted={true}
 				itemsScopeModal={scope.items}
 				classColor={scope.indispensable ? 'border-success border-4' : undefined}
 			>
@@ -61,7 +62,7 @@
 					<BadgeDependencies project={projectStore} {scope} />
 				</div> -->
 
-				<div slot="header" class="flex flex-row p-[0.1rem] border-b-2 border-slate-200">
+				<div slot="header" class="flex flex-row p-[0.1rem] ">
 					<div class="w-full justify-end ">
 						<ToggleScope
 							bind:this={toggle}
@@ -102,7 +103,8 @@
 					</div>
 				</div>
 				<div slot="body">
-					<h4>Indispensable items:</h4>
+					<h4 class="my-0">Indispensable items:</h4>
+
 					<Items
 						bind:scope
 						items={scope.items.filter((i) => i.indispensable)}
@@ -115,7 +117,7 @@
 							$projectStore = $projectStore;
 						}}
 					/>
-					<h4>Nice to have items:</h4>
+					<h4 class="my-0">Nice-to-have items:</h4>
 					<Items
 						bind:scope
 						items={scope.items.filter((i) => !i.indispensable)}

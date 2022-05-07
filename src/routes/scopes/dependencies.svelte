@@ -63,7 +63,7 @@
 >
 	{#each sortedScopes as scope}
 		<div>
-			<Scope bind:scope itemsScopeModal={scope.items}>
+			<Scope bind:scope itemsScopeModal={scope.items} headerHighlighted={true}>
 				<div slot="badge">
 					<BadgeDependencies project={projectStore} bind:scope />
 				</div>
@@ -91,10 +91,9 @@
 							<li>it cannot depends on scopes that already depends on this scope</li>
 						</ul>
 					{/if}
-
-					<span class="font-bold">Depends on scopes:</span>
 				</div>
 				<div slot="body">
+					<span class="font-bold">Depends on scopes:</span>
 					<Items
 						emptyState="No Scope"
 						badgeNiceToHave

@@ -8,6 +8,7 @@
 	export let readOnly = false;
 	export let dragAndDrop = false;
 	export let checkbox = false;
+	export let toggleTitle = 'indispensable';
 	export let fnDisableCheckbox = undefined;
 	export let checked = false;
 	export let allowRemoveItem = false;
@@ -87,9 +88,9 @@
 				contenteditable
 				bind:textContent={item.name}
 			>
-				<label for="modal-item-{item.id}" class="mr-2 w-full link link-hover prose"
-					>{item.name}</label
-				>
+				<label for="modal-item-{item.id}" class="mr-2 w-full link link-hover prose">
+					{item.name}
+				</label>
 			</span>
 		{:else if itemsModal.length > 0}
 			<div

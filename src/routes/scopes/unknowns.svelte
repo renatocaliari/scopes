@@ -52,6 +52,7 @@
  -->
 			<Scope
 				bind:scope
+				headerHighlighted={true}
 				classColor={scope.risky ? 'border-accent border-4' : undefined}
 				itemsScopeModal={scope.items}
 			>
@@ -59,10 +60,7 @@
 					<BadgeDependencies project={projectStore} {scope} />
 				</div> -->
 
-				<div
-					slot="header"
-					class="inline-flex w-full justify-end rounded-md p-[0.1rem] border-b-2 border-slate-200"
-				>
+				<div slot="header" class="inline-flex w-full justify-end p-[0.1rem]">
 					<!-- <ToggleScope
 						bind:scope
 						bind:checked={scope.indispensable}
