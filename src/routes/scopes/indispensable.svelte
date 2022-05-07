@@ -62,7 +62,7 @@
 					<BadgeDependencies project={projectStore} {scope} />
 				</div> -->
 
-				<div slot="header" class="flex flex-row p-[0.1rem] ">
+				<div slot="header" class="flex flex-col p-[0.1rem] ">
 					<div class="w-full justify-end ">
 						<ToggleScope
 							bind:this={toggle}
@@ -97,10 +97,12 @@
 								}
 							}}
 						/>
-						{#if scope.risky}
-							<div class="flex badge badge-accent m-1 text-white">Risky</div>
-						{/if}
 					</div>
+					{#if scope.risky}
+						<div class="pb-2">
+							<div class="flex badge badge-accent m-1 text-white">Risky</div>
+						</div>
+					{/if}
 				</div>
 				<div slot="body">
 					<h4 class="my-0">Indispensable items:</h4>

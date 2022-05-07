@@ -58,11 +58,10 @@
 		<div
 			class:collapse-title={collapsable}
 			class="mb-2 w-full"
-			class:p-4={headerHighlighted}
 			class:bg-slate-200={headerHighlighted}
 		>
-			<div class="flex flex-col w-full ">
-				<div class="inline-flex w-full">
+			<div class="flex flex-col w-full">
+				<div class="inline-flex w-full" class:p-4={!collapsable}>
 					{#if editTitle}
 						<div class="w-full flex flex-wrap break-all">
 							<svelte:element
@@ -84,7 +83,7 @@
 							/>
 						</div>
 						{#if $$slots.badge}
-							<div>
+							<div class="pb-2">
 								<slot name="badge" />
 							</div>
 						{/if}
@@ -105,20 +104,20 @@
 							>
 						</div>
 						{#if $$slots.badge}
-							<div>
+							<div class="pb-2">
 								<slot name="badge" />
 							</div>
 						{/if}
 					{/if}
 				</div>
 				{#if $$slots.header}
-					<div>
+					<div class="px-4">
 						<slot name="header" />
 					</div>
 				{/if}
 			</div>
 			{#if $$slots.subTitle}
-				<div class="flex-none"><slot name="subTitle" /></div>
+				<div class="flex-none p-2"><slot name="subTitle" /></div>
 			{/if}
 		</div>
 		<div class:collapse-content={collapsable} class="overflow-visible p-2">
