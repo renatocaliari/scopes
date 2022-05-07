@@ -20,7 +20,7 @@
 	}
 </script>
 
-<div class="border-2 p-2 flex flex-col shadow-xl mb-6">
+<div class="flex flex-col mb-6">
 	{#if checkList.items?.length > 0}
 		<div>
 			<span class="text-base sm:text-2xl font-bold m-2">{checkList.title || 'Tasks'}:</span>

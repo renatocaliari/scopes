@@ -133,7 +133,7 @@
 		class="flex
 		flex-row
 		flex-wrap 
-		place-content-around
+		place-content-between ml-4
 		"
 	>
 		{#each $projectStore.filter((scope) => scope.id !== 'bucket') as scope}
