@@ -356,7 +356,8 @@ export function ProjectStore() {
         if (scopes.length) {
             let forkedScope = scopes.find((s2) => s2.forkedScopeId === scope.id);
             let forkedScopeId = forkedScope ? forkedScope.id : 0;
-            return scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(forkedScopeId));
+            return scopes.filter((s) => s.dependsOn.includes(scope.id));
+            // return scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(forkedScopeId));
         } else {
             return get(store).filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId);
         }

@@ -26,7 +26,8 @@
 
 		// console.log('scope.dependsOn:', scope.dependsOn);
 		dependsOn = scopes.filter(
-			(s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
+			// (s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
+			(s) => scope.dependsOn.includes(s.id)
 		);
 	}
 </script>
