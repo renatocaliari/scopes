@@ -400,7 +400,7 @@
 										</div>
 										<div slot="body">
 											{#if scope.forkedScopeId}
-												<div class="border-2 bg-yellow-50 p-2 text-left">
+												<div class="border-2 bg-yellow-50 mt-2 p-2 text-left">
 													<p>
 														The sole intention at this step is allowing the execution of the next
 														scope,

@@ -53,16 +53,12 @@
 	name="scope-{scope.i}"
 	class="rounded-md border-[0.1em] border-slate-300 shadow-xl {width} max-h-screen h-full {classColor}"
 >
-	<div
-		class:collapse={collapsable}
-		class:collapse-arrow={collapsable}
-		class:p-4={!headerHighlighted}
-	>
+	<div class:collapse={collapsable} class:collapse-arrow={collapsable}>
 		<input type="checkbox" class:hidden={!collapsable} />
 		<div
 			class:collapse-title={collapsable}
 			class="mb-2 w-full"
-			class:p-2={headerHighlighted}
+			class:p-4={headerHighlighted}
 			class:bg-slate-200={headerHighlighted}
 		>
 			<div class="flex flex-col w-full ">
