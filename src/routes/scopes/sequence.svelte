@@ -28,7 +28,7 @@
 <script>
 	projectStore.sortScopesByPriority();
 
-	console.log('$sortedGroupedAndForkedScopes:', $sortedGroupedAndForkedScopes);
+	// console.log('$sortedGroupedAndForkedScopes:', $sortedGroupedAndForkedScopes);
 
 	let niceToHaveScopesItems = JSON.parse(JSON.stringify($sortedScopesDocumentation));
 	niceToHaveScopesItems
