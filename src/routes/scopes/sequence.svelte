@@ -176,8 +176,12 @@
 						return acc.flat(2);
 					}, []);
 					let dependsOn = scopes.filter(
-						(s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
+						// (s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
+						(s) => scope.dependsOn.includes(s.id)
 					);
+
+					// quero encontrar escopos duplicados com o mesmo id, mas o mesmo id pode significar
+					// scope.id ou scope.forkedScopeId. se tiver os dois, dar prioridade apenas ao forkedid.
 
 					if (toggleAddInfo) {
 						if (
