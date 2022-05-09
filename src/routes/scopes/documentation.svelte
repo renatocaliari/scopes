@@ -52,21 +52,26 @@
 		let text = '';
 		let textNumberTitle = 1;
 		scopes.forEach((scope, idx) => {
-			if (scope.title && scope.description) {
+			if ((scope.title || scope.name) && scope.id !== 'bucket') {
 				text = text.concat(
-					'- ### ' + (autoNumber ? textNumberTitle + '. ' : '') + scope.title.trim() + '\n'
+					'- ### ' +
+						(autoNumber ? textNumberTitle + '. ' : '') +
+						(scope.title ? scope.title.trim() : scope.name ? 'Scope ' + scope.name : '') +
+						'\n'
 				);
 
-				let textNumberDescription = 1;
-				scope.description.split('\n').map((line) => {
-					text = text.concat(
-						'\t- ' +
-							(autoNumber ? textNumberTitle + '.' + textNumberDescription + '. ' : '') +
-							line +
-							'\n'
-					);
-					textNumberDescription++;
-				});
+				if (scope.description) {
+					let textNumberDescription = 1;
+					scope.description.split('\n').map((line) => {
+						text = text.concat(
+							'\t- ' +
+								(autoNumber ? textNumberTitle + '.' + textNumberDescription + '. ' : '') +
+								line +
+								'\n'
+						);
+						textNumberDescription++;
+					});
+				}
 				textNumberTitle++;
 			}
 		});
