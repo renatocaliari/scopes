@@ -438,7 +438,7 @@ export function ProjectStore() {
         let groupForkedNiceToHaveScopesNiceToHaveTasks = [];
         let groupRemainingNiceToHaveScopesNiceToHaveTasks = [];
 
-        console.log('groupScopes:', JSON.parse(JSON.stringify(groupsScopes)));
+        // console.log('groupScopes:', JSON.parse(JSON.stringify(groupsScopes)));
 
         let indispensableScopesIndispensableTasks = JSON.parse(JSON.stringify(groupsScopes)).map((g) => {
             g.indispensable = true;
