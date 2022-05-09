@@ -15,7 +15,7 @@
 		<div class="hero-content text-center">
 			<div class="max-w-md">
 				<h1 class="text-8xl mb-2 font-bold">Scopefully</h1>
-				<span class="text-3xl">(Beta v0.0.1)</span>
+				<span class="text-3xl">(Beta v0.0.2)</span>
 				<p class="text-2xl">
 					The tool to help you understand the execution of your next project before start it.
 				</p>
