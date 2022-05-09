@@ -18,6 +18,8 @@
 	let dependsOn;
 
 	$: {
+		// console.log('badge scope:', scope);
+		// console.log('badge scopes:', scopes);
 		$projectStore,
 			// console.log('BADGE scopes:', scopes);
 			(unlockDependencies = project
@@ -35,7 +37,7 @@
 <div class="inline-flex flex-wrap: nowrap;">
 	<label for="scope-unlocks-{scope.id}-{randomId}" class="link link-hover">
 		<div
-			data-tip="This scope unlocks {project
+			data-tip="{scope.name || scope.placeholder} unlocks {project
 				.scopeUnlocksDependencies(scope, scopes)
 				.filter((item) => item != null).length} scope(s)"
 			class="tooltip badge bg-green-500 border-green-500 text-white mr-2"
@@ -50,7 +52,7 @@
 
 	<label for="scope-depends-{scope.id}-{randomId}" class="link link-hover">
 		<div
-			data-tip="{dependsOn.length} scope(s) depend(s) on [{scope.name || scope.placeholder}]"
+			data-tip="{scope.name || scope.placeholder} depend(s) on {dependsOn.length} scope(s)"
 			class="tooltip badge bg-red-500 border-red-500 text-white"
 		>
 			{#key dependsOn.length}

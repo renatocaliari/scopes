@@ -1,5 +1,5 @@
 <script>
-	import { projectStore, sortedScopesDocumentation } from '$lib/stores/projectStore';
+	import { projectStore, storeSortedScopesDocumentation } from '$lib/stores/projectStore';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
@@ -17,7 +17,7 @@
 	projectStore.sortScopesByPriority();
 
 	$: {
-		if ($sortedScopesDocumentation && !moving) {
+		if ($storeSortedScopesDocumentation && !moving) {
 			saveDataIntoOriginalStore();
 		}
 	}
@@ -76,12 +76,12 @@
 	}
 
 	function handleDndConsider(e) {
-		$sortedScopesDocumentation = e.detail.items;
+		$storeSortedScopesDocumentation = e.detail.items;
 		reordered = true;
 		moving = true;
 	}
 	function handleDndFinalize(e) {
-		$sortedScopesDocumentation = e.detail.items;
+		$storeSortedScopesDocumentation = e.detail.items;
 		reordered = true;
 		moving = false;
 		saveDataIntoOriginalStore();
@@ -91,7 +91,7 @@
 	}
 
 	function saveDataIntoOriginalStore() {
-		$sortedScopesDocumentation.map((s) => {
+		$storeSortedScopesDocumentation.map((s) => {
 			let scopeOriginal = $projectStore.find((s2) => s2.id === s.id);
 			scopeOriginal.title = s.title;
 			scopeOriginal.description = s.description;
@@ -106,7 +106,7 @@
 			<label
 				for="modal-export"
 				class="btn btn-outline modal-button mr-2"
-				on:click={() => scopesToText($sortedScopesDocumentation)}
+				on:click={() => scopesToText($storeSortedScopesDocumentation)}
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="w-4 h-4 mr-1"
 					><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
@@ -126,7 +126,7 @@
 <div
 	class="w-full"
 	use:proxyDndzone={{
-		items: $sortedScopesDocumentation,
+		items: $storeSortedScopesDocumentation,
 		flipDurationMs,
 		morphDisabled: false,
 		dropTargetClasses: ['bg-green-50']
@@ -134,7 +134,7 @@
 	on:consider={(e) => handleDndConsider(e)}
 	on:finalize={(e) => handleDndFinalize(e)}
 >
-	{#each $sortedScopesDocumentation as scope, idx (scope.id)}
+	{#each $storeSortedScopesDocumentation as scope, idx (scope.id)}
 		<div class="m-2 flex justify-center mb-8" animate:flip={{ duration: flipDurationMs }}>
 			<Scope bind:scope itemsScopeModal={scope.items} width="w-full">
 				<div slot="badge" class="w-full inline-flex items-center align-middle">

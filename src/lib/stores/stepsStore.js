@@ -34,7 +34,6 @@ export const stepsStore = writable([
     {
         linkText: '5. Sequence',
         h1: 'Sequence',
-        h2: 'Sequence for execution',
         link: '/scopes/sequence',
         active: false,
         completed: false
