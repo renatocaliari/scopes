@@ -86,7 +86,13 @@
 					text = text.concat('\n');
 				}
 				text = text.concat(
-					'- ### ' + 'Step ' + idxGlobal + ': **' + (scope.name || scope.placeholder) + '**'
+					'- ### ' +
+						'Step ' +
+						idxGlobal +
+						': **' +
+						(scope.name || scope.placeholder) +
+						'** - ' +
+						(scope.indispensable ? 'Indispensable' : 'Nice-to-have')
 				);
 
 				let unlockDependencies = projectStore
