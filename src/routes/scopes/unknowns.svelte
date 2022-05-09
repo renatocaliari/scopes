@@ -22,7 +22,7 @@
 			{
 				name: 'unknowns',
 				optional: true,
-				text: 'Check which scopes have risky unknowns (vs routine work)',
+				text: '🚨 Check which scopes have risky unknowns. The remaining ones will be considered known or routine work',
 				checked: sortedScopes.some((scope) => scope.risky)
 			}
 		]
