@@ -509,9 +509,6 @@ export function ProjectStore() {
 
         let niceToHaveGroup = [].concat(groupsRiskyNiceToHaveScopesIndispensableTasks, groupForkedNiceToHaveScopesIndispensableTasks, groupRemainingNiceToHaveScopesIndispensableTasks, groupsRiskyNiceToHaveScopesNiceToHaveTasks, groupForkedNiceToHaveScopesNiceToHaveTasks, groupRemainingNiceToHaveScopesNiceToHaveTasks).filter((g) => g.items.length);
 
-
-        // console.log('indispensableGroup:', indispensableGroup);
-        // console.log('niceToHaveGroup:', niceToHaveGroup);
         return {
             indispensable: indispensableGroup,
             niceToHave: niceToHaveGroup,
@@ -522,20 +519,13 @@ export function ProjectStore() {
         let forkedScopes = [];
         let itemsRemainingOfGroupsBasedOnRisky = [];
 
-        // console.log('generateForkingScopesBasedOnRisky groups:', groups);
         let groupsRisky = JSON.parse(JSON.stringify(groups)).map((group, index) => {
             let indexLastRisky = lastIndexOf(group.items, 'risky', true);
-            // console.log('generateForkingScopesBasedOnRisky indexLastRisky:', indexLastRisky);
-
-            // console.log('generateForkingScopesBasedOnRisky group:', group);
             group.items = group.items.map((scope, index) => {
                 scope.remove = true;
                 let hasMoreItemsAfterFirstScope = index > 0;
                 if (index <= indexLastRisky) {
-                    // console.log('indexLastRisky:', indexLastRisky);
-                    // console.log('scope:', scope);
                     let previousId = scope.id;
-                    // console.log('generateForkingScopesBasedOnRisky scope:', JSON.parse(JSON.stringify(scope)));
 
                     if (!scope.risky) {
                         let forkedScope = JSON.parse(JSON.stringify(scope));
@@ -584,32 +574,10 @@ export function ProjectStore() {
         let groupedScopes = groupScopes(copyFilteredStore);
         let groupedSortedScopes = mergeSort(mergeGroupScopes, groupedScopes);
 
-        // console.log('>>> groupedSortedScopes:', groupedScopes);
-
         let sortedGroupedSequenceScopes = sortScopesinGroupForking(groupedSortedScopes);
         sortedGroupedSequenceScopes.sequence = generateSequence([...sortedGroupedSequenceScopes.indispensable, ...sortedGroupedSequenceScopes.niceToHave]);
 
-        // console.log('@@@ experiment:', sortedGroupedSequenceScopes);
-
-        // let sortedScopesinGroupForked = sortScopesinGroupForking(groupedSortedScopes, true, true);
-        // let remainingItemsGroups = sortedScopesinGroupForked.filter((g) => g.id === -1);
-
-        // remainingItemsGroups.forEach((g) => {
-        //     console.log('>>>> g:', g);
-        //     let splittedGroupRemainingItems = splitGroupRemainingItems(g ? g.items : []);
-        //     console.log('>>>> splittedGroupRemainingItems:', splittedGroupRemainingItems);
-
-        //     sortedScopesinGroupForked = sortedScopesinGroupForked.filter((g) => g.id !== -1).concat(splittedGroupRemainingItems);
-        //     sortedScopesinGroupForked = generateIdForGroups(sortedScopesinGroupForked);
-
-        // });
-
-
-
-        // console.log('groupedSortedScopes:', groupedSortedScopes);
-        // console.log('sortedScopesinGroupForkingByRisky:', sortedScopesinGroupForkingByRisky);
         storeSortedGroupedScopes.set(groupedSortedScopes);
-        // storeSortedGroupedAndForkedScopes.set(sortedScopesinGroupForked);
         storeSortedGroupedSequenceScopes.set(sortedGroupedSequenceScopes);
         storeSortedScopesDocumentation.set(mergeSort(mergeScopes, copyFilteredStore).map((s, idx) => { s.orderDocumentation = idx + 1; return s; }));
 

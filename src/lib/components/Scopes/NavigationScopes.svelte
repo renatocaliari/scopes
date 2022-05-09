@@ -26,7 +26,9 @@
 		{#each $stepsStore as btn, idx}
 			{#if idx <= currentStep}
 				{#if idx === currentStep}
-					<li bind:this={lastLinkBreadcrumb}><a href={btn.link}>{btn.linkText}</a></li>
+					<li bind:this={lastLinkBreadcrumb} class="active">
+						<a href={btn.link}>{btn.linkText}</a>
+					</li>
 				{:else}
 					<li><a href={btn.link}>{btn.linkText}</a></li>
 				{/if}

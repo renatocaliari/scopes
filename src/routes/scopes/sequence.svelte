@@ -42,8 +42,6 @@
 		return acc;
 	}, []);
 
-	// console.log('>>> $storeSortedScopesDocumentation:', $storeSortedScopesDocumentation);
-	// console.log('>>> forkedScopes:', forkedScopes);
 	let scopes = [...$storeSortedScopesDocumentation, ...forkedScopes].reduce(
 		(acc, scope, idx, arr) => {
 			acc.push(scope);
@@ -51,7 +49,6 @@
 		},
 		[]
 	);
-	// console.log('scopes:', scopes);
 
 	$: checkList = {
 		name: 'Tasks',
@@ -59,7 +56,7 @@
 			{
 				name: 'sequence',
 				optional: true,
-				text: 'At your own risk, you can re-order the sequence. But remeber, you may lose the benefits of the generated sequence',
+				text: 'You can re-order the sequence. But remember, you may lose the benefits of the generated sequence',
 				checked: reordered
 			}
 		]
