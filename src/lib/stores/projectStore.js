@@ -438,27 +438,30 @@ export function ProjectStore() {
         let groupForkedNiceToHaveScopesNiceToHaveTasks = [];
         let groupRemainingNiceToHaveScopesNiceToHaveTasks = [];
 
+        console.log('groupScopes:', JSON.parse(JSON.stringify(groupsScopes)));
 
         let indispensableScopesIndispensableTasks = JSON.parse(JSON.stringify(groupsScopes)).map((g) => {
             g.indispensable = true;
-            g.items = g.items.filter((s) => s.indispensable).map((s) => {
+            g.items = g.items.filter((s) => s.indispensable && s.items.length).map((s) => {
                 s.items = s.items.filter((item) => item.indispensable);
                 return s;
-            })
+            });
             g.indispensableTasks = true;
             return g;
-        })
-            .filter((g) => g.items.length > 0);
-        ;
+        }).filter((g) => g.items.length);
+
         let indispensableScopesNiceToHaveTasks = JSON.parse(JSON.stringify(groupsScopes)).map((g) => {
-            g.items = g.items.map((s) => {
+            g.items = g.items.filter((s) => s.indispensable && s.items.length).map((s) => {
                 s.items = s.items.filter((item) => !item.indispensable);
                 return s;
-            }).filter((s) => s.indispensable && !s.forkedScopeId);
+            });
             g.indispensableTasks = false;
             return g;
         }
-        );
+        ).filter((g) => g.items.length);
+
+        console.log('indispensableScopesIndispensableTasks:', indispensableScopesIndispensableTasks);
+        console.log('indispensableScopesNiceToHaveTasks:', indispensableScopesNiceToHaveTasks);
 
         ({ groupsRisky, groupForkedScopes, groupRemainingItems } = generateForkingScopesBasedOnRisky(indispensableScopesIndispensableTasks));
         groupsRiskyIndispensableScopesIndispensableTasks = JSON.parse(JSON.stringify(groupsRisky)).map((g) => { g.indispensableTasks = true; return g; }).filter((g) => g.items.length > 0);
@@ -475,10 +478,10 @@ export function ProjectStore() {
 
 
         let niceToHaveScopesIndispensableTasks = JSON.parse(JSON.stringify(groupsScopes)).map((g) => {
-            g.items = g.items.map((s) => {
+            g.items = g.items.filter((s) => !s.indispensable && s.items.length).map((s) => {
                 s.items = s.items.filter((item) => item.indispensable);
                 return s;
-            }).filter((s) => !s.indispensable && s.items.length);
+            });
             g.dependencyPackage = (g.items.length > 1);
             g.indispensableTasks = true;
             return g;
@@ -487,10 +490,10 @@ export function ProjectStore() {
 
 
         let niceToHaveNiceToHaveScopesTasks = JSON.parse(JSON.stringify(groupsScopes)).map((g) => {
-            g.items = g.items.map((s) => {
+            g.items = g.items.filter((s) => !s.indispensable && s.items.length).map((s) => {
                 s.items = s.items.filter((item) => !item.indispensable);
                 return s;
-            }).filter((s) => !s.indispensable && s.items.length);
+            });
             g.dependencyPackage = (g.items.length > 1);
             g.indispensableTasks = false;
             return g;
@@ -521,34 +524,43 @@ export function ProjectStore() {
 
         let groupsRisky = JSON.parse(JSON.stringify(groups)).map((group, index) => {
             let indexLastRisky = lastIndexOf(group.items, 'risky', true);
+            let groupRiskyHasItems = group.items[indexLastRisky] && group.items[indexLastRisky].items.length > 0;
+
             group.items = group.items.map((scope, index) => {
                 scope.remove = true;
+                scope.freezeOrder = false;
                 let hasMoreItemsAfterFirstScope = index > 0;
                 if (index <= indexLastRisky) {
-                    let previousId = scope.id;
+                    if (groupRiskyHasItems) {
+                        let previousId = scope.id;
 
-                    if (!scope.risky) {
-                        let forkedScope = JSON.parse(JSON.stringify(scope));
-                        forkedScope.id = previousId;
-                        forkedScope.freezeOrder = false;
-                        forkedScopes = [...forkedScopes, forkedScope];
-                        scope.forkedScopeId = scope.id;
+                        if (!scope.risky && groupRiskyHasItems && scope.items.length) {
+                            let forkedScope = JSON.parse(JSON.stringify(scope));
+                            forkedScope.id = previousId;
+                            forkedScope.freezeOrder = false;
+                            forkedScopes = [...forkedScopes, forkedScope];
+                            scope.forkedScopeId = scope.id;
 
-                        let scopeRandomId = uuidv4();
-                        scope.id = scope.id + '-' + scopeRandomId;
+                            let scopeRandomId = uuidv4();
+                            scope.id = scope.id + '-' + scopeRandomId;
+                        }
+                        // if (groupRiskyHasItems) {
+                        scope.remove = false;
+                        scope.freezeOrder = true;
+                        // }
+                    } else if (index !== indexLastRisky && scope.items.length) {
+                        itemsRemainingOfGroupsBasedOnRisky.push(scope);
                     }
-                    scope.remove = false;
-                    scope.freezeOrder = true;
-                } else if (hasMoreItemsAfterFirstScope) {
+                } else if (hasMoreItemsAfterFirstScope && scope.items.length) {
                     itemsRemainingOfGroupsBasedOnRisky.push(scope);
-                    scope.freezeOrder = false;
+
                 }
                 return scope;
-            }).filter((scope) => !scope.remove);
+            }).filter((scope) => !scope.remove && scope.items.length);
 
             group.dependencyPackage = group.items.length > 1;
 
-            updateDependenciesOfScopesGeneratedByFork(group.items);
+            group.items = updateDependenciesOfScopesGeneratedByFork(group.items);
             return group;
         });
 
@@ -590,13 +602,15 @@ export function ProjectStore() {
     }
 
     function updateDependenciesOfScopesGeneratedByFork(scopes) {
-        return scopes.filter((scope) => scope.freezeOrder).map((scope, index) => {
-            if (scopes[index + 1]) {
+        let arrScopes = JSON.parse(JSON.stringify(scopes));
+        return arrScopes.filter((scope) => scope.freezeOrder).map((scope, index) => {
+            if (arrScopes[index + 1]) {
                 let indexDependsOn = scopes[index + 1]?.dependsOn?.indexOf(scope.forkedScopeId);
                 if (indexDependsOn > -1) {
-                    scopes[index + 1].dependsOn[indexDependsOn] = scope.id;
+                    arrScopes[index + 1].dependsOn[indexDependsOn] = scope.id;
                 }
             }
+            return scope;
         });
     }
 

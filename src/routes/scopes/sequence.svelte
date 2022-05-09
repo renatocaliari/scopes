@@ -202,7 +202,7 @@
 
 	function getEmoji(scope) {
 		let emoji = '';
-		if (scope.indispensable && scope.risky) {
+		if (scope.risky) {
 			emoji = emoji + '🚨';
 		} else if (scope.forkedScopeId) {
 			emoji = emoji + '⏱️';
