@@ -510,8 +510,8 @@ export function ProjectStore() {
         let niceToHaveGroup = [].concat(groupsRiskyNiceToHaveScopesIndispensableTasks, groupForkedNiceToHaveScopesIndispensableTasks, groupRemainingNiceToHaveScopesIndispensableTasks, groupsRiskyNiceToHaveScopesNiceToHaveTasks, groupForkedNiceToHaveScopesNiceToHaveTasks, groupRemainingNiceToHaveScopesNiceToHaveTasks).filter((g) => g.items.length);
 
 
-        console.log('indispensableGroup:', indispensableGroup);
-        console.log('niceToHaveGroup:', niceToHaveGroup);
+        // console.log('indispensableGroup:', indispensableGroup);
+        // console.log('niceToHaveGroup:', niceToHaveGroup);
         return {
             indispensable: indispensableGroup,
             niceToHave: niceToHaveGroup,
@@ -584,7 +584,7 @@ export function ProjectStore() {
         let groupedScopes = groupScopes(copyFilteredStore);
         let groupedSortedScopes = mergeSort(mergeGroupScopes, groupedScopes);
 
-        console.log('>>> groupedSortedScopes:', groupedScopes);
+        // console.log('>>> groupedSortedScopes:', groupedScopes);
 
         let sortedGroupedSequenceScopes = sortScopesinGroupForking(groupedSortedScopes);
         sortedGroupedSequenceScopes.sequence = generateSequence([...sortedGroupedSequenceScopes.indispensable, ...sortedGroupedSequenceScopes.niceToHave]);

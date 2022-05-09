@@ -51,7 +51,7 @@
 		},
 		[]
 	);
-	console.log('scopes:', scopes);
+	// console.log('scopes:', scopes);
 
 	$: checkList = {
 		name: 'Tasks',
