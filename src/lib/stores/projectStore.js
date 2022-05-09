@@ -591,7 +591,7 @@ export function ProjectStore() {
 
         storeSortedGroupedScopes.set(groupedSortedScopes);
         storeSortedGroupedSequenceScopes.set(sortedGroupedSequenceScopes);
-        storeSortedScopesDocumentation.set(mergeSort(mergeScopes, copyFilteredStore).map((s, idx) => { s.orderDocumentation = idx + 1; return s; }));
+        storeSortedScopesDocumentation.set(mergeSort(mergeScopesForDocumentation, copyFilteredStore).map((s, idx) => { s.orderDocumentation = idx + 1; return s; }));
 
         return {
             storeSortedGroupedScopes: get(storeSortedGroupedScopes),
@@ -821,19 +821,29 @@ export function ProjectStore() {
     }
 
 
-    function mergeScopesRisky(left, right, originalArr) {
+    function mergeScopesForDocumentation(left, right, originalArr) {
         let sortedArr = []; // the sorted elements will go here
         while (left.length && right.length) {
 
-            // console.log('>>>>>>>>>>>>>>>>>>>>>>>>> mergeScopesRisky right[0]:', right[0]);
-            // console.log('>>>>>>>>>>>>>>>>>>>>>>>>> mergeScopesRisky left[0]:', left[0]);
 
             if (left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id)) {
                 sortedArr.push(right.shift());
                 // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
             } else if (right[0].dependsOn?.includes(left[0].id) && !left[0].dependsOn?.includes(right[0].id)) {
                 sortedArr.push(left.shift());
-                // console.log('} else if (right[0].dependsOn?.includes(left[0].id) && !left[0].dependsOn?.includes(right[0].id)) {');
+            } else if (left[0].indispensable && !right[0].indispensable) {
+                sortedArr.push(left.shift());
+                // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
+            }
+            else if (right[0].indispensable && !left[0].indispensable) {
+                sortedArr.push(right.shift());
+            }
+            else if (left[0].risky && !right[0].risky) {
+                sortedArr.push(left.shift());
+                // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
+            } else if (right[0].risky && !left[0].risky) {
+                sortedArr.push(right.shift());
+
 
                 // } else if (left[0].risky && !right[0].risky) {
                 //     sortedArr.push(left.shift());
