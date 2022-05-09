@@ -84,7 +84,7 @@
 			for="scope-depends-{scope.id}-{randomId}"
 			class="btn btn-sm btn-circle absolute right-2 top-2">✕</label
 		>
-		<h3 class="text-lg font-bold">Scopes depends on {scope.name}</h3>
+		<h3 class="text-lg font-bold">{scope.name} depends on:</h3>
 		{#each dependsOn as scope (scope.id)}
 			<div class="m-2 p-2 w-auto border-gray-400 input input-bordered">
 				<ItemDragDrop item={scope} readOnly={true} />
