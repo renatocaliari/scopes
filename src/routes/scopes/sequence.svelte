@@ -143,25 +143,27 @@
 				}
 
 				if (!scope.forkedScopeId) {
-					if (scope.items.length) {
-						if (group.indispensableTasks) {
-							text = text.concat('\n\t- Indispensable tasks:');
-						} else {
-							text = text.concat('\n\t- Nice-to-have tasks:');
-						}
+					if (group.indispensableTasks) {
+						text = text.concat('\n\t- Indispensable tasks:');
+					} else {
+						text = text.concat('\n\t- Nice-to-have tasks:');
 					}
-					scope.items.forEach((item) => {
-						text = text.concat(
-							'\n\t\t- ' +
-								(toggleAutoTodo
-									? group.indispensableTasks
-										? 'NOW' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
-										: 'LATER'
-									: '') +
-								' ' +
-								item.name
-						);
-					});
+					if (scope.items.length) {
+						scope.items.forEach((item) => {
+							text = text.concat(
+								'\n\t\t- ' +
+									(toggleAutoTodo
+										? group.indispensableTasks
+											? 'NOW' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
+											: 'LATER'
+										: '') +
+									' ' +
+									item.name
+							);
+						});
+					} else {
+						text = text.concat('\n\t\t- No item added');
+					}
 				} else {
 					text = text.concat(
 						'\n\t\t- ' +
@@ -356,7 +358,7 @@
 										class="flex items-center
 											content-center align-middle italic"
 									>
-										No items added
+										No item added
 									</div>
 								{/if}
 							</div>
