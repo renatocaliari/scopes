@@ -518,10 +518,10 @@ export function ProjectStore() {
         groupRemainingNiceToHaveScopesNiceToHaveTasks = JSON.parse(JSON.stringify(groupRemainingItems)).map((g) => { g.indispensableTasks = false; return g; }).filter((g) => g.items.length > 0);
 
 
-        console.log('>>> niceToHaveScopesNiceToHaveTasks:', niceToHaveScopesNiceToHaveTasks);
-        console.log('>>> groupsRiskyNiceToHaveScopesNiceToHaveTasks:', groupsRiskyNiceToHaveScopesNiceToHaveTasks);
-        console.log('>>> groupForkedNiceToHaveScopesNiceToHaveTasks:', groupForkedNiceToHaveScopesNiceToHaveTasks);
-        console.log('>>> groupRemainingNiceToHaveScopesNiceToHaveTasks:', groupRemainingNiceToHaveScopesNiceToHaveTasks);
+        // console.log('>>> niceToHaveScopesNiceToHaveTasks:', niceToHaveScopesNiceToHaveTasks);
+        // console.log('>>> groupsRiskyNiceToHaveScopesNiceToHaveTasks:', groupsRiskyNiceToHaveScopesNiceToHaveTasks);
+        // console.log('>>> groupForkedNiceToHaveScopesNiceToHaveTasks:', groupForkedNiceToHaveScopesNiceToHaveTasks);
+        // console.log('>>> groupRemainingNiceToHaveScopesNiceToHaveTasks:', groupRemainingNiceToHaveScopesNiceToHaveTasks);
 
         let niceToHaveGroup = [].concat(groupsRiskyNiceToHaveScopesIndispensableTasks, groupForkedNiceToHaveScopesIndispensableTasks, groupRemainingNiceToHaveScopesIndispensableTasks, groupsRiskyNiceToHaveScopesNiceToHaveTasks, groupForkedNiceToHaveScopesNiceToHaveTasks, groupRemainingNiceToHaveScopesNiceToHaveTasks).filter((g) => g.items.length);
 
@@ -556,7 +556,7 @@ export function ProjectStore() {
         let groupForkedNiceToHaveScopesNiceToHaveTasks = [];
         let groupRemainingNiceToHaveScopesNiceToHaveTasks = [];
 
-        console.log('groupScopes:', JSON.parse(JSON.stringify(groupsScopes)));
+        // console.log('groupScopes:', JSON.parse(JSON.stringify(groupsScopes)));
 
         let indispensableScopesIndispensableTasks = JSON.parse(JSON.stringify(groupsScopes)).map((g) => {
             g.indispensable = true;
