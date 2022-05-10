@@ -256,8 +256,8 @@
 
 		<h2 class="text-4xl font-bold tracking-tight text-center">What Scopefully is not about?</h2>
 		<div>
-			Scopefully is not a tool to manager continuous & infinite backlog and tasks. For it you can
-			use many other tools like Fibery.io, Clickup, Jira, Trello, etc.
+			Scopefully is not a tool to manage continuous & infinite backlog and tasks. For it you can use
+			many other tools like Fibery.io, Clickup, Jira, Trello, etc.
 		</div>
 		<div class="mt-4">
 			At the same time, Scopefully is an add-on. It fits in your workflow precisely by pushing you
