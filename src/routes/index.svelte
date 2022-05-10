@@ -216,13 +216,18 @@
 					<span class="bg-primary p-0.5 text-white">project</span>
 				</li>
 				<li>
-					<span class="bg-accent p-0.5 text-white">plan</span> the
-					<span class="bg-primary p-0.5 text-white">next cycle of development</span> of your digital
-					product
+					<span class="bg-accent p-0.5 text-white">map</span> the scopes and sequence of execution
+					of a
+					<span class="bg-primary p-0.5 text-white">project</span>
 				</li>
 				<li>
 					<span class="bg-accent p-0.5 text-white">plan</span> the
-					<span class="bg-primary p-0.5 text-white">next cycle of discovery</span> of your digital product
+					<span class="bg-primary p-0.5 text-white">next cycle of development or discovery</span> of
+					your digital product
+				</li>
+				<li>
+					<span class="bg-accent p-0.5 text-white">plan</span> your next
+					<span class="bg-primary p-0.5 text-white">event</span>
 				</li>
 				<li>
 					<span class="bg-accent p-0.5 text-white">define</span> the next

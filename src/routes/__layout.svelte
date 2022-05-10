@@ -16,6 +16,25 @@
 	// mixpanel.init('17ecea84c6ac6d69cd43193b7d046e9b', { debug: dev });
 </script>
 
+<svelte:head>
+	<!--Start of Tawk.to Script-->
+	<script type="text/javascript">
+		var Tawk_API = Tawk_API || {},
+			Tawk_LoadStart = new Date();
+		(function () {
+			var s1 = document.createElement('script'),
+				s0 = document.getElementsByTagName('script')[0];
+			s1.async = true;
+			s1.src = 'https://embed.tawk.to/627a95d57b967b11798eaff2/1g2ndiiqk';
+			s1.charset = 'UTF-8';
+			s1.setAttribute('crossorigin', '*');
+			s0.parentNode.insertBefore(s1, s0);
+		})();
+	</script>
+	<!--End of Tawk.to Script--></svelte:head
+>
+
+<!--End of Tawk.to Script-->
 <LoadingPageProgressBar />
 <div
 	class="sm:flex sm:flex-col md:flex md:flex-col w-full content-center items-center justify-center"
