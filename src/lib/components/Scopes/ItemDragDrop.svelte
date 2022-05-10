@@ -9,6 +9,7 @@
 	export let dragAndDrop = false;
 	export let checkbox = false;
 	export let toggleTitle = 'indispensable';
+	export let showStep = false;
 	export let fnDisableCheckbox = undefined;
 	export let checked = false;
 	export let allowRemoveItem = false;
@@ -48,6 +49,7 @@
 			on:mouseout={mouseOut}
 		>
 			{item.name || item.placeholder}
+			{showStep ? ' on step ' + (item.order + 1) : ''}
 		</div>
 	{:else}
 		{#if dragAndDrop}

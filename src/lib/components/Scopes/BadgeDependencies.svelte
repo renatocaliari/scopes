@@ -39,7 +39,7 @@
 		<div
 			data-tip="{scope.name || scope.placeholder} unlocks {project
 				.scopeUnlocksDependencies(scope, scopes)
-				.filter((item) => item != null).length} scope(s)"
+				.filter((item) => item != null).length} step-scope(s)"
 			class="tooltip badge bg-green-500 border-green-500 text-white mr-2"
 		>
 			{#key unlockDependencies.length}
@@ -72,7 +72,7 @@
 		<h3 class="text-lg font-bold">{scope.name} unlocks:</h3>
 		{#each unlockDependencies as scope (scope.id)}
 			<div class="m-2 p-2 w-auto border-gray-400 input input-bordered">
-				<ItemDragDrop item={scope} readOnly={true} />
+				<ItemDragDrop item={scope} readOnly={true} showStep={true} />
 			</div>
 		{/each}
 	</div>
