@@ -14,34 +14,40 @@
 		scopes = $project;
 	}
 
-	let unlockDependencies;
+	let unlockDependencies = [];
 	let dependsOn;
 
+	({ unlockDependencies, dependsOn } = refreshDependenciesCount());
+
 	$: {
-		// console.log('badge scope:', scope);
-		// console.log('badge scopes:', scopes);
-		$projectStore,
-			// console.log('BADGE scopes:', scopes);
-			(unlockDependencies = project
-				.scopeUnlocksDependencies(scope, scopes)
-				.filter((item) => item != null));
+		$projectStore, refreshDependenciesCount();
+	}
+
+	let dataTip =
+		(scope.name || scope.placeholder) + ' unlocks ' + unlockDependencies?.length + ' scope(s)';
+
+	function refreshDependenciesCount() {
+		// console.log('BADGE scopes:', scopes);
+		let unlockDependencies = project
+			.scopeUnlocksDependencies(scope, scopes)
+			.filter((item) => item != null);
 
 		// console.log('scope.dependsOn:', scope.dependsOn);
-		dependsOn = scopes.filter(
+		let dependsOn = scopes.filter(
 			// (s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
 			(s) => scope.dependsOn.includes(s.id)
 		);
+
+		return {
+			unlockDependencies,
+			dependsOn
+		};
 	}
 </script>
 
 <div class="inline-flex flex-wrap: nowrap;">
 	<label for="scope-unlocks-{scope.id}-{randomId}" class="link link-hover">
-		<div
-			data-tip="{scope.name || scope.placeholder} unlocks {project
-				.scopeUnlocksDependencies(scope, scopes)
-				.filter((item) => item != null).length} step-scope(s)"
-			class="tooltip badge bg-green-500 border-green-500 text-white mr-2"
-		>
+		<div data-tip={dataTip} class="tooltip badge bg-green-500 border-green-500 text-white mr-2">
 			{#key unlockDependencies.length}
 				<span class="display: inline-block" in:fly={{ y: -20 }}>
 					{unlockDependencies.length}
@@ -72,7 +78,7 @@
 		<h3 class="text-lg font-bold">{scope.name} unlocks:</h3>
 		{#each unlockDependencies as scope (scope.id)}
 			<div class="m-2 p-2 w-auto border-gray-400 input input-bordered">
-				<ItemDragDrop item={scope} readOnly={true} showStep={true} />
+				<ItemDragDrop item={scope} readOnly={true} />
 			</div>
 		{/each}
 	</div>

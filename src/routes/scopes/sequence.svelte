@@ -20,6 +20,7 @@
 		storeSortedGroupedSequenceScopes
 	} from '$lib/stores/projectStore';
 	import { projectStore } from '$lib/stores/projectStore';
+	import { get } from 'svelte/store';
 
 	projectStore.sortScopesByPriority();
 
@@ -27,28 +28,7 @@
 	const flipDurationMs = 300;
 	let reordered = false;
 
-	let forkedScopes = $storeSortedGroupedSequenceScopes['sequence'].reduce((acc, g) => {
-		let scopesForked = g.items.reduce((acc2, scope) => {
-			if (scope.forkedScopeId) {
-				acc2.push(scope);
-			}
-			return acc2;
-		}, []);
-
-		scopesForked;
-		if (scopesForked.length) {
-			acc.push(...scopesForked);
-		}
-		return acc;
-	}, []);
-
-	let scopes = [...$storeSortedScopesDocumentation, ...forkedScopes].reduce(
-		(acc, scope, idx, arr) => {
-			acc.push(scope);
-			return acc.flat(2);
-		},
-		[]
-	);
+	// console.log('storeSortedGroupedSequenceScopes:', $storeSortedGroupedSequenceScopes);
 
 	$: checkList = {
 		name: 'Tasks',
@@ -61,6 +41,18 @@
 			}
 		]
 	};
+
+	let forkedScopes = $storeSortedGroupedSequenceScopes['sequence'].reduce((acc, group) => {
+		group.items.forEach((scope) => {
+			if (scope.forkedScopeId) {
+				acc.push(scope);
+			}
+		});
+		return acc;
+	}, []);
+
+	let scopes = [...$storeSortedScopesDocumentation, ...forkedScopes];
+	// console.log('>>> scopes:', scopes);
 
 	let successfullyCopied = undefined;
 	const handleSuccessfullyCopied = (e) => {

@@ -27,7 +27,7 @@ export let projectStore = ProjectStore();
 // console.log('store:', JSON.stringify(get(store)));
 export let storeSortedGroupedScopes = writable('scopesSorted', []);
 export let storeSortedGroupedAndForkedScopes = writable('sortedGroupedAndForkedScopes', []);
-export let storeSortedGroupedSequenceScopes = writable('sortedGroupedSequenceScopes', {});
+export let storeSortedGroupedSequenceScopes = writable('sortedGroupedSequenceScopes', []);
 export let storeSortedScopesDocumentation = writable('sortedScopesDocumentation', []);
 // export let sortedGroupedScopes = writable([]);
 // export let sortedGroupedAndForkedScopes = writable([]);
@@ -364,7 +364,7 @@ export function ProjectStore() {
             // console.log('### forkedScope:', forkedScope);
             // console.log('### forkedScopeId:', forkedScopeId);
             // console.log('### scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId)):', scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId)));
-            return scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId));
+            return scopes.filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId); //|| s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId));
         } else {
             return get(store).filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId);
         }
