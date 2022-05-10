@@ -26,7 +26,9 @@
 				name: 'indispensable',
 				optional: false,
 				text: 'Check which scopes or items are indispensable. The remaining ones will be considered nice-to-have for this cycle.',
-				checked: sortedScopes.some((scope) => scope.indispensable)
+				checked: sortedScopes.some(
+					(scope) => scope.indispensable || scope.items.some((item) => (item) => item.indispensable)
+				)
 			}
 		]
 	};
