@@ -118,7 +118,7 @@
 
 						if (scope.forkedScopeId) {
 							text = text.concat(
-								'\n\t\t- WARNING: The sole intention at this step is allowing the execution of the tasks of the next scope.' +
+								'\n\t\t- WARNING: The sole intention at this step is allowing the execution of the tasks of the next step.' +
 									'\n\t\t- Think about affordances or simulated ways to mimic the real behavior of the tasks here.' +
 									'\n\t\t- In the world of software development you can think about dummy objects, fake objects, stubs and mocks.'
 							);
@@ -175,7 +175,7 @@
 									? 'NOW' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
 									: 'LATER'
 								: '') +
-							'At this step, do only what is needed to enable doing the tasks of the next scope.'
+							'At this step, do only what is needed to enable doing the tasks of the next step.'
 					);
 				}
 			});
