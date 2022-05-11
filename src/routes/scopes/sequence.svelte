@@ -256,113 +256,119 @@
 		>
 	</h2>
 </div>
-<div class=" align-middle justify-center content-center items-center w-2/3">
-	<section
-		class="p-0 flex flex-col align-middle content-center items-center
-			justify-center m-0"
-		use:proxyDndzone={{
-			items: $storeSortedGroupedSequenceScopes['sequence'],
-			flipDurationMs,
-			morphDisabled: false,
-			type: 'sequence',
-			dropTargetClasses: ['bg-green-50']
-		}}
-		on:consider={(e) => handleDndConsider(e)}
-		on:finalize={(e) => handleDndFinalize(e)}
+<div
+	class="sm:flex sm:flex-col md:flex md:flex-col w-full content-center items-center justify-center"
+>
+	<div
+		class="flex flex-col align-middle justify-center content-center items-center md:w-2/3 w-full p-2 "
 	>
-		{#each $storeSortedGroupedSequenceScopes['sequence'] as group, idxGroup (group.id)}
-			<fieldset
-				class="w-full justify-start flex flex-col p-2 m-2
+		<section
+			class="p-0 flex flex-col align-middle content-center items-center
+			justify-center m-0"
+			use:proxyDndzone={{
+				items: $storeSortedGroupedSequenceScopes['sequence'],
+				flipDurationMs,
+				morphDisabled: false,
+				type: 'sequence',
+				dropTargetClasses: ['bg-green-50']
+			}}
+			on:consider={(e) => handleDndConsider(e)}
+			on:finalize={(e) => handleDndFinalize(e)}
+		>
+			{#each $storeSortedGroupedSequenceScopes['sequence'] as group, idxGroup (group.id)}
+				<fieldset
+					class="w-full justify-start flex flex-col p-2 m-2
 					align-middle content-center "
-				class:box={group.dependencyPackage}
-				class:border-2={group.dependencyPackage}
-				class:border-slate-200={group.dependencyPackage}
-				class:card={group.dependencyPackage}
-			>
-				{#if group.dependencyPackage}
-					<legend class="ml-4 p-2">Sequence block with dependent scopes</legend>
-				{/if}
-				<!-- <div class="align-middle content-center justify-items-center min-w-fit">
+					class:box={group.dependencyPackage}
+					class:border-2={group.dependencyPackage}
+					class:border-slate-200={group.dependencyPackage}
+					class:card={group.dependencyPackage}
+				>
+					{#if group.dependencyPackage}
+						<legend class="ml-4 p-2">Sequence block with dependent scopes</legend>
+					{/if}
+					<!-- <div class="align-middle content-center justify-items-center min-w-fit">
 						<h3 class="mt-2 ">Sequence {group.id}</h3>
 					</div> -->
-				{#each group.items as scope, idx (scope.id)}
-					<!-- {@const calculatedColor = calculateColor(scope, maxDependents)} -->
-					{@const nextOne = group.items[idx + 1] ? group.items[idx + 1] : { name: '' }}
-					<div class="m-2 pl-2 justify-center flex flex-col align-middle">
-						<div class="flex flex-col justify-start content-start items-start">
-							<div class="flex flex-row justify-between w-full">
-								<div
-									class="flex flex-row content-center
+					{#each group.items as scope, idx (scope.id)}
+						<!-- {@const calculatedColor = calculateColor(scope, maxDependents)} -->
+						{@const nextOne = group.items[idx + 1] ? group.items[idx + 1] : { name: '' }}
+						<div class="m-2 pl-2 justify-center flex flex-col align-middle">
+							<div class="flex flex-col justify-start content-start items-start">
+								<div class="flex flex-row justify-between w-full">
+									<div
+										class="flex flex-row content-center
 										items-center align-middle"
-								>
-									<div class="text-xl font-bold">
-										{scope.order} -
-										{getEmoji(scope)}
-										{scope.name || scope.placeholder}
+									>
+										<div class="text-xl font-bold">
+											{scope.order} -
+											{getEmoji(scope)}
+											{scope.name || scope.placeholder}
+										</div>
+										{#if !scope.indispensable}
+											<span class="ml-2 badge badge-outline break-normal w-fit">Nice-to-have</span>
+										{:else}
+											<span class="ml-2 badge badge-outline break-normal w-fit">Indispensable</span>
+										{/if}
+										{#if scope.risky}
+											<span class="ml-2 badge badge-outline break-normal w-fit">Risky</span>
+										{/if}
 									</div>
-									{#if !scope.indispensable}
-										<span class="ml-2 badge badge-outline">Nice-to-have</span>
-									{:else}
-										<span class="ml-2 badge badge-outline">Indispensable</span>
-									{/if}
-									{#if scope.risky}
-										<span class="ml-2 badge badge-outline">Risky</span>
-									{/if}
+									<div>
+										<BadgeDependencies project={projectStore} {scopes} {scope} />
+									</div>
 								</div>
-								<div>
-									<BadgeDependencies project={projectStore} {scopes} {scope} />
-								</div>
-							</div>
-							<div class="flex flex-col gap-0 p-0 m-0">
-								{#if scope.forkedScopeId}
-									<div class="flex items-center content-center align-middle">
-										<!-- <input type="checkbox" class="checkbox mr-2" />
+								<div class="flex flex-col gap-0 p-0 m-0">
+									{#if scope.forkedScopeId}
+										<div class="flex items-center content-center align-middle">
+											<!-- <input type="checkbox" class="checkbox mr-2" />
 												<p class="italic">
 													At this step, do only the essential to be able to do the next risky scope.
 												</p> -->
-									</div>
-									<div class="flex flex-col m-0 bg-yellow-50 mt-2 p-2 border-[1px]">
-										At this step, do only what is needed to enable doing the tasks of the next
-										scope.
-										<br />
-										Think about affordances or simulated ways to mimic the real behavior of the tasks.
-										<br />
-										In the world of software development you can think about dummy objects, fake objects,
-										stubs and mocks.
-									</div>
-								{:else}
-									{#if typeof group.indispensableTasks !== 'undefined'}
+										</div>
+										<div class="flex flex-col m-0 bg-yellow-50 mt-2 p-2 border-[1px]">
+											At this step, do only what is needed to enable doing the tasks of the next
+											scope.
+											<br />
+											Think about affordances or simulated ways to mimic the real behavior of the tasks.
+											<br />
+											In the world of software development you can think about dummy objects, fake objects,
+											stubs and mocks.
+										</div>
+									{:else}
+										{#if typeof group.indispensableTasks !== 'undefined'}
+											<div class="pb-2">
+												{#if group.indispensableTasks === true}
+													Indispensable tasks:
+												{:else if group.indispensableTasks === false}
+													Nice-to-have tasks:
+												{/if}
+											</div>
+										{/if}
 										<div class="pb-2">
-											{#if group.indispensableTasks === true}
-												Indispensable tasks:
-											{:else if group.indispensableTasks === false}
-												Nice-to-have tasks:
-											{/if}
+											{#each scope.items as item}
+												<div class="flex items-center content-center align-middle">
+													<input type="checkbox" class="checkbox mr-2" />{item.name}
+												</div>
+											{/each}
 										</div>
 									{/if}
-									<div class="pb-2">
-										{#each scope.items as item}
-											<div class="flex items-center content-center align-middle">
-												<input type="checkbox" class="checkbox mr-2" />{item.name}
-											</div>
-										{/each}
-									</div>
-								{/if}
-								{#if !scope.items.length}
-									<div
-										class="flex items-center
+									{#if !scope.items.length}
+										<div
+											class="flex items-center
 											content-center align-middle italic"
-									>
-										No item added
-									</div>
-								{/if}
+										>
+											No item added
+										</div>
+									{/if}
+								</div>
 							</div>
 						</div>
-					</div>
-				{/each}
-			</fieldset>
-		{/each}
-	</section>
+					{/each}
+				</fieldset>
+			{/each}
+		</section>
+	</div>
 </div>
 
 <input type="checkbox" id="modal-export" class="modal-toggle" />
