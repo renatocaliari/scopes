@@ -40,10 +40,10 @@ export function ProjectStore() {
 
     const { set, subscribe, update } = store;
 
-    function reset() {
+    function reset(sampleData = false, idxSample) {
         // console.log('reseting...');
         set([]);
-        createInitialData(true, 9, false);
+        createInitialData(true, 9, sampleData, idxSample = 2);
     }
 
     if (get(store).length === 0) {

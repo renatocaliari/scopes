@@ -2,8 +2,8 @@
 	"compilerOptions": {
 		"module": "esnext"
 	},
-	"compilerOptions": {
-		"module": "esnext"
-	},
+	"types": [
+		"vitest/globals"
+	],
 	"extends": "./.svelte-kit/tsconfig.json"
 }

@@ -19,8 +19,8 @@
 				<p class="text-2xl">
 					The tool to help you understand the execution of your next project before start it.
 				</p>
-				<a href="/scopes/dump" class="btn btn-primary">Get Started for FREE</a>
-				<a href="/about" class="btn btn-outline ml-4">About</a>
+				<a href="/scopes/dump" sveltekit:prefetch class="btn btn-primary">Get Started for FREE</a>
+				<a href="/about" sveltekit:prefetch class="btn btn-outline ml-4">About</a>
 
 				<p class="text-lg">
 					All the information will be <br />stored locally in your browser. <br /><br /> You can export
