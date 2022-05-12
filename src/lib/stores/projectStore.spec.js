@@ -17,10 +17,10 @@ describe("Sequence", () => {
     it("creates a sequence of scopes and fork if needed to help risky scopes", () => {
         projectStore.reset(true, 2);
         projectStore.sortScopesByPriority();
-        let lengthArr = get(storeSortedGroupedSequenceScopes)['sequence'].length;
+        let lengthArr = get(storeSortedGroupedSequenceScopes).length;
 
         expect(lengthArr).toBe(10);
-        expect(get(storeSortedGroupedSequenceScopes)['sequence'][0].items[1].forkedScopeId).toBe('scope-1');
-        expect(get(storeSortedGroupedSequenceScopes)['sequence'][lengthArr - 1].items[0].id).toBe('scope-4');
+        expect(get(storeSortedGroupedSequenceScopes)[0].items[1].forkedScopeId).toBe('scope-1');
+        expect(get(storeSortedGroupedSequenceScopes)[lengthArr - 1].items[0].id).toBe('scope-4');
     })
 })

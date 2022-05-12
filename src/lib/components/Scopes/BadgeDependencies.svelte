@@ -10,6 +10,7 @@
 	export let scopes = [];
 	export let scope;
 
+	console.log('badge dep scopes', scopes);
 	if (!scopes.length) {
 		scopes = $project;
 	}
@@ -33,6 +34,7 @@
 			.filter((item) => item != null);
 
 		// console.log('scope.dependsOn:', scope.dependsOn);
+		console.log('scope:', scope);
 		let dependsOn = scopes.filter(
 			// (s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
 			(s) => scope.dependsOn.includes(s.id)

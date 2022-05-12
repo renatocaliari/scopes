@@ -8,7 +8,8 @@ export default defineConfig({
     ],
     test: {
         globals: true,
-        environment: 'jsdom'
+        environment: 'jsdom',
+        includeSource: ["src/**/*.{js, ts, svelte"]
     },
     resolve: {
         alias: {

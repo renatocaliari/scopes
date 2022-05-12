@@ -42,7 +42,7 @@
 		]
 	};
 
-	let forkedScopes = $storeSortedGroupedSequenceScopes['sequence'].reduce((acc, group) => {
+	let forkedScopes = $storeSortedGroupedSequenceScopes.reduce((acc, group) => {
 		group.items.forEach((scope) => {
 			if (scope.forkedScopeId) {
 				acc.push(scope);
@@ -52,7 +52,7 @@
 	}, []);
 
 	let scopes = [...$storeSortedScopesDocumentation, ...forkedScopes];
-	// console.log('>>> scopes:', scopes);
+	console.log('>>> scopes:', scopes);
 
 	let successfullyCopied = undefined;
 	const handleSuccessfullyCopied = (e) => {
@@ -178,11 +178,11 @@
 	}
 
 	function handleDndConsider(e) {
-		$storeSortedGroupedSequenceScopes['sequence'] = e.detail.items;
+		$storeSortedGroupedSequenceScopes = e.detail.items;
 		reordered = true;
 	}
 	function handleDndFinalize(e) {
-		$storeSortedGroupedSequenceScopes['sequence'] = projectStore.generateSequence(e.detail.items);
+		$storeSortedGroupedSequenceScopes = projectStore.generateSequence(e.detail.items);
 		reordered = true;
 	}
 	function proxyDndzone() {
@@ -193,7 +193,7 @@
 	}
 
 	function confirmUpdate() {
-		$storeSortedGroupedSequenceScopes['sequence'].set(
+		$storeSortedGroupedSequenceScopes.set(
 			projectStore.sortScopesByPriority().storeSortedGroupedAndForkedScopes
 		);
 	}
@@ -225,7 +225,7 @@
 			<label
 				for="modal-export"
 				class="btn btn-outline modal-button"
-				on:click={() => (exportText = scopesToText($storeSortedGroupedSequenceScopes['sequence']))}
+				on:click={() => (exportText = scopesToText($storeSortedGroupedSequenceScopes))}
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="w-4 h-4 mr-1"
 					><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
@@ -266,7 +266,7 @@
 			class="p-0 flex flex-col align-middle content-center items-center
 			justify-center m-0"
 			use:proxyDndzone={{
-				items: $storeSortedGroupedSequenceScopes['sequence'],
+				items: $storeSortedGroupedSequenceScopes,
 				flipDurationMs,
 				morphDisabled: false,
 				type: 'sequence',
@@ -275,7 +275,7 @@
 			on:consider={(e) => handleDndConsider(e)}
 			on:finalize={(e) => handleDndFinalize(e)}
 		>
-			{#each $storeSortedGroupedSequenceScopes['sequence'] as group, idxGroup (group.id)}
+			{#each $storeSortedGroupedSequenceScopes as group, idxGroup (group.id)}
 				<fieldset
 					class="w-full justify-start flex flex-col p-2 m-2
 					align-middle content-center "
@@ -418,7 +418,7 @@
 			class="toggle align-middle content-center items-center mr-2"
 			bind:checked={toggleAddInfo}
 			on:change={() => {
-				scopesToText($storeSortedGroupedSequenceScopes['sequence']);
+				scopesToText($storeSortedGroupedSequenceScopes);
 			}}
 		/><label for="auto-number" class="mr-2"
 			>Add info about each scope (dependencies, riskies, etc)</label
@@ -429,7 +429,7 @@
 			class="toggle align-middle content-center items-center mr-2"
 			bind:checked={toggleAutoTodo}
 			on:change={() => {
-				scopesToText($storeSortedGroupedSequenceScopes['sequence']);
+				scopesToText($storeSortedGroupedSequenceScopes);
 			}}
 		/><label for="auto-number" class="mr-2">Put NOW/LATER* at the beginning of the tasks</label>
 		<span class="label-text-alt"

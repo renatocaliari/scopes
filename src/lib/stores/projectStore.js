@@ -33,6 +33,46 @@ export let storeSortedScopesDocumentation = writable('sortedScopesDocumentation'
 // export let sortedGroupedAndForkedScopes = writable([]);
 // export let sortedScopesDocumentation = writable([]);
 
+
+/**
+ * @typedef {Object} Item
+ * @property {string} id 
+ * @property {string} placeholder 
+ * @property {string} name 
+ * @property {string} description 
+ * @property {boolean} indispensable
+ * 
+ */
+
+/**
+ * @typedef {Object} Scope
+ * @property {string} id 
+ * @property {string} placeholder 
+ * @property {string} name 
+ * @property {string} title 
+ * @property {string} description 
+ * @property {boolean} order
+ * @property {boolean} risky
+ * @property {boolean} indispensable
+ * @property {boolean} freezeOrder
+ * @property {boolean} remove
+ * @property {[]} dependsOn
+ * @property {Item[]} items
+ * 
+ */
+
+/**
+ * @typedef {Object} GroupScopes
+ * @property {string} id 
+ * @property {boolean} risky
+ * @property {boolean} indispensable
+ * @property {boolean} dependencyPackage
+ * @property {Scope[]} items
+ * @property {boolean} indispensableTasks
+ * @property {boolean} order
+ * 
+ */
+
 export function ProjectStore() {
     // let store = persistentWritable("scopes", []);
     // let store = localStorageStore("scopes", []);
@@ -354,17 +394,17 @@ export function ProjectStore() {
     }
 
     function scopeUnlocksDependencies(scope, scopes = []) {
-        // console.log('### scope:', scope);
-        // console.log('### scope.id:', scope.id);
-        // console.log('### scope.forkedScopeId:', scope.forkedScopeId);
-        // console.log('### scopes:', scopes);
+        console.log('### scope:', scope);
+        console.log('### scope.id:', scope.id);
+        console.log('### scope.forkedScopeId:', scope.forkedScopeId);
+        console.log('### scopes:', scopes);
         if (scopes.length) {
             let forkedScope = scopes.find((s2) => s2.forkedScopeId === scope.id);
             let forkedScopeId = forkedScope ? forkedScope.id : 0;
-            // console.log('### forkedScope:', forkedScope);
-            // console.log('### forkedScopeId:', forkedScopeId);
-            // console.log('### scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId)):', scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId)));
-            return scopes.filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId); //|| s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId));
+            console.log('### forkedScope:', forkedScope);
+            console.log('### forkedScopeId:', forkedScopeId);
+            console.log('### scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId)):', scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId)));
+            return scopes.filter((s) => (s.dependsOn.includes(scope.id) && !s.forkedScopeId) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId));
         } else {
             return get(store).filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId);
         }
@@ -729,7 +769,7 @@ export function ProjectStore() {
         sortedGroupedSequenceScopes.sequence = generateSequence([...sortedGroupedSequenceScopes.indispensable, ...sortedGroupedSequenceScopes.niceToHave]);
 
         storeSortedGroupedScopes.set(groupedSortedScopes);
-        storeSortedGroupedSequenceScopes.set(sortedGroupedSequenceScopes);
+        storeSortedGroupedSequenceScopes.set(sortedGroupedSequenceScopes.sequence);
         storeSortedScopesDocumentation.set(mergeSort(mergeScopesForDocumentation, copyFilteredStore).map((s, idx) => { s.orderDocumentation = idx + 1; return s; }));
 
         return {
@@ -760,6 +800,11 @@ export function ProjectStore() {
         return -1;
     };
 
+    /**
+     * 
+     * @param {GroupScopes[]} groups 
+     * @returns {GroupScopes[]}
+     */
     function generateSequence(groups) {
         let newArrGroups = JSON.parse(JSON.stringify(groups));
         let idxSequence = 0;

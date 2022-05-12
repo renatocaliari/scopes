@@ -6,14 +6,20 @@
 	import LoadingPageProgressBar from '$lib/components/LoadingPageProgressBar.svelte';
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import { prefetchRoutes } from '$app/navigation';
 	import { notificationData } from '$lib/stores/notificationStore';
 	import { dev } from '$app/env';
+	import { onMount } from 'svelte';
 
 	// import mixpanel from 'mixpanel-browser';
 
 	// Enabling the debug mode flag is useful during implementation,
 	// but it's recommended you remove it for prod	uction
 	// mixpanel.init('17ecea84c6ac6d69cd43193b7d046e9b', { debug: dev });
+</script>
+
+<script>
+	onMount(prefetchRoutes);
 </script>
 
 <svelte:head>
