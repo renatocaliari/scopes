@@ -60,7 +60,7 @@
 					<BadgeDependencies project={projectStore} {scope} />
 				</div> -->
 
-				<div slot="header" class="inline-flex w-full justify-end p-[0.1rem]">
+				<div slot="header" class="flex flex-col p-[0.1rem]">
 					<!-- <ToggleScope
 						bind:scope
 						bind:checked={scope.indispensable}
@@ -79,6 +79,11 @@
 							$projectStore = $projectStore;
 						}}
 					/>
+					{#if scope.indispensable}
+						<div class="pb-2">
+							<div class="flex badge badge-primary  text-white">Indispensable</div>
+						</div>
+					{/if}
 				</div>
 				<div slot="body">
 					<Items bind:scope items={scope.items.filter((i) => i.indispensable)} />

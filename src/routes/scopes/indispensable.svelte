@@ -102,7 +102,7 @@
 					</div>
 					{#if scope.risky}
 						<div class="pb-2">
-							<div class="flex badge badge-accent m-1 text-white">Risky</div>
+							<div class="flex badge badge-accent text-white">Risky</div>
 						</div>
 					{/if}
 				</div>

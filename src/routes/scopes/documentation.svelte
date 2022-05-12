@@ -147,8 +147,10 @@
 					<div class="move cursor-grab align-middle content-center justify-items-center" />
 				</div>
 				<div slot="header" class="w-full">
-					<div class="badge" class:hidden={!scope.indispensable}>Indispensable</div>
-					<div class="badge" class:hidden={!scope.risky}>Risky</div>
+					<div class="badge badge-primary text-white" class:hidden={!scope.indispensable}>
+						Indispensable
+					</div>
+					<div class="badge badge-accent text-white" class:hidden={!scope.risky}>Risky</div>
 					<h2
 						class="mt-2 border-dashed border-2 border-gray-300"
 						contenteditable
