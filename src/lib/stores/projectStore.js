@@ -394,16 +394,16 @@ export function ProjectStore() {
     }
 
     function scopeUnlocksDependencies(scope, scopes = []) {
-        console.log('### scope:', scope);
-        console.log('### scope.id:', scope.id);
-        console.log('### scope.forkedScopeId:', scope.forkedScopeId);
-        console.log('### scopes:', scopes);
+        // console.log('### scope:', scope);
+        // console.log('### scope.id:', scope.id);
+        // console.log('### scope.forkedScopeId:', scope.forkedScopeId);
+        // console.log('### scopes:', scopes);
         if (scopes.length) {
             let forkedScope = scopes.find((s2) => s2.forkedScopeId === scope.id);
             let forkedScopeId = forkedScope ? forkedScope.id : 0;
-            console.log('### forkedScope:', forkedScope);
-            console.log('### forkedScopeId:', forkedScopeId);
-            console.log('### scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId)):', scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId)));
+            // console.log('### forkedScope:', forkedScope);
+            // console.log('### forkedScopeId:', forkedScopeId);
+            // console.log('### scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId)):', scopes.filter((s) => s.dependsOn.includes(scope.id) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId)));
             return scopes.filter((s) => (s.dependsOn.includes(scope.id) && !s.forkedScopeId) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId));
         } else {
             return get(store).filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId);
