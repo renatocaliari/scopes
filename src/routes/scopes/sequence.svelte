@@ -11,7 +11,7 @@
 
 	let showUpdate = false;
 	let toggleAutoTodo = false;
-	let toggleAddInfo = true;
+	let toggleAddInfo = false;
 </script>
 
 <script>
