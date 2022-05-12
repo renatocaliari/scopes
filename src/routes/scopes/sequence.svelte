@@ -52,7 +52,7 @@
 	}, []);
 
 	let scopes = [...$storeSortedScopesDocumentation, ...forkedScopes];
-	console.log('>>> scopes:', scopes);
+	// console.log('>>> scopes:', scopes);
 
 	let successfullyCopied = undefined;
 	const handleSuccessfullyCopied = (e) => {
