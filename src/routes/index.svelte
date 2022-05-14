@@ -214,37 +214,54 @@
 			You can use it to things like:
 			<ul>
 				<li>
-					<span class="bg-accent p-0.5 text-white">map</span> the scopes of your
-					<span class="bg-primary p-0.5 text-white">project</span>
+					<span class="underline decoration-primary decoration-4 underline-offset-8">map</span> the
+					scopes of your
+					<span class="underline decoration-secondary decoration-4 underline-offset-8">project</span
+					>
 				</li>
 				<li>
-					<span class="bg-accent p-0.5 text-white">discover</span> a better
-					<span class="bg-primary p-0.5 text-white">sequence</span> of execution of your tasks
+					<span class="underline decoration-primary decoration-4 underline-offset-8">discover</span>
+					a better
+					<span class="underline decoration-secondary decoration-4 underline-offset-8"
+						>sequence</span
+					> of execution of your tasks
 				</li>
 				<li>
-					<span class="bg-accent p-0.5 text-white">shape</span> your next
-					<span class="bg-primary p-0.5 text-white">project</span>
+					<span class="underline decoration-primary decoration-4 underline-offset-8">shape</span>
+					your next
+					<span class="underline decoration-secondary decoration-4 underline-offset-8">project</span
+					>
 				</li>
 				<li>
-					<span class="bg-accent p-0.5 text-white">plan</span> the
-					<span class="bg-primary p-0.5 text-white">next cycle of development or discovery</span> of
-					your software
+					<span class="underline decoration-primary decoration-4 underline-offset-8">plan</span> the
+					next cycle of
+					<span class="underline decoration-secondary decoration-4 underline-offset-8"
+						>development or discovery</span
+					> of your software
 				</li>
 				<li>
-					<span class="bg-accent p-0.5 text-white">plan</span> your next
-					<span class="bg-primary p-0.5 text-white">event</span>
+					<span class="underline decoration-primary decoration-4 underline-offset-8">plan</span>
+					your next
+					<span class="underline decoration-secondary decoration-4 underline-offset-8">event</span>
 				</li>
 				<li>
-					<span class="bg-accent p-0.5 text-white">plan</span>
-					<span class="bg-primary p-0.5 text-white">projects</span> of Marketing, Sales, Development,
-					Design, Data, etc
+					<span class="underline decoration-primary decoration-4 underline-offset-8">plan</span>
+					<span class="underline decoration-secondary decoration-4 underline-offset-8"
+						>projects</span
+					> of Marketing, Sales, Development, Design, Data, etc
 				</li>
 				<li>
-					<span class="bg-accent p-0.5 text-white">plan</span> the next cycle of your
-					<span class="bg-primary p-0.5 text-white">personal tasks</span>, be it for your week,
-					month, etc
+					<span class="underline decoration-primary decoration-4 underline-offset-8">plan</span> the
+					next cycle of your
+					<span class="underline decoration-secondary decoration-4 underline-offset-8"
+						>personal tasks</span
+					>, be it for your week, month, etc
 				</li>
-				<li><span class="bg-primary p-0.5 text-white">whatever</span> you want</li>
+				<li>
+					<span class="underline decoration-secondary decoration-4 underline-offset-8"
+						>whatever</span
+					> you want :)
+				</li>
 			</ul>
 		</div>
 		<h2 class="text-4xl font-bold tracking-tight text-center">Export to Text [Markdown]</h2>
