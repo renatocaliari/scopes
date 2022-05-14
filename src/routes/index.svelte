@@ -13,14 +13,14 @@
 	<div class="hero min-h-fit sm:mt-24">
 		<div class="hero-content text-center">
 			<div class="max-w-md">
-				<h1 class="text-4xl sm:text-8xl mb-2 font-bold">Scopefully</h1>
+				<h1 class="text-6xl sm:text-8xl mb-2 font-bold">Scopefully</h1>
 				<span class="text-base sm:text-3xl">(beta v0.0.2)</span>
 				<p class="text-lg sm:text-2xl">
 					The tool to help you understand the execution of your next project before start it.
 				</p>
 				<div class="flex flex-col sm:flex-row items-center justify-center content-center gap-2">
 					<a href="/scopes/dump" sveltekit:prefetch class="btn btn-primary">Get Started for FREE</a>
-					<a href="/about" sveltekit:prefetch class="btn btn-outline ml-4">About</a>
+					<a href="/about" sveltekit:prefetch class="hidden sm:flex btn btn-outline ml-4">About</a>
 				</div>
 				<p class="text-sm sm:text-lg">
 					All the information will be <br />stored locally in your browser. <br /><br /> You can export
@@ -31,9 +31,11 @@
 	</div>
 
 	<!-- Section 1 -->
-	<section class="py-20 bg-white">
+	<section class="sm:py-20 bg-white">
 		<div class="container max-w-6xl mx-auto">
-			<h2 class="text-4xl font-bold tracking-tight text-center">How Scopefully helps you</h2>
+			<h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-center">
+				How Scopefully helps you
+			</h2>
 			<!-- <p class="mt-2 text-lg text-center text-gray-600">
 				Check out our list of awesome features below.
 			</p> -->
