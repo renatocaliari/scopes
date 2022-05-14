@@ -1,6 +1,5 @@
 <script>
 	// import mixpanel from 'mixpanel-browser';
-
 	let mixpanel = {
 		track: () => {}
 	};
@@ -14,15 +13,16 @@
 	<div class="hero min-h-fit sm:mt-24">
 		<div class="hero-content text-center">
 			<div class="max-w-md">
-				<h1 class="text-8xl mb-2 font-bold">Scopefully</h1>
-				<span class="text-3xl">(Beta v0.0.2)</span>
-				<p class="text-2xl">
+				<h1 class="text-4xl sm:text-8xl mb-2 font-bold">Scopefully</h1>
+				<span class="text-base sm:text-3xl">(beta v0.0.2)</span>
+				<p class="text-lg sm:text-2xl">
 					The tool to help you understand the execution of your next project before start it.
 				</p>
-				<a href="/scopes/dump" sveltekit:prefetch class="btn btn-primary">Get Started for FREE</a>
-				<a href="/about" sveltekit:prefetch class="btn btn-outline ml-4">About</a>
-
-				<p class="text-lg">
+				<div class="flex flex-col sm:flex-row items-center justify-center content-center gap-2">
+					<a href="/scopes/dump" sveltekit:prefetch class="btn btn-primary">Get Started for FREE</a>
+					<a href="/about" sveltekit:prefetch class="btn btn-outline ml-4">About</a>
+				</div>
+				<p class="text-sm sm:text-lg">
 					All the information will be <br />stored locally in your browser. <br /><br /> You can export
 					the final result.
 				</p>
@@ -212,26 +212,25 @@
 			You can use it to things like:
 			<ul>
 				<li>
-					<span class="bg-accent p-0.5 text-white">shape</span> your next
+					<span class="bg-accent p-0.5 text-white">map</span> the scopes of your
 					<span class="bg-primary p-0.5 text-white">project</span>
 				</li>
 				<li>
-					<span class="bg-accent p-0.5 text-white">map</span> the scopes and sequence of execution
-					of a
+					<span class="bg-accent p-0.5 text-white">discover</span> a better
+					<span class="bg-primary p-0.5 text-white">sequence</span> of execution of your tasks
+				</li>
+				<li>
+					<span class="bg-accent p-0.5 text-white">shape</span> your next
 					<span class="bg-primary p-0.5 text-white">project</span>
 				</li>
 				<li>
 					<span class="bg-accent p-0.5 text-white">plan</span> the
 					<span class="bg-primary p-0.5 text-white">next cycle of development or discovery</span> of
-					your digital product
+					your software
 				</li>
 				<li>
 					<span class="bg-accent p-0.5 text-white">plan</span> your next
 					<span class="bg-primary p-0.5 text-white">event</span>
-				</li>
-				<li>
-					<span class="bg-accent p-0.5 text-white">define</span> the next
-					<span class="bg-primary p-0.5 text-white">sprint</span> of SCRUM
 				</li>
 				<li>
 					<span class="bg-accent p-0.5 text-white">plan</span>
