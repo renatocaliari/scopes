@@ -147,6 +147,7 @@
 					<div class="move cursor-grab align-middle content-center justify-items-center" />
 				</div>
 				<div slot="header" class="w-full">
+					<div class="badge badge-outline" class:hidden={scope.indispensable}>Nice-to-have</div>
 					<div class="badge badge-primary text-white" class:hidden={!scope.indispensable}>
 						Indispensable
 					</div>
