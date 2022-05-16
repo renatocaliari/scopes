@@ -1,13 +1,17 @@
 <script>
+	import { goto } from '$app/navigation';
 	import { stepsStore } from '$lib/stores/stepsStore';
 	import { onMount } from 'svelte';
-
 	export let currentStep = 0;
 
 	let lastLinkBreadcrumb;
 	onMount(async () => {
 		lastLinkBreadcrumb.scrollIntoView();
 	});
+
+	if (currentStep > 0 && !$stepsStore[0].completed) {
+		goto('/scopes/dump');
+	}
 </script>
 
 <svelte:head>
@@ -21,17 +25,20 @@
 		{/if}
 	{/each}
 </div>
+
 <div class="text-sm hidden sm:flex breadcrumbs">
 	<ul>
 		{#each $stepsStore as btn, idx}
-			{#if idx <= currentStep}
-				{#if idx === currentStep}
-					<li bind:this={lastLinkBreadcrumb} class="active">
-						<a href={btn.link}>{btn.linkText}</a>
-					</li>
-				{:else}
-					<li><a href={btn.link}>{btn.linkText}</a></li>
-				{/if}
+			{#if idx === currentStep}
+				<li bind:this={lastLinkBreadcrumb}>
+					<span class="font-bold underline underline-offset-8 decoration-4">{btn.linkText}</span>
+				</li>
+			{:else if !$stepsStore[0].completed}
+				<li><span>{btn.linkText}</span></li>
+			{:else}
+				<li>
+					<a class="link link-hover font-normal" href={btn.link}>{btn.linkText}</a>
+				</li>
 			{/if}
 		{/each}
 	</ul>
@@ -54,3 +61,8 @@
 {#if $stepsStore[currentStep].h2}
 	<h2>{$stepsStore[currentStep].h2}</h2>
 {/if}
+
+<style>
+	.breadcrumb {
+	}
+</style>

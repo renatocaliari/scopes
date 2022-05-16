@@ -79,11 +79,17 @@
 							$projectStore = $projectStore;
 						}}
 					/>
-					{#if scope.indispensable}
-						<div class="pb-2">
-							<div class="flex badge badge-primary  text-white">Indispensable</div>
-						</div>
-					{/if}
+					<div class="pb-2 gap-2 flex flex-row">
+						{#if scope.risky}
+							<div class="flex badge badge-accent text-white">Risky</div>
+						{/if}
+
+						{#if scope.indispensable}
+							<div class="pb-2">
+								<div class="flex badge badge-primary text-white">Indispensable</div>
+							</div>
+						{/if}
+					</div>
 				</div>
 				<div slot="body">
 					<Items bind:scope items={scope.items.filter((i) => i.indispensable)} />

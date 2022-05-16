@@ -50,20 +50,12 @@
 		{@const itemsNiceToHave = projectStore.scopeFilterItemsNiceToHave(scope)}
 
 		<div>
-			<!-- 				bind:scope
-				icon={scope.risky ? '' : undefined}
-				classColor={scope.risky ? 'bg-red-50' : undefined}
- -->
 			<Scope
 				bind:scope
 				headerHighlighted={true}
 				itemsScopeModal={scope.items}
 				classColor={scope.indispensable ? 'border-success border-4' : undefined}
 			>
-				<!-- <div slot="badge">
-					<BadgeDependencies project={projectStore} {scope} />
-				</div> -->
-
 				<div slot="header" class="flex flex-col p-[0.1rem] ">
 					<div class="w-full justify-end ">
 						<ToggleScope
@@ -100,11 +92,18 @@
 							}}
 						/>
 					</div>
-					{#if scope.risky}
-						<div class="pb-2">
+					<div class="pb-2 gap-2 flex flex-row">
+						{#if scope.indispensable}
+							<div class="badge badge-primary text-white" class:hidden={!scope.indispensable}>
+								Indispensable
+							</div>
+						{:else}
+							<div class="badge badge-outline" class:hidden={scope.indispensable}>Nice-to-have</div>
+						{/if}
+						{#if scope.risky}
 							<div class="flex badge badge-accent text-white">Risky</div>
-						</div>
-					{/if}
+						{/if}
+					</div>
 				</div>
 				<div slot="body">
 					<h4 class="my-0">Indispensable items:</h4>
