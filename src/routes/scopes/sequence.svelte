@@ -441,7 +441,7 @@
 		>
 		<div class="divider" />
 
-		<div style="white-space: pre-wrap;" class="w-full h-96 overflow-auto">
+		<div style="white-space: pre-wrap;" class="w-full h-96 max-h-96 overflow-auto">
 			{exportText}
 		</div>
 		<div class="modal-action">
