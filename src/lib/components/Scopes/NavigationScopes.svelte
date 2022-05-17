@@ -44,7 +44,7 @@
 	</ul>
 </div>
 
-<h1>{$stepsStore[currentStep].h1}</h1>
+<h1 class="sm:mt-10">{$stepsStore[currentStep].h1}</h1>
 
 <!-- <div class="hidden lg:flex btn-group justify-center my-4">
 	{#each $stepsStore as btn, idx} -->
@@ -61,8 +61,3 @@
 {#if $stepsStore[currentStep].h2}
 	<h2>{$stepsStore[currentStep].h2}</h2>
 {/if}
-
-<style>
-	.breadcrumb {
-	}
-</style>

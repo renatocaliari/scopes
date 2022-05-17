@@ -47,7 +47,8 @@
 	class={'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 grid-flow-row gap-4 place-content-around'}
 >
 	{#each sortedScopes as scope}
-		{@const itemsNiceToHave = projectStore.scopeFilterItemsNiceToHave(scope)}
+		{@const itemsIndispensable = projectStore.scopeFilterItems(scope, true)}
+		{@const itemsNiceToHave = projectStore.scopeFilterItems(scope, false)}
 
 		<div>
 			<Scope
@@ -107,23 +108,30 @@
 				</div>
 				<div slot="body">
 					<h4 class="my-0">Indispensable items:</h4>
-
-					<Items
-						bind:scope
-						items={scope.items.filter((i) => i.indispensable)}
-						checkbox
-						fnSetChecked={(item) => {
-							return item.indispensable;
-						}}
-						fnOnCheckItem={(e, scope, i, checked) => {
-							projectStore.itemUpdateIndispensable(scope, i, checked);
-							$projectStore = $projectStore;
-						}}
-					/>
+					{#if !itemsIndispensable.length}
+						<div
+							class="h-40 w-full text-center items-center justify-center text-8xl opacity-20 mt-8"
+						>
+							🤷‍♀️
+						</div>
+					{:else}
+						<Items
+							bind:scope
+							items={itemsIndispensable}
+							checkbox
+							fnSetChecked={(item) => {
+								return item.indispensable;
+							}}
+							fnOnCheckItem={(e, scope, i, checked) => {
+								projectStore.itemUpdateIndispensable(scope, i, checked);
+								$projectStore = $projectStore;
+							}}
+						/>
+					{/if}
 					<h4 class="my-0">Nice-to-have items:</h4>
 					<Items
 						bind:scope
-						items={scope.items.filter((i) => !i.indispensable)}
+						items={itemsNiceToHave}
 						checkbox
 						fnSetChecked={(item) => {
 							return item.indispensable;

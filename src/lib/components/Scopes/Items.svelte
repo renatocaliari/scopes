@@ -95,7 +95,6 @@
 	<form class="flex-none form form-control" on:submit|preventDefault={handleSubmit}>
 		<input
 			class="input input-bordered mb-2 rounded-none"
-			use:autoFocus={focusAdd}
 			bind:this={fieldAddText}
 			id="task"
 			name="task"

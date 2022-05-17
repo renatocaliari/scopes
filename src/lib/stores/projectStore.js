@@ -408,12 +408,8 @@ export function ProjectStore() {
         }
     };
 
-    function scopeFilterItemsIndispensable(scope) {
-        return scope.items.filter((item) => item.indispensable)
-    }
-
-    function scopeFilterItemsNiceToHave(scope) {
-        return scope.items.filter((item) => !item.indispensable)
+    function scopeFilterItems(scope, indispensable = true) {
+        return scope.items.filter((item) => item.indispensable === indispensable)
     }
 
     function sortItemsByIndispensable(scope) {
@@ -518,7 +514,7 @@ export function ProjectStore() {
                 return false;
             }));
 
-            console.log('group:', deepCopy(group));
+            // console.log('group:', deepCopy(group));
 
             group.dependencyPackage = group.items.length > 1;
 
@@ -896,8 +892,7 @@ export function ProjectStore() {
         scopeRemoveItem,
         scopeUpdateRisky,
         scopeUpdateIndispensable,
-        scopeFilterItemsIndispensable,
-        scopeFilterItemsNiceToHave,
+        scopeFilterItems,
         itemUpdateIndispensable,
         sortItemsByIndispensable,
         updateDependencies,

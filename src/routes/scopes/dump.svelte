@@ -76,7 +76,7 @@
 
 <NavigationScopes currentStep={0} let:currentStep>
 	<div slot="checkList">
-		<div class="alert alert-info text-white shadow-lg mb-4">
+		<div class="alert shadow-lg mb-4">
 			<div>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"

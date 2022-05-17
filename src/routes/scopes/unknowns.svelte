@@ -43,8 +43,7 @@
 	class={'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 grid-flow-row gap-4 place-content-around'}
 >
 	{#each sortedScopes as scope}
-		{@const itemsNiceToHave = projectStore.scopeFilterItemsNiceToHave(scope)}
-
+		{@const itemsIndispensable = projectStore.scopeFilterItems(scope, true)}
 		<div>
 			<!-- 				bind:scope
 				icon={scope.risky ? '' : undefined}
@@ -92,7 +91,14 @@
 					</div>
 				</div>
 				<div slot="body">
-					<Items bind:scope items={scope.items.filter((i) => i.indispensable)} />
+					<h4 class="my-0">Indispensable items:</h4>
+					{#if !itemsIndispensable.length}
+						<div class="w-full text-center items-center justify-center text-8xl opacity-20 mt-8">
+							🤷‍♀️
+						</div>
+					{/if}
+
+					<Items bind:scope items={itemsIndispensable} />
 				</div>
 			</Scope>
 		</div>
