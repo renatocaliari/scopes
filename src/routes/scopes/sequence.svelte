@@ -167,7 +167,7 @@
 									? 'NOW' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
 									: 'LATER'
 								: '') +
-							'At this step, do only what is needed to enable doing the tasks of the next step.'
+							'At this step, do as little as possible, only what is needed, to enable doing the tasks of the next step.'
 					);
 				}
 			});
@@ -330,8 +330,8 @@
 												</p> -->
 										</div>
 										<div class="flex flex-col m-0 bg-yellow-50 mt-2 p-2 border-[1px]">
-											At this step, do only what is needed to enable doing the tasks of the next
-											scope.
+											At this step, do as little as possible, only what is needed, to enable doing
+											the tasks of the next step scope.
 											<br />
 											Think about affordances or simulated ways to mimic the real behavior of the tasks.
 											<br />
