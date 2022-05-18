@@ -61,7 +61,7 @@
 			class:bg-slate-200={headerHighlighted}
 		>
 			<div class="flex flex-col w-full">
-				<div class="inline-flex w-full" class:p-4={!collapsable}>
+				<div class="inline-flex w-full" class:px-4={!collapsable} class:pt-4={!collapsable}>
 					{#if editTitle}
 						<div class="w-full flex flex-wrap break-all">
 							<svelte:element
@@ -120,7 +120,7 @@
 				<div class="flex-none p-2"><slot name="subTitle" /></div>
 			{/if}
 		</div>
-		<div class:collapse-content={collapsable} class="overflow-visible p-2">
+		<div class:collapse-content={collapsable} class="overflow-visible px-2 pb-2">
 			{#if $$slots.body}
 				<slot name="body" />
 			{/if}
