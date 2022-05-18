@@ -476,7 +476,7 @@
 <div class="modal modal-bottom sm:modal-middle">
 	<div class="modal-box">
 		<h3 class="font-bold text-lg">About the sequence</h3>
-		<div>
+		<div class="max-h-96 overflow-y-auto">
 			The sequence is generated based on all information about scopes.<br />
 			The criteria used are:
 			<ol>
