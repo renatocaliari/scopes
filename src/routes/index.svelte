@@ -19,8 +19,7 @@
 					The tool to help you understand the execution of your next project before start it.
 				</p>
 				<div class="flex flex-col sm:flex-row items-center justify-center content-center gap-2">
-					<a href="/scopes/dump" sveltekit:prefetch class="btn btn-primary">Get Started fo r FREE</a
-					>
+					<a href="/scopes/dump" sveltekit:prefetch class="btn btn-primary">Get Started for FREE</a>
 					<a href="/about" sveltekit:prefetch class="hidden sm:flex btn btn-outline ml-4">About</a>
 				</div>
 				<p class="text-sm sm:text-lg">
