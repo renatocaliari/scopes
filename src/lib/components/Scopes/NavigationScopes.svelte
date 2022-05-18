@@ -5,9 +5,9 @@
 	export let currentStep = 0;
 
 	let lastLinkBreadcrumb;
-	onMount(async () => {
-		lastLinkBreadcrumb.scrollIntoView();
-	});
+	// onMount(async () => {
+	// 	lastLinkBreadcrumb.scrollIntoView();
+	// });
 
 	if (currentStep > 0 && !$stepsStore[0].completed) {
 		goto('/scopes/dump');
