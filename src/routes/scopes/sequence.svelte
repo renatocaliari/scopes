@@ -149,7 +149,7 @@
 								'\n\t\t- ' +
 									(toggleAutoTodo
 										? group.indispensableTasks
-											? 'NOW' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
+											? 'LATER' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
 											: 'LATER'
 										: '') +
 									' ' +
@@ -164,7 +164,7 @@
 						'\n\t\t- ' +
 							(toggleAutoTodo
 								? group.indispensableTasks
-									? 'NOW' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
+									? 'LATER' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
 									: 'LATER'
 								: '') +
 							'At this step, do as little as possible, only what is needed, to enable doing the tasks of the next step.'
@@ -434,8 +434,8 @@
 			on:change={() => {
 				scopesToText($storeSortedGroupedSequenceScopes);
 			}}
-		/><label for="auto-number" class="mr-2">Put NOW/LATER* at the beginning of the tasks</label>
-		<span class="label-text-alt"
+		/><label for="auto-number" class="mr-2">Put LATER* at the beginning of the tasks</label>
+		<span class="flex label-text-alt"
 			>(*experimentally in format used by <a href="https://logseq.com/" target="_blank">Logseq</a
 			>)</span
 		>
