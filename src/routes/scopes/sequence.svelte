@@ -9,7 +9,6 @@
 	// notice - fade in works fine but don't add svelte's fade-out (known issue)
 	import { cubicIn } from 'svelte/easing';
 
-	let showUpdate = false;
 	let toggleAutoTodo = false;
 	let toggleAddInfo = false;
 </script>
@@ -17,18 +16,42 @@
 <script>
 	import {
 		storeSortedScopesDocumentation,
-		storeSortedGroupedSequenceScopes
+		storeSortedGroupedSequenceScopes,
+		ProjectStore
 	} from '$lib/stores/projectStore';
 	import { projectStore } from '$lib/stores/projectStore';
-	import { get } from 'svelte/store';
-
-	projectStore.sortScopesByPriority();
+	import { deepEqual, normalizeScopesToCompare } from '$lib/utils/comparison';
 
 	let exportText;
 	const flipDurationMs = 300;
+	let moving = false;
 	let reordered = false;
+	let updatedSequence = false;
+	let confirmUpdateStoreSequence = false;
 
-	// console.log('storeSortedGroupedSequenceScopes:', $storeSortedGroupedSequenceScopes);
+	let sortedGroupedSequenceScopes;
+	let sortedScopesDocumentation;
+
+	({ sortedGroupedSequenceScopes, sortedScopesDocumentation } =
+		projectStore.sortScopesByPriority());
+
+	$: {
+		$storeSortedGroupedSequenceScopes;
+		if (!moving) {
+			updatedSequence = !deepEqual(
+				normalizeScopesToCompare($storeSortedGroupedSequenceScopes),
+				normalizeScopesToCompare(sortedGroupedSequenceScopes)
+			);
+		}
+		if (
+			!$storeSortedGroupedSequenceScopes.length ||
+			(!moving && updatedSequence && confirmUpdateStoreSequence)
+		) {
+			$storeSortedGroupedSequenceScopes = sortedGroupedSequenceScopes;
+			updatedSequence = false;
+			confirmUpdateStoreSequence = false;
+		}
+	}
 
 	$: checkList = {
 		name: 'Tasks',
@@ -51,8 +74,7 @@
 		return acc;
 	}, []);
 
-	let scopes = [...$storeSortedScopesDocumentation, ...forkedScopes];
-	// console.log('>>> scopes:', scopes);
+	let scopes = [...sortedScopesDocumentation, ...forkedScopes];
 
 	let successfullyCopied = undefined;
 	const handleSuccessfullyCopied = (e) => {
@@ -180,22 +202,18 @@
 	function handleDndConsider(e) {
 		$storeSortedGroupedSequenceScopes = e.detail.items;
 		reordered = true;
+		moving = true;
 	}
 	function handleDndFinalize(e) {
 		$storeSortedGroupedSequenceScopes = projectStore.generateSequence(e.detail.items);
 		reordered = true;
+		moving = false;
 	}
 	function proxyDndzone() {
 		if (arguments[1]['items'].length > 1) {
 			return dndzone.apply(null, arguments);
 		}
 		return;
-	}
-
-	function confirmUpdate() {
-		$storeSortedGroupedSequenceScopes.set(
-			projectStore.sortScopesByPriority().storeSortedGroupedSequenceScopes
-		);
 	}
 
 	function getEmoji(scope) {
@@ -233,9 +251,6 @@
 					/></svg
 				> Export To Text [Markdown]</label
 			>
-			<!-- {#if showUpdate}
-				<label for="modal-update" class="btn btn-primary modal-update">Update</label>
-			{/if} -->
 		</div>
 	</NavigationCheckList>
 </NavigationScopes>
@@ -261,6 +276,17 @@
 			>
 		</h1>
 
+		{#if updatedSequence}
+			<div class="rounded-md outline outline-2  outline-black bg-yellow-50 p-2">
+				<p>
+					The sequence below or the scope information in that sequence is different from the updated
+					version.
+				</p>
+				<label for="modal-update" class="btn btn-accent modal-button"> Generate new sequence</label>
+				<div><sub /></div>
+			</div>
+		{/if}
+
 		<section
 			class="p-0 flex flex-col align-middle content-center items-center
 			justify-center m-0"
@@ -284,7 +310,7 @@
 					class:card={group.dependencyPackage}
 				>
 					{#if group.dependencyPackage}
-						<legend class="ml-4 p-2">Sequence block with dependent scopes</legend>
+						<legend class="ml-4 p-2">Block with dependent scopes</legend>
 					{/if}
 					<!-- <div class="align-middle content-center justify-items-center min-w-fit">
 						<h3 class="mt-2 ">Sequence {group.id}</h3>
@@ -462,13 +488,14 @@
 <input type="checkbox" id="modal-update" class="modal-toggle" />
 <div class="modal modal-bottom sm:modal-middle">
 	<div class="modal-box">
-		<h3 class="font-bold text-lg">
-			Scopes were changed in other steps. Do you want to lost this sequence and get an automatic new
-			one based on the changes?
-		</h3>
+		<h3 class="font-bold text-lg">Do you want to get the updated sequence?</h3>
 		<div class="modal-action">
 			<label for="modal-update" class="btn">Cancel</label>
-			<label for="modal-update" class="btn btn-primary" on:click={confirmUpdate}>Confirm</label>
+			<label
+				for="modal-update"
+				class="btn btn-primary"
+				on:click={() => (confirmUpdateStoreSequence = true)}>Confirm</label
+			>
 		</div>
 	</div>
 </div>

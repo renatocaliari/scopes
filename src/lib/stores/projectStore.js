@@ -25,13 +25,8 @@ import { convertToNumberingScheme } from "$lib/utils/general";
 let store = writable("scopes", []);
 
 export let projectStore = ProjectStore();
-// console.log('store:', JSON.stringify(get(store)));
 export let storeSortedGroupedSequenceScopes = writable('sortedGroupedSequenceScopes', []);
 export let storeSortedScopesDocumentation = writable('sortedScopesDocumentation', []);
-// export let sortedGroupedScopes = writable([]);
-// export let sortedGroupedAndForkedScopes = writable([]);
-// export let sortedScopesDocumentation = writable([]);
-
 
 /**
  * @typedef {Object} Item
@@ -82,6 +77,8 @@ export function ProjectStore(scopesSample = []) {
 
     function reset() {
         set([]);
+        storeSortedGroupedSequenceScopes = writable('sortedGroupedSequenceScopes', []);
+        storeSortedScopesDocumentation = writable('sortedScopesDocumentation', []);
     }
 
     if (scopesSample.length) {
@@ -564,12 +561,11 @@ export function ProjectStore(scopesSample = []) {
         let sortedGroupedSequenceScopes = sortScopesinGroupForking(groupedSortedScopes);
         sortedGroupedSequenceScopes = generateSequence([...sortedGroupedSequenceScopes.indispensable, ...sortedGroupedSequenceScopes.niceToHave]);
 
-        storeSortedGroupedSequenceScopes.set(sortedGroupedSequenceScopes);
-        storeSortedScopesDocumentation.set(mergeSort(mergeScopesForDocumentation, copyFilteredStore).map((s, idx) => { s.orderDocumentation = idx + 1; return s; }));
+        let sortedScopesDocumentation = mergeSort(mergeScopesForDocumentation, copyFilteredStore).map((s, idx) => { s.orderDocumentation = idx + 1; return s; });
 
         return {
-            storeSortedGroupedSequenceScopes: get(storeSortedGroupedSequenceScopes),
-            storeSortedScopesDocumentation: get(storeSortedScopesDocumentation)
+            sortedGroupedSequenceScopes: sortedGroupedSequenceScopes,
+            sortedScopesDocumentation: sortedScopesDocumentation
         }
     }
 

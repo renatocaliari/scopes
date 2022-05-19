@@ -20,7 +20,7 @@
 
 <div class="text-sm flex sm:hidden breadcrumbs">
 	{#each $stepsStore as btn, idx}
-		{#if currentStep > 1 && idx === currentStep - 1}
+		{#if currentStep > 0 && idx === currentStep - 1}
 			&#60;<a class="ml-2" href={btn.link}>{btn.linkText}</a>
 		{/if}
 	{/each}

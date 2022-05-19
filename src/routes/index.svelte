@@ -1,4 +1,5 @@
 <script>
+	import Typewriter from 'svelte-typewriter';
 	// import mixpanel from 'mixpanel-browser';
 	let mixpanel = {
 		track: () => {}
@@ -14,10 +15,16 @@
 		<div class="hero-content text-center">
 			<div class="max-w-md">
 				<h1 class="text-6xl sm:text-8xl mb-2 font-bold">Scopefully</h1>
-				<span class="text-base sm:text-3xl">(beta v0.0.3)</span>
-				<p class="text-lg sm:text-2xl">
-					The tool to help you understand the execution of your next project before start it.
-				</p>
+				<span class="text-base sm:text-3xl">(beta v0.0.4)</span>
+				<div class="text-lg sm:text-2xl my-4">
+					Map the scopes and discover an optimized sequence for execution of tasks for
+					<Typewriter scramble loop interval="80" unwriteInterval="10">
+						<span>the next cycle of your product</span>
+						<span>your project</span>
+						<span>your event</span>
+						<span>your week</span>
+					</Typewriter>
+				</div>
 				<div class="flex flex-col sm:flex-row items-center justify-center content-center gap-2">
 					<a href="/scopes/dump" sveltekit:prefetch class="btn btn-primary">Get Started for FREE</a>
 					<a href="/about" sveltekit:prefetch class="hidden sm:flex btn btn-outline ml-4">About</a>
@@ -221,7 +228,7 @@
 				</li>
 				<li>
 					<span class="underline decoration-primary decoration-4 underline-offset-8">discover</span>
-					a better
+					an optimized
 					<span class="underline decoration-secondary decoration-4 underline-offset-8"
 						>sequence</span
 					> of execution of your tasks
