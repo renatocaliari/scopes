@@ -63,7 +63,7 @@
 			<div class="flex flex-col w-full">
 				<div class="inline-flex w-full" class:px-4={!collapsable} class:pt-4={!collapsable}>
 					{#if editTitle}
-						<div class="w-full flex flex-wrap break-all">
+						<div class="w-full flex flex-wrap break-words">
 							<svelte:element
 								this="h3"
 								on:paste|preventDefault|stopPropagation={handlePaste}
@@ -88,9 +88,9 @@
 							</div>
 						{/if}
 					{:else}
-						<div class="card-title w-full min-h-8 flex flex-wrap break-all">
+						<div class="card-title w-full min-h-8 flex flex-wrap break-words">
 							<label for="modal-{scope.id}" class="mr-2 link link-hover prose"
-								><h2 class="align-middle content-center items-center break-normal">
+								><h2 class="align-middle content-center items-center break-words">
 									{#if icon}
 										<Icon data={icon} class=" mr-2" />
 									{/if}
