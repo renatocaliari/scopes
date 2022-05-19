@@ -14,7 +14,14 @@
 	let reordered = false;
 	let moving = false;
 
-	projectStore.sortScopesByPriority();
+	$storeSortedScopesDocumentation = mergeSort(mergeScopesForDocumentation, copyFilteredStore).map(
+		(s, idx) => {
+			s.orderDocumentation = idx + 1;
+			return s;
+		}
+	);
+
+	({ sortedScopesDocumentation } = projectStore.sortScopesByPriority());
 
 	$: {
 		if ($storeSortedScopesDocumentation && !moving) {
