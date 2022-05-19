@@ -293,29 +293,28 @@
 						<!-- {@const calculatedColor = calculateColor(scope, maxDependents)} -->
 						{@const nextOne = group.items[idx + 1] ? group.items[idx + 1] : { name: '' }}
 						<div class="m-2 pl-2 justify-center flex flex-col align-middle">
-							<div class="flex flex-col justify-start content-start items-start">
+							<div class="flex flex-col">
 								<div class="flex flex-row justify-between w-full">
 									<div
-										class="flex flex-row content-center
-										items-center align-middle"
+										class="flex flex-col align-middle text-left items-start content-start justify-start"
 									>
 										<div class="text-xl font-bold">
 											{scope.order} -
 											{getEmoji(scope)}
 											{scope.name || scope.placeholder}
 										</div>
-										{#if !scope.indispensable}
-											<span class="ml-2 badge badge-outline break-normal w-fit">Nice-to-have</span>
-										{:else}
-											<span class="ml-2 badge badge-primary text-white break-normal w-fit"
-												>Indispensable</span
-											>
-										{/if}
-										{#if scope.risky}
-											<span class="ml-2 badge badge-accent text-white break-normal w-fit"
-												>Risky</span
-											>
-										{/if}
+										<div class="flex flex-row gap-2">
+											{#if !scope.indispensable}
+												<span class="badge badge-outline break-normal">Nice-to-have</span>
+											{:else}
+												<span class="badge badge-primary text-white break-normal"
+													>Indispensable</span
+												>
+											{/if}
+											{#if scope.risky}
+												<span class="badge badge-accent text-white break-normal">Risky</span>
+											{/if}
+										</div>
 									</div>
 									<div>
 										<BadgeDependencies project={projectStore} {scopes} {scope} />
@@ -330,21 +329,23 @@
 												</p> -->
 										</div>
 										<div class="flex flex-col m-0 bg-yellow-50 mt-2 p-2 border-[1px]">
-											At this step, do as little as possible, only what is needed, to enable doing
-											the tasks of the next step scope.
-											<br />
-											Think about affordances or simulated ways to mimic the real behavior of the tasks.
-											<br />
-											In the world of software development you can think about dummy objects, fake objects,
-											stubs and mocks.
+											At this step, do only what is needed and as little as possible, to enable
+											doing the tasks of the next step scope.
+											<div class="text-xs">
+												Think about affordances or simulated ways to mimic the real behavior of the
+												tasks.
+												<br />
+												In the world of software development you can think about dummy objects, fake
+												objects, stubs and mocks.
+											</div>
 										</div>
 									{:else}
 										{#if typeof group.indispensableTasks !== 'undefined'}
-											<div class="pb-2">
+											<div class="py-2">
 												{#if group.indispensableTasks === true}
-													Indispensable tasks:
+													<span class="font-bold">Indispensable tasks:</span>
 												{:else if group.indispensableTasks === false}
-													Nice-to-have tasks:
+													<span class="font-bold">Nice-to-have tasks:</span>
 												{/if}
 											</div>
 										{/if}
