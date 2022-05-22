@@ -9,9 +9,9 @@
 	// 	lastLinkBreadcrumb.scrollIntoView();
 	// });
 
-	if (currentStep > 0 && !$stepsStore[0].completed) {
-		goto('/scopes/dump');
-	}
+	// if (currentStep > 0 && !$stepsStore[0].completed) {
+	// 	goto('/scopes/dump');
+	// }
 </script>
 
 <svelte:head>

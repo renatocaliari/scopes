@@ -390,16 +390,28 @@ export function ProjectStore(scopesSample = []) {
         store = store;
     }
 
-    function scopeUnlocksDependencies(scope, scopes = []) {
+    function scopeDependsOn(scope, scopes) {
+        let result;
+        result = scopes.filter(
+            // (s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
+            (s) => scope.dependsOn.includes(s.id)
+        );
+        return result;
+    }
+
+    function scopeUnlocksDependenciesOf(scope, scopes = []) {
+        let result;
         if (scopes.length) {
             let forkedScope = scopes.find((s2) => s2.forkedScopeId === scope.id);
             let forkedScopeId = forkedScope ? forkedScope.id : 0;
             // return scopes.filter((s) => (s.dependsOn.includes(scope.id) && !s.forkedScopeId) || s.dependsOn.includes(scope.forkedScopeId) || s.dependsOn.includes(forkedScopeId));
-            return scopes.filter((s) => (s.dependsOn.includes(scope.id) && !s.forkedScopeId) || s.dependsOn.includes(scope.forkedScopeId));
+            result = scopes.filter((s) => (s.dependsOn.includes(scope.id) && !s.forkedScopeId) || s.dependsOn.includes(scope.forkedScopeId));
 
         } else {
-            return get(store).filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId);
+            result = get(store).filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId);
         }
+
+        return result.filter((item) => item != null)
     };
 
     function scopeFilterItems(scope, indispensable = true) {
@@ -901,9 +913,145 @@ export function ProjectStore(scopesSample = []) {
         const half = arr.length / 2;
         const left = arr.splice(0, half); // the first half of the array
         const right = arr;
-        // console.log('left:', deepCopy(left));
-        // console.log('right:', deepCopy(right));
         return merger(mergeSort(merger, left, originalArr), mergeSort(merger, right, originalArr), originalArr);
+    }
+
+
+    function sequenceToText(groups, toggleAddInfo, toggleAutoTodo) {
+        let text = '';
+        let idxGlobal = 0;
+
+        let priorities = ['#A', '#B', '#C'];
+        let idxPriority = 0;
+
+        groups.forEach((group, idxGroup) => {
+            group.items.forEach((scope, idxScope) => {
+                idxGlobal++;
+
+                if (idxGlobal > 1) {
+                    text = text.concat('\n');
+                }
+                text = text.concat(
+                    '- ### ' +
+                    'Step ' +
+                    idxGlobal +
+                    ': **' +
+                    (scope.name || scope.placeholder) +
+                    '** - ' +
+                    (scope.indispensable ? 'Indispensable' : 'Nice-to-have')
+                );
+
+                let unlockDependencies = projectStore
+                    .scopeUnlocksDependenciesOf(scope, scopes);
+
+                let dependsOn = projectStore.dependsOn(scope, scopes);
+
+                if (toggleAddInfo) {
+                    if (
+                        scope.forkedScopeId ||
+                        scope.risky ||
+                        dependsOn?.length ||
+                        unlockDependencies.length
+                    ) {
+                        text = text.concat('\n\t- Info:');
+
+                        if (scope.forkedScopeId) {
+                            text = text.concat(
+                                '\n\t\t- WARNING: The sole intention at this step is allowing the execution of the tasks of the next step.' +
+                                '\n\t\t- Think about affordances or simulated ways to mimic the real behavior of the tasks here.' +
+                                '\n\t\t- In the world of software development you can think about dummy objects, fake objects, stubs and mocks.'
+                            );
+                        }
+                        if (scope.risky) {
+                            text = text.concat(
+                                scope.risky ? '\n\t- WARNING: This scope is RISKY because it has UNKNOWNS' : ''
+                            );
+                        }
+
+                        if (dependsOn?.length > 0) {
+                            text = text.concat('\n\t- This scope depends on the following scopes:');
+                            dependsOn.forEach((s) => {
+                                text = text.concat('\n\t\t- ' + s.name);
+                            });
+                        }
+                        // let unlocksScopes = group.items.filter((s) => s.dependsOn?.includes(scope.id));
+                        if (unlockDependencies.length > 0) {
+                            text = text.concat('\n\t- This scope unlocks the following scopes:');
+                            unlockDependencies.forEach((s) => {
+                                text = text.concat('\n\t\t- ' + s.name);
+                            });
+                        }
+                    }
+                }
+
+                if (!scope.forkedScopeId) {
+                    if (group.indispensableTasks) {
+                        text = text.concat('\n\t- Indispensable tasks:');
+                    } else {
+                        text = text.concat('\n\t- Nice-to-have tasks:');
+                    }
+                    if (scope.items.length) {
+                        scope.items.forEach((item) => {
+                            text = text.concat(
+                                '\n\t\t- ' +
+                                (toggleAutoTodo
+                                    ? group.indispensableTasks
+                                        ? 'LATER' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
+                                        : 'LATER'
+                                    : '') +
+                                ' ' +
+                                item.name
+                            );
+                        });
+                    } else {
+                        text = text.concat('\n\t\t- No item added');
+                    }
+                } else {
+                    text = text.concat(
+                        '\n\t\t- ' +
+                        (toggleAutoTodo
+                            ? group.indispensableTasks
+                                ? 'LATER' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
+                                : 'LATER'
+                            : '') +
+                        'At this step, do as little as possible, only what is needed, to enable doing the tasks of the next step.'
+                    );
+                }
+            });
+        });
+
+        return text;
+    }
+
+    function documentationToText(scopes, autoNumber) {
+        let text = '';
+        let textNumberTitle = 1;
+        scopes.forEach((scope, idx) => {
+            if ((scope.title || scope.name) && scope.id !== 'bucket') {
+                text = text.concat(
+                    '- ### ' +
+                    (autoNumber ? textNumberTitle + '. ' : '') +
+                    (scope.title ? scope.title.trim() : scope.name ? 'Scope ' + scope.name : '') +
+                    '\n'
+                );
+
+                if (scope.description) {
+                    let textNumberDescription = 1;
+                    scope.description.split('\n').map((line) => {
+                        text = text.concat(
+                            '\t- ' +
+                            (autoNumber ? textNumberTitle + '.' + textNumberDescription + '. ' : '') +
+                            line +
+                            '\n'
+                        );
+                        textNumberDescription++;
+                    });
+                }
+                textNumberTitle++;
+            }
+        });
+
+        return text;
     }
 
     return {
@@ -916,7 +1064,8 @@ export function ProjectStore(scopesSample = []) {
         addScope,
         addBucketScope,
         addScopeAutoId,
-        scopeUnlocksDependencies,
+        scopeDependsOn: scopeDependsOn,
+        scopeUnlocksDependenciesOf: scopeUnlocksDependenciesOf,
         scopeRemoveItem,
         scopeUpdateRisky,
         scopeUpdateIndispensable,
@@ -931,6 +1080,8 @@ export function ProjectStore(scopesSample = []) {
         filterScopesButBucket,
         filterScopesWithItemsExcludingBucket,
         filterScopesWithItemsExcludingThisAndBucket,
+        sequenceToText,
+        documentationToText
     }
 };
 

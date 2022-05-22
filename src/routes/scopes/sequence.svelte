@@ -85,120 +85,6 @@
 		successfullyCopied = false;
 	};
 
-	function scopesToText(groups) {
-		let text = '';
-		let idxGlobal = 0;
-
-		let priorities = ['#A', '#B', '#C'];
-		let idxPriority = 0;
-
-		groups.forEach((group, idxGroup) => {
-			group.items.forEach((scope, idxScope) => {
-				idxGlobal++;
-
-				if (idxGlobal > 1) {
-					text = text.concat('\n');
-				}
-				text = text.concat(
-					'- ### ' +
-						'Step ' +
-						idxGlobal +
-						': **' +
-						(scope.name || scope.placeholder) +
-						'** - ' +
-						(scope.indispensable ? 'Indispensable' : 'Nice-to-have')
-				);
-
-				let unlockDependencies = projectStore
-					.scopeUnlocksDependencies(scope, scopes)
-					.filter((item) => item != null);
-
-				let dependsOn = scopes.filter(
-					(s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
-					// (s) => scope.dependsOn.includes(s.id)
-				);
-
-				// quero encontrar escopos duplicados com o mesmo id, mas o mesmo id pode significar
-				// scope.id ou scope.forkedScopeId. se tiver os dois, dar prioridade apenas ao forkedid.
-
-				if (toggleAddInfo) {
-					if (
-						scope.forkedScopeId ||
-						scope.risky ||
-						dependsOn?.length ||
-						unlockDependencies.length
-					) {
-						text = text.concat('\n\t- Info:');
-
-						if (scope.forkedScopeId) {
-							text = text.concat(
-								'\n\t\t- WARNING: The sole intention at this step is allowing the execution of the tasks of the next step.' +
-									'\n\t\t- Think about affordances or simulated ways to mimic the real behavior of the tasks here.' +
-									'\n\t\t- In the world of software development you can think about dummy objects, fake objects, stubs and mocks.'
-							);
-						}
-						if (scope.risky) {
-							text = text.concat(
-								scope.risky ? '\n\t- WARNING: This scope is RISKY because it has UNKNOWNS' : ''
-							);
-						}
-
-						if (dependsOn?.length > 0) {
-							text = text.concat('\n\t- This scope depends on the following scopes:');
-							dependsOn.forEach((s) => {
-								text = text.concat('\n\t\t- ' + s.name);
-							});
-						}
-						// let unlocksScopes = group.items.filter((s) => s.dependsOn?.includes(scope.id));
-						if (unlockDependencies.length > 0) {
-							text = text.concat('\n\t- This scope unlocks the following scopes:');
-							unlockDependencies.forEach((s) => {
-								text = text.concat('\n\t\t- ' + s.name);
-							});
-						}
-					}
-				}
-
-				if (!scope.forkedScopeId) {
-					if (group.indispensableTasks) {
-						text = text.concat('\n\t- Indispensable tasks:');
-					} else {
-						text = text.concat('\n\t- Nice-to-have tasks:');
-					}
-					if (scope.items.length) {
-						scope.items.forEach((item) => {
-							text = text.concat(
-								'\n\t\t- ' +
-									(toggleAutoTodo
-										? group.indispensableTasks
-											? 'LATER' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
-											: 'LATER'
-										: '') +
-									' ' +
-									item.name
-							);
-						});
-					} else {
-						text = text.concat('\n\t\t- No item added');
-					}
-				} else {
-					text = text.concat(
-						'\n\t\t- ' +
-							(toggleAutoTodo
-								? group.indispensableTasks
-									? 'LATER' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
-									: 'LATER'
-								: '') +
-							'At this step, do as little as possible, only what is needed, to enable doing the tasks of the next step.'
-					);
-				}
-			});
-		});
-
-		exportText = text;
-		return text;
-	}
-
 	function handleDndConsider(e) {
 		$storeSortedGroupedSequenceScopes = e.detail.items;
 		reordered = true;
@@ -243,7 +129,12 @@
 			<label
 				for="modal-export"
 				class="btn btn-outline modal-button"
-				on:click={() => (exportText = scopesToText($storeSortedGroupedSequenceScopes))}
+				on:click={() =>
+					(exportText = projectStore.sequenceToText(
+						$storeSortedGroupedSequenceScopes,
+						toggleAddInfo,
+						toggleAutoTodo
+					))}
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="w-4 h-4 mr-1"
 					><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path

@@ -14,12 +14,14 @@
 	let reordered = false;
 	let moving = false;
 
-	$storeSortedScopesDocumentation = mergeSort(mergeScopesForDocumentation, copyFilteredStore).map(
-		(s, idx) => {
-			s.orderDocumentation = idx + 1;
-			return s;
-		}
-	);
+	// $storeSortedScopesDocumentation = mergeSort(mergeScopesForDocumentation, copyFilteredStore).map(
+	// 	(s, idx) => {
+	// 		s.orderDocumentation = idx + 1;
+	// 		return s;
+	// 	}
+	// );
+
+	let sortedScopesDocumentation;
 
 	({ sortedScopesDocumentation } = projectStore.sortScopesByPriority());
 
@@ -55,38 +57,6 @@
 		successfullyCopied = false;
 	};
 
-	function scopesToText(scopes) {
-		let text = '';
-		let textNumberTitle = 1;
-		scopes.forEach((scope, idx) => {
-			if ((scope.title || scope.name) && scope.id !== 'bucket') {
-				text = text.concat(
-					'- ### ' +
-						(autoNumber ? textNumberTitle + '. ' : '') +
-						(scope.title ? scope.title.trim() : scope.name ? 'Scope ' + scope.name : '') +
-						'\n'
-				);
-
-				if (scope.description) {
-					let textNumberDescription = 1;
-					scope.description.split('\n').map((line) => {
-						text = text.concat(
-							'\t- ' +
-								(autoNumber ? textNumberTitle + '.' + textNumberDescription + '. ' : '') +
-								line +
-								'\n'
-						);
-						textNumberDescription++;
-					});
-				}
-				textNumberTitle++;
-			}
-		});
-
-		exportText = text;
-		return text;
-	}
-
 	function handleDndConsider(e) {
 		$storeSortedScopesDocumentation = e.detail.items;
 		reordered = true;
@@ -118,7 +88,8 @@
 			<label
 				for="modal-export"
 				class="btn btn-outline modal-button mr-2"
-				on:click={() => scopesToText($storeSortedScopesDocumentation)}
+				on:click={() =>
+					projectStore.documentationToText($storeSortedScopesDocumentation, autoNumber)}
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="w-4 h-4 mr-1"
 					><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path

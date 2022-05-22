@@ -45,6 +45,14 @@ export const stepsStore = writable([
         link: '/scopes/documentation',
         active: false,
         completed: false
+    },
+    {
+        linkText: '7. Workspace',
+        h1: 'Documentation & Sketches',
+        h2: 'See it in a workspace on TryEraser and create sketches',
+        link: '/scopes/documentation',
+        active: false,
+        completed: false
     }
 ])
 

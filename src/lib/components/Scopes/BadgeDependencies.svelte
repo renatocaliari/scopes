@@ -28,17 +28,10 @@
 		(scope.name || scope.placeholder) + ' unlocks ' + unlockDependencies?.length + ' scope(s)';
 
 	function refreshDependenciesCount() {
-		// console.log('BADGE scopes:', scopes);
-		let unlockDependencies = project
-			.scopeUnlocksDependencies(scope, scopes)
-			.filter((item) => item != null);
-
-		// console.log('scope.dependsOn:', scope.dependsOn);
-		// console.log('scope:', scope);
-		let dependsOn = scopes.filter(
-			// (s) => scope.dependsOn.includes(s.id) || scope.dependsOn.includes(s.forkedScopeId)
-			(s) => scope.dependsOn.includes(s.id)
-		);
+		let unlockDependencies = project.scopeUnlocksDependenciesOf(scope, scopes);
+		let dependsOn = project.scopeDependsOn(scope, scopes);
+		// console.log('scope.unlockDependencies:', unlockDependencies);
+		// console.log('scope.dependsOn:', dependsOn);
 
 		return {
 			unlockDependencies,
