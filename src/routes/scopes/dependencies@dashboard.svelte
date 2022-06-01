@@ -4,13 +4,12 @@
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 	import { projectStore } from '$lib/stores/projectStore';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
-	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
 
 	let sortedScopes;
 	$: {
 		$projectStore,
 			// console.log('projectStore', $projectStore),
-			(sortedScopes = $projectStore
+			(sortedScopes = $projectStore['scopes']
 				.filter((scope) => scope.id !== 'bucket')
 				.filter((scope) => scope.items.length > 0));
 	}
@@ -28,34 +27,26 @@
 	};
 
 	function confirmClearDependencies() {
-		$projectStore.map((scope) => {
+		$projectStore['scopes'].map((scope) => {
 			scope.dependsOn = [];
 		});
 		$projectStore = $projectStore;
 	}
 </script>
 
-<NavigationScopes currentStep={3} let:currentStep>
-	<NavigationCheckList
-		{checkList}
-		{currentStep}
-		optional={true}
-		linkNextStep="/scopes/sequence"
-		linkPreviousStep="/scopes/unknowns"
-	>
-		<div slot="buttons">
-			<label
-				for="modal-clear-dependencies"
-				class="btn btn-outline modal-button"
-				class:btn-disabled={$projectStore.every((scope) => scope.dependsOn === 0)}
-				><svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
-					><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
-						d="M135.2 17.69C140.6 6.848 151.7 0 163.8 0H284.2C296.3 0 307.4 6.848 312.8 17.69L320 32H416C433.7 32 448 46.33 448 64C448 81.67 433.7 96 416 96H32C14.33 96 0 81.67 0 64C0 46.33 14.33 32 32 32H128L135.2 17.69zM394.8 466.1C393.2 492.3 372.3 512 346.9 512H101.1C75.75 512 54.77 492.3 53.19 466.1L31.1 128H416L394.8 466.1z"
-					/></svg
-				>Clear all dependencies</label
-			>
-		</div>
-	</NavigationCheckList>
+<NavigationScopes stepId="dependencies" {checkList} optional={true}>
+	<div slot="buttons">
+		<label
+			for="modal-clear-dependencies"
+			class="btn btn-outline modal-button"
+			class:btn-disabled={$projectStore['scopes'].every((scope) => scope.dependsOn === 0)}
+			><svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+				><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+					d="M135.2 17.69C140.6 6.848 151.7 0 163.8 0H284.2C296.3 0 307.4 6.848 312.8 17.69L320 32H416C433.7 32 448 46.33 448 64C448 81.67 433.7 96 416 96H32C14.33 96 0 81.67 0 64C0 46.33 14.33 32 32 32H128L135.2 17.69zM394.8 466.1C393.2 492.3 372.3 512 346.9 512H101.1C75.75 512 54.77 492.3 53.19 466.1L31.1 128H416L394.8 466.1z"
+				/></svg
+			>Clear all dependencies</label
+		>
+	</div>
 </NavigationScopes>
 
 <div
@@ -63,14 +54,14 @@
 >
 	{#each sortedScopes as scope}
 		<div>
-			<Scope bind:scope itemsScopeModal={scope.items} headerHighlighted={true}>
+			<Scope bind:scope itemsScopeModal={scope.items}>
 				<div slot="badge">
 					<BadgeDependencies project={projectStore} bind:scope />
 				</div>
 				<div slot="header">
 					<div class="badge badge-accent text-white" class:hidden={!scope.risky}>Risky</div>
-					<div class="badge badge-success text-white" class:hidden={!scope.indispensable}>
-						Indispensable
+					<div class="badge badge-success text-white" class:hidden={scope.indispensable}>
+						Nice-to-have
 					</div>
 				</div>
 
@@ -96,7 +87,9 @@
 					<span class="font-bold">Depends on scopes:</span>
 					<Items
 						emptyState="No Scope"
+						classesCSSItem="text-base"
 						badgeNiceToHave
+						maxHeight=""
 						bind:scope
 						items={projectStore.filterScopesWithItemsExcludingThisAndBucket(scope)}
 						checkbox

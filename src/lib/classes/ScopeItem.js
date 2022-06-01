@@ -6,12 +6,23 @@ import { v4 as uuidv4 } from 'uuid';
 // b. with store: https://svelte.dev/repl/164f13f5d99b46e7a8f4cb9627db2aee?version=3.44.1
 
 export default class ScopeItem {
-    constructor(name, indispensable = false, description = "") {
+    constructor(name, indispensable = false, description = "", risky = false, automatable = false, delegable = false, unclear = false, tedious = false) {
         this.id = uuidv4();
-        this.name = name
-        this.indispensable = indispensable
-        this.description = description
-        this.placeholder = ''
+        this.name = name;
+        this.indispensable = indispensable;
+        this.description = description;
+        this.placeholder = '';
+
+        this.risky = risky;
+        this.automatable = automatable;
+        this.delegable = delegable;
+        this.unclear = unclear;
+        this.tedious = tedious;
+
+        this.mitigators = [];
+        this.automatableDescription = '';
+        this.delegableDescription = '';
+
     }
 
     static createItem(name, indispensable, description) {

@@ -3,7 +3,6 @@
 	import Items from '$lib/components/Scopes/Items.svelte';
 	import { projectStore } from '$lib/stores/projectStore';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
-	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
 
 	function addItem(scope, value, indispensable) {
 		projectStore.scopeAddItem(scope, value, indispensable);
@@ -17,25 +16,27 @@
 	let fieldImportText;
 
 	$: {
-		$projectStore, (scopeBucket = $projectStore.find((scope) => scope.id === 'bucket'));
+		$projectStore, (scopeBucket = $projectStore['scopes'].find((scope) => scope.id === 'bucket'));
 		checkList = {
 			title: 'Tasks to proceed',
 			items: [
 				{
 					name: 'dump',
 					text: 'In the Bucket below, dump all you think is needed to do or solve in the next cycle',
-					checked: $projectStore.some((scope) => scope.items?.length > 0)
+					checked: $projectStore['scopes'].some((scope) => scope.items?.length > 0)
 				},
 				{
 					name: 'group',
 					text: 'Group those items in the scopes on the right side asking: what items can be completed together in isolation of the other items?',
-					checked: $projectStore.some((scope) => scope.id !== 'bucket' && scope.items?.length > 0)
+					checked: $projectStore['scopes'].some(
+						(scope) => scope.id !== 'bucket' && scope.items?.length > 0
+					)
 				},
 				{
 					name: 'more',
 					text: 'Group items in more than 1 scope',
 					checked:
-						$projectStore
+						$projectStore['scopes']
 							.filter((scope) => scope.id !== 'bucket')
 							.filter((scope) => scope.items?.length > 0).length > 1
 				},
@@ -43,10 +44,10 @@
 					name: 'name',
 					text: 'Give a name to each scope with items based on affinity and relationship of items grouped together',
 					checked:
-						$projectStore
+						$projectStore['scopes']
 							.filter((scope) => scope.id !== 'bucket')
 							.filter((scope) => scope.items?.length > 0 && scope.name.length > 0).length > 0 &&
-						$projectStore
+						$projectStore['scopes']
 							.filter((scope) => scope.id !== 'bucket')
 							.filter((scope) => scope.items?.length > 0 && scope.name.length === 0).length === 0
 				}
@@ -74,48 +75,24 @@
 	}
 </script>
 
-<NavigationScopes currentStep={0} let:currentStep>
-	<div slot="checkList">
-		<div class="alert shadow-lg mb-4">
-			<div>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					class="stroke-current flex-shrink-0 w-6 h-6"
-					><path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-					/></svg
-				>
-				<span
-					>Thinking about a timeframe to execute a project is essential to know what to dump here,
-					make tradeoffs and sequence the execution of tasks on the other steps.</span
-				>
-			</div>
-		</div>
-		<NavigationCheckList {currentStep} {checkList} linkNextStep="/scopes/indispensable">
-			<div slot="buttons">
-				<label
-					for="modal-clear"
-					class="btn btn-outline modal-button"
-					class:btn-disabled={$projectStore.every((scope) => scope.items?.length === 0)}
-					><svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
-						><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
-							d="M135.2 17.69C140.6 6.848 151.7 0 163.8 0H284.2C296.3 0 307.4 6.848 312.8 17.69L320 32H416C433.7 32 448 46.33 448 64C448 81.67 433.7 96 416 96H32C14.33 96 0 81.67 0 64C0 46.33 14.33 32 32 32H128L135.2 17.69zM394.8 466.1C393.2 492.3 372.3 512 346.9 512H101.1C75.75 512 54.77 492.3 53.19 466.1L31.1 128H416L394.8 466.1z"
-						/></svg
-					>Clear all scopes and items</label
-				>
-			</div>
-		</NavigationCheckList>
+<NavigationScopes stepId="dump" {checkList}>
+	<div slot="buttons">
+		<label
+			for="modal-clear"
+			class="btn btn-outline modal-button"
+			class:btn-disabled={$projectStore['scopes'].every((scope) => scope.items?.length === 0)}
+			><svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+				><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+					d="M135.2 17.69C140.6 6.848 151.7 0 163.8 0H284.2C296.3 0 307.4 6.848 312.8 17.69L320 32H416C433.7 32 448 46.33 448 64C448 81.67 433.7 96 416 96H32C14.33 96 0 81.67 0 64C0 46.33 14.33 32 32 32H128L135.2 17.69zM394.8 466.1C393.2 492.3 372.3 512 346.9 512H101.1C75.75 512 54.77 492.3 53.19 466.1L31.1 128H416L394.8 466.1z"
+				/></svg
+			>Clear all scopes and items</label
+		>
 	</div>
 </NavigationScopes>
 
 <div
 	class="flex md:flex-nowrap flex-wrap 
-	place-content-center"
+	place-content-center w-full"
 >
 	<div class="mb-4">
 		<div class="sticky top-0 left-0 mb-4">
@@ -139,7 +116,6 @@
 						}}
 						maxHeight="max-h-96"
 						minHeight="h-screen"
-						focusAdd
 						dragAndDrop={true}
 						allowAddItem
 						allowEditItem
@@ -156,7 +132,7 @@
 		place-content-between ml-4
 		"
 	>
-		{#each $projectStore.filter((scope) => scope.id !== 'bucket') as scope}
+		{#each $projectStore['scopes'].filter((scope) => scope.id !== 'bucket') as scope}
 			<div class="flex mx-4 mb-4 h-80">
 				<!-- on:addItem={(e) => {
 								addItem(scope, e.detail.value, true);
@@ -165,7 +141,16 @@
 
 				<Scope editTitle bind:scope width="w-80">
 					<div slot="body">
-						<Items bind:scope bind:items={scope.items} allowEditItem dragAndDrop={true} />
+						<Items
+							bind:scope
+							bind:items={scope.items}
+							allowAddItem
+							on:addItem={(e) => {
+								addItem(scope, e.detail.value, e.detail.indispensable);
+							}}
+							allowEditItem
+							dragAndDrop={true}
+						/>
 					</div></Scope
 				>
 			</div>

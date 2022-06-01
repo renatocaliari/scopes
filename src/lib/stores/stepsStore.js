@@ -1,58 +1,151 @@
-import { writable } from "svelte/store";
+import { writable as writableLocal } from 'svelte-local-storage-store'
+import { writable } from 'svelte/store';
+import { get } from 'svelte/store';
 
-
-export const stepsStore = writable([
+export const stepsCompleted = writableLocal('steps',
     {
-        linkText: '1. Dump & Cluster',
+        "dump": {
+            active: false,
+            completed: false,
+        },
+        "deadline": {
+            active: false,
+            completed: false
+        },
+        "classify": {
+            active: false,
+            completed: false
+        },
+        "detail": {
+            active: false,
+            completed: false
+        },
+        "dependencies": {
+            active: false,
+            completed: false
+        },
+        "sequence": {
+            active: false,
+            completed: false
+        },
+        "documentation": {
+            active: false,
+            completed: false
+        }
+    });
+
+let storeSteps = get(stepsCompleted);
+
+export function getStepById(stepId) {
+    let step = get(steps).find((step) => step.id === stepId);
+    if (step) {
+        step.active = storeSteps[stepId].active;
+        step.completed = storeSteps[stepId].completed;
+        return step;
+    }
+    return null;
+}
+
+export function getActiveStep() {
+    for (const key in storeSteps) {
+        const step = storeSteps[key];
+        if (step.active) {
+            return step;
+        }
+    }
+    return null;
+}
+
+export function setStepCompleted(stepId, completed) {
+    try {
+        storeSteps[stepId].completed = completed;
+        getStepById(stepId).completed = completed;
+
+    } catch (error) { }
+}
+
+export function setStepActive(stepId) {
+
+    for (const key in storeSteps) {
+        const step = storeSteps[key];
+        step.active = key === stepId;
+        getStepById(stepId).active = key === stepId;
+        console.log('stepId:', stepId);
+        console.log('step.active:', step.active);
+        console.log('getStepById(stepId).active:', getStepById(stepId).active);
+
+        //        getStepById(stepId).active = key === stepId;
+    }
+    console.log(storeSteps);
+}
+
+
+
+export let steps = writable([
+    {
+        step: 0,
+        id: 'dump',
+        linkText: 'Dump & Cluster',
         h1: 'Dump & Cluster',
         link: '/scopes/dump',
-        active: true,
-        completed: false
+        active: storeSteps["dump"].active,
+        completed: storeSteps["dump"].completed
     },
     {
-        linkText: '2. Indispensable',
-        h1: 'Indispensable',
-        link: '/scopes/indispensable',
-        active: false,
-        completed: false
+        step: 1,
+        id: 'deadline',
+        linkText: 'Deadline',
+        h1: 'Set a deadline',
+        link: '/scopes/deadline',
+        active: storeSteps["deadline"].active,
+        completed: storeSteps["deadline"].completed
+    },
+
+    {
+        step: 2,
+        id: 'classify',
+        linkText: 'Classify',
+        h1: 'Classify',
+        link: '/scopes/classify',
+        active: storeSteps["classify"].active,
+        completed: storeSteps["classify"].completed
     },
     {
-        linkText: '3. Risky Unknowns',
-        h1: 'Risky Unknowns',
-        h2: 'Set scopes with risky unknowns',
-        link: '/scopes/unknowns',
-        active: false,
-        completed: false
+        step: 3,
+        id: 'detail',
+        linkText: 'Detail',
+        h1: 'Detail',
+        link: '/scopes/detail',
+        active: storeSteps["detail"].active,
+        completed: storeSteps["detail"].completed
+
     },
     {
-        linkText: '4. Dependencies',
+        step: 4,
+        id: 'dependencies',
+        linkText: 'Set Dependencies',
         h1: 'Set Dependencies',
         link: '/scopes/dependencies',
-        active: false,
-        completed: false
+        active: storeSteps["dependencies"].active,
+        completed: storeSteps["dependencies"].completed
     },
     {
-        linkText: '5. Sequence',
+        step: 5,
+        id: 'sequence',
+        linkText: 'Get Sequence',
         h1: 'Sequence',
         link: '/scopes/sequence',
-        active: false,
-        completed: false
+        active: storeSteps["sequence"].active,
+        completed: storeSteps["sequence"].completed
     },
     {
-        linkText: '6. Create Documentation',
+        step: 6,
+        id: 'documentation',
+        linkText: 'Create Documentation',
         h1: 'Documentation',
         h2: 'Create documentation to other people that will execute it',
         link: '/scopes/documentation',
-        active: false,
-        completed: false
-    },
-    // {
-    //     linkText: '7. Workspace',
-    //     h1: 'Documentation & Sketches',
-    //     h2: 'See it in a workspace on TryEraser and create sketches',
-    //     link: '/scopes/documentation',
-    //     active: false,
-    //     completed: false
-    // }
-])
-
+        active: storeSteps["documentation"].active,
+        completed: storeSteps["documentation"].completed
+    }
+]);

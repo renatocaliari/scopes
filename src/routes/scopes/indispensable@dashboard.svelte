@@ -6,8 +6,6 @@
 	import Items from '$lib/components/Scopes/Items.svelte';
 	import { projectStore } from '$lib/stores/projectStore';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
-	import NavigationCheckList from '$lib/components/Scopes/NavigationCheckList.svelte';
-	import { prevent_default } from 'svelte/internal';
 
 	let toggle;
 
@@ -34,14 +32,7 @@
 	};
 </script>
 
-<NavigationScopes currentStep={1} let:currentStep>
-	<NavigationCheckList
-		{currentStep}
-		{checkList}
-		linkNextStep="/scopes/unknowns"
-		linkPreviousStep="/scopes/dump"
-	/>
-</NavigationScopes>
+<NavigationScopes stepId="indispensable" {checkList} />
 
 <div
 	class={'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 grid-flow-row gap-4 place-content-around'}
@@ -53,7 +44,6 @@
 		<div>
 			<Scope
 				bind:scope
-				headerHighlighted={true}
 				itemsScopeModal={scope.items}
 				classColor={scope.indispensable ? 'border-success border-4' : undefined}
 			>
@@ -66,7 +56,7 @@
 							checkText="Indispensable Scope"
 							on:checkItem={(e) => {
 								if (!e.detail.checked) {
-									let scopesDependsOnThat = $projectStore.filter(
+									let scopesDependsOnThat = $projectStore['scopes'].filter(
 										(s) => s.dependsOn.includes(e.detail.item.id) && s.indispensable
 									);
 									if (scopesDependsOnThat.length) {
@@ -101,9 +91,6 @@
 						{:else}
 							<div class="badge badge-outline" class:hidden={scope.indispensable}>Nice-to-have</div>
 						{/if}
-						{#if scope.risky}
-							<div class="flex badge badge-accent text-white">Risky</div>
-						{/if}
 					</div>
 				</div>
 				<div slot="body">
@@ -122,8 +109,8 @@
 							fnSetChecked={(item) => {
 								return item.indispensable;
 							}}
-							fnOnCheckItem={(e, scope, i, checked) => {
-								projectStore.itemUpdateIndispensable(scope, i, checked);
+							fnOnCheckItem={(e, scope, item, checked) => {
+								projectStore.setClassificationIndispensableToObject(scope, item, checked);
 								$projectStore = $projectStore;
 							}}
 						/>
@@ -136,8 +123,8 @@
 						fnSetChecked={(item) => {
 							return item.indispensable;
 						}}
-						fnOnCheckItem={(e, scope, i, checked) => {
-							projectStore.itemUpdateIndispensable(scope, i, checked);
+						fnOnCheckItem={(e, scope, item, checked) => {
+							projectStore.setClassificationIndispensableToObject(scope, item, checked);
 							$projectStore = $projectStore;
 						}}
 					/>

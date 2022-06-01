@@ -1,9 +1,17 @@
 <script>
+	import { goto } from '$app/navigation';
+	import { steps, stepsCompleted } from '$lib/stores/stepsStore';
 	import Typewriter from 'svelte-typewriter';
+	import { Tweet } from 'sveltekit-embed';
 	// import mixpanel from 'mixpanel-browser';
 	let mixpanel = {
 		track: () => {}
 	};
+
+	let activeStep = $stepsCompleted.find((step) => step.active)?.step;
+	// if (activeStep) {
+	// 	goto(stepsStore[activeStep].link);
+	// }
 </script>
 
 <svelte:head>
@@ -13,32 +21,37 @@
 <div class="flex flex-col justify-center items-center">
 	<div class="hero min-h-fit sm:mt-24">
 		<div class="hero-content text-center">
-			<div class="max-w-md">
-				<h1 class="text-6xl sm:text-8xl mb-2 font-bold">Scopefully</h1>
-				<span class="text-base sm:text-3xl">(beta v0.0.4)</span>
-				<div class="text-lg sm:text-2xl my-4">
-					Map the scopes and discover an optimized sequence for execution of tasks for
+			<div class="flex flex-col text-center max-w-xl">
+				<h1 class="text-4xl sm:text-6xl font-bold mt-6 mb-0">
+					You don't need to be a productivity ninja to get things done.
+				</h1>
+				<h2 class="text-xl sm:text-2xl font-normal">
+					The tool to help you structure
 					<Typewriter scramble loop interval="80" unwriteInterval="10">
 						<span>the next cycle of your product</span>
 						<span>your project</span>
-						<span>your event</span>
+						<span>your experiment</span>
 						<span>your week</span>
 					</Typewriter>
-				</div>
+				</h2>
 				<div class="flex flex-col sm:flex-row items-center justify-center content-center gap-2">
-					<a href="/scopes/dump" sveltekit:prefetch class="btn btn-primary">Get Started for FREE</a>
-					<a href="/about" sveltekit:prefetch class="hidden sm:flex btn btn-outline ml-4">About</a>
+					<a href="/scopes/dump" sveltekit:prefetch class="btn btn-primary btn-wide">Start now</a>
 				</div>
-				<p class="text-sm sm:text-lg">
-					All the information will be <br />stored locally in your browser. <br /><br /> You can export
-					the final result.
+				<p class="text-sm sm:text-base">
+					All the information will be <br />stored locally in your browser.
 				</p>
 			</div>
 		</div>
 	</div>
+	<blockquote class="text-lg max-w-lg mb-0">
+		"This is already a great tool at this early stage for planning projects and breaking then down
+		into the pieces that matter." - <a
+			href="https://twitter.com/b05crypto/status/1523645023484801024">Brad Nickel</a
+		>
+	</blockquote>
 
 	<!-- Section 1 -->
-	<section class="sm:py-20 bg-white">
+	<section class="sm:py-20 sm:my-20 bg-white">
 		<div class="container max-w-6xl mx-auto">
 			<h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-center">
 				How Scopefully helps you
@@ -120,9 +133,9 @@
 							/></svg
 						>
 					</div>
-					<h4 class="text-xl font-medium text-gray-700">Risky Unknowns</h4>
+					<h4 class="text-xl font-medium text-gray-700">Classification</h4>
 					<p class="grow text-base text-center text-gray-500">
-						Highlight scopes with risky unknowns vs routine work
+						Classify scopes and tasks to get awareness and tips
 					</p>
 				</div>
 

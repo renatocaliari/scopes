@@ -22,11 +22,11 @@ import { convertToNumberingScheme } from "$lib/utils/general";
 // let store = localStorageStore("scopes", []);
 // let store = writable([]);
 
-let store = writable("scopes", []);
+let store = writable("project", { scopes: [] });
 
 export let projectStore = ProjectStore();
-export let storeSortedGroupedSequenceScopes = writable('sortedGroupedSequenceScopes', []);
-export let storeSortedScopesDocumentation = writable('sortedScopesDocumentation', []);
+export let storeSortedGroupedSequenceScopes = writable('storeGroupedSequenceScopes', []);
+export let storeScopesDocumentation = writable('storeScopesDocumentation', []);
 
 /**
  * @typedef {Object} Item
@@ -34,7 +34,12 @@ export let storeSortedScopesDocumentation = writable('sortedScopesDocumentation'
  * @property {string} placeholder 
  * @property {string} name 
  * @property {string} description 
+ * @property {boolean} automatable
+ * @property {boolean} delegable
  * @property {boolean} indispensable
+ * @property {boolean} risky
+ * @property {boolean} unclear
+ * @property {boolean} tedious
  * 
  */
 
@@ -46,8 +51,12 @@ export let storeSortedScopesDocumentation = writable('sortedScopesDocumentation'
  * @property {string} title 
  * @property {string} description 
  * @property {boolean} order
- * @property {boolean} risky
+ * @property {boolean} automatable
+ * @property {boolean} delegable
  * @property {boolean} indispensable
+ * @property {boolean} risky
+ * @property {boolean} unclear
+ * @property {boolean} tedious
  * @property {boolean} remove
  * @property {number} forkedScopeId
  * @property {boolean} hasForks
@@ -76,9 +85,9 @@ export function ProjectStore(scopesSample = []) {
     const { set, subscribe, update } = store;
 
     function reset() {
-        set([]);
+        set({ scopes: [] });
         storeSortedGroupedSequenceScopes = writable('sortedGroupedSequenceScopes', []);
-        storeSortedScopesDocumentation = writable('sortedScopesDocumentation', []);
+        storeScopesDocumentation = writable('sortedstoreScopesDocumentation', []);
     }
 
     if (scopesSample.length) {
@@ -87,7 +96,7 @@ export function ProjectStore(scopesSample = []) {
             addScope(scope);
         });
     }
-    else if (get(store).length === 0) {
+    else if (get(store)['scopes'].length === 0) {
         createInitialData(true, 9);
     }
 
@@ -253,8 +262,8 @@ export function ProjectStore(scopesSample = []) {
         }
     }
 
+    function addBucketScope(name, items = [], dependsOn = [], risky = false, indispensable = false, order = 0, automatable = false, delegable = false, unclear = false, tedious = false) {
 
-    function addBucketScope(name, items = [], dependsOn = [], risky = false, indispensable = false, order = 0) {
         let scope = {
             id: "bucket",
             title: "",
@@ -265,24 +274,34 @@ export function ProjectStore(scopesSample = []) {
             dependsOn: dependsOn,
             risky: risky,
             indispensable: indispensable,
+            automatable: automatable,
+            delegable: delegable,
+            unclear: unclear,
+            tedious: tedious,
             forkedScopeId: undefined,
             hasForks: false,
         }
         addScope(scope);
     }
 
-    function addScopeAutoId(name, items = [], dependsOn = [], risky = false, indispensable = false, order = 0) {
+    function addScopeAutoId(name, items = [], dependsOn = [], risky = false, indispensable = false, order = 0, automatable = false, delegable = false, unclear = false, tedious = false) {
+        console.log('get(store)', get(store));
+        console.log('get(store)scopes', get(store)['scopes']);
         let scope = {
-            id: "scope-" + get(store).length,
+            id: "scope-" + get(store)['scopes'].length,
             title: "",
             description: "",
             name: name,
-            placeholder: "Scope " + get(store).length,
+            placeholder: "Scope " + get(store)['scopes'].length,
             order: order,
             items: items,
             dependsOn: dependsOn,
             risky: risky,
             indispensable: indispensable,
+            automatable: automatable,
+            delegable: delegable,
+            unclear: unclear,
+            tedious: tedious,
             forkedScopeId: undefined,
             hasForks: false,
 
@@ -291,104 +310,148 @@ export function ProjectStore(scopesSample = []) {
     }
 
     function addScope(scope) {
-        update(scopes => {
-            return [...scopes, scope]
+        update(project => {
+            project['scopes'] = [...project['scopes'], scope];
+            return project;
         });
     }
 
     function filterScopesButBucket() {
-        return get(store).filter((scope) => scope.id !== 'bucket')
+        return get(store)['scopes'].filter((scope) => scope.id !== 'bucket')
     }
 
     function filterScopesWithItemsExcludingBucket() {
-        return get(store).filter((scope) => scope.id !== 'bucket' && scope.items.length > 0)
+        return get(store)['scopes'].filter((scope) => scope.id !== 'bucket' && scope.items.length > 0)
     }
 
     function filterScopesWithItemsExcludingThisAndBucket(currentScope) {
-        return get(store).filter((scope) => scope.id != currentScope.id && scope.id !== "bucket" && scope.items.length > 0);
+        return get(store)['scopes'].filter((scope) => scope.id != currentScope.id && scope.id !== "bucket" && scope.items.length > 0);
     }
 
     function filterScopes(fn) {
-        return get(store).filter(fn);
+        return get(store)['scopes'].filter(fn);
     }
 
     function updateDependencies(scope, checkedScope, checked) {
-        update(scopes => get(store).map((s) => {
-            if (scope.id === s.id) {
-                s.dependsOn = s.dependsOn || [];
-                if (checked) {
-                    s.dependsOn = [...new Set([...s.dependsOn, checkedScope.id])];
-                } else {
-                    s.dependsOn = s.dependsOn.filter((id) => id !== checkedScope.id);
-                }
+        scopeUpdate(scope, (s) => {
+            s.dependsOn = s.dependsOn || [];
+            if (checked) {
+                s.dependsOn = [...new Set([...s.dependsOn, checkedScope.id])];
+            } else {
+                s.dependsOn = s.dependsOn.filter((id) => id !== checkedScope.id);
             }
-            return s;
-        }));
+        });
         mixpanel.track('scope:dependencies:update');
-
         store = store;
-        // }
+    };
+
+    function objectUpdate(scope, item, apply) {
+        item ? itemUpdateOnScope(scope, item, apply) : scopeUpdate(scope, apply);
     }
 
-    function scopeUpdateRisky(scope, risky) {
-        update(scopes => get(store).map((s) => {
-            if (scope.id === s.id) {
-                s.risky = risky;
-            }
-            return s;
-        }));
-        mixpanel.track('scopes:risky:update');
-        store = store;
-    }
-
-    function scopeUpdateIndispensable(scope, indispensable) {
-        update(scopes => get(store).map((s) => {
-            if (scope.id === s.id) {
-                s.indispensable = indispensable;
-            }
-            return s;
-        }));
+    function scopeUpdate(scope, apply) {
+        update(project => {
+            project['scopes'].map((s) => {
+                if (scope.id === s.id) {
+                    apply(scope);
+                }
+                return s;
+            })
+            return project;
+        });
         mixpanel.track('scope:indispensable:update');
         store = store;
     }
 
+    function scopeUpdateRisky(scope, risky) {
+        scopeUpdate(scope, (scope) => { scope.risky = risky })
+    }
+
+    function scopeUpdateIndispensable(scope, indispensable) {
+        scopeUpdate(scope, (scope) => { scope.indispensable = indispensable })
+    }
+
+    function scopeUpdateAutomatable(scope, automatable) {
+        scopeUpdate(scope, (scope) => { scope.automatable = automatable })
+    }
+    function scopeUpdateDelegable(scope, delegable) {
+        scopeUpdate(scope, (scope) => { scope.delegable = delegable })
+    }
+    function scopeUpdateUnclear(scope, unclear) {
+        scopeUpdate(scope, (scope) => { scope.unclear = unclear })
+    }
+    function scopeUpdateTedious(scope, tedious) {
+        scopeUpdate(scope, (scope) => { scope.tedious = tedious })
+    }
+
     function scopeRemoveItem(scope, item) {
-        update(scopes =>
-            scopes.find((s) => s.id === scope.id)
-                .items.filter((i) => i.id !== item.id));
+        update(project => {
+            project['scopes'].find((s) => s.id === scope.id)
+                .items.filter((i) => i.id !== item.id);
+
+            return project;
+        }
+        );
         store = store;
         mixpanel.track('scope:item:remove');
     }
 
-    function itemUpdateIndispensable(scope, item, indispensable) {
-
-        update(scopes => get(store).map((s) => {
-            if (scope.id === s.id) {
-                s.items.map((i) => {
-                    if (i.id === item.id) {
-                        i.indispensable = indispensable;
-                    }
-                });
-            }
-            return s;
-        }));
+    function itemUpdateOnScope(scope, item, apply) {
+        update(project => {
+            project['scopes'].map((s) => {
+                if (scope.id === s.id) {
+                    s.items.map((i) => {
+                        if (i.id === item.id) {
+                            apply(item);
+                        }
+                    });
+                }
+                return s;
+            })
+            return project;
+        });
 
         mixpanel.track('scope:item:indispensable:update');
         store = store;
-
     }
 
+
     function scopeAddItem(scope, name, indispensable, description) {
-        update(scopes => get(store).map((s) => {
-            if (scope.id === s.id) {
-                s.items = [new ScopeItem(name, indispensable, description), ...s.items];
-            }
-            return s;
-        }));
+        scopeUpdate(scope, (s) => {
+            s.items = [new ScopeItem(name, indispensable, description), ...s.items];
+        });
         mixpanel.track('scope:item:add');
 
         store = store;
     }
+
+    function itemAddMitigator(scope, item, name) {
+        itemUpdateOnScope(scope, item, (item) => {
+            item.mitigators = [new ScopeItem(name, true), ...item.mitigators];
+        })
+        mixpanel.track('scope:item:addMitigator');
+
+        store = store;
+    }
+
+    function itemAddAutomatableDescription(scope, item, description) {
+        itemUpdateOnScope(scope, item, (item) => {
+            item.automatableDescription = description;
+        })
+        mixpanel.track('scope:item:addAutomatableDescription');
+
+        store = store;
+    }
+
+    function itemAddDelegableDescription(scope, item, description) {
+        itemUpdateOnScope(scope, item, (item) => {
+            item.delegableDescription = description;
+        })
+        mixpanel.track('scope:item:addDelegableDescription');
+
+        store = store;
+    }
+
 
     function scopeDependsOn(scope, scopes) {
         let result;
@@ -408,7 +471,7 @@ export function ProjectStore(scopesSample = []) {
             result = scopes.filter((s) => (s.dependsOn.includes(scope.id) && !s.forkedScopeId) || s.dependsOn.includes(scope.forkedScopeId));
 
         } else {
-            result = get(store).filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId);
+            result = get(store)['scopes'].filter((s) => s.dependsOn.includes(scope.id) && !s.forkedScopeId);
         }
 
         return result.filter((item) => item != null)
@@ -566,18 +629,25 @@ export function ProjectStore(scopesSample = []) {
         // based on this idea: https://svelte.dev/repl/44f170d0cd43440ca8dd8e2bff341bda?version=3.17.1
         // another idea with slice: https://github.com/sveltejs/svelte/issues/6071
 
-        let copyFilteredStore = deepCopy(get(store).filter((scope) => scope.id !== 'bucket' && scope.items.length > 0));
+        let copyFilteredStore = deepCopy(get(store)['scopes'].filter((scope) => scope.id !== 'bucket' && scope.items.length > 0));
         let groupedScopes = groupScopes(copyFilteredStore);
         let groupedSortedScopes = mergeSort(mergeGroupScopes, groupedScopes);
 
-        let sortedGroupedSequenceScopes = sortScopesinGroupForking(groupedSortedScopes);
-        sortedGroupedSequenceScopes = generateSequence([...sortedGroupedSequenceScopes.indispensable, ...sortedGroupedSequenceScopes.niceToHave]);
+        let groupedSequenceScopes = sortScopesinGroupForking(groupedSortedScopes);
+        groupedSequenceScopes = generateSequence([...groupedSequenceScopes.indispensable, ...groupedSequenceScopes.niceToHave]);
 
-        let sortedScopesDocumentation = mergeSort(mergeScopesForDocumentation, copyFilteredStore).map((s, idx) => { s.orderDocumentation = idx + 1; return s; });
+        let scopesDocumentationSolution = mergeSort(mergeScopesForDocumentation, copyFilteredStore).map((s, idx) => { s.orderDocumentation = idx + 1; return s; });
+
+        let scopesDocumentation = {};
+        scopesDocumentation.context = "";
+        scopesDocumentation.intention = "";
+        scopesDocumentation.forces = "";
+        scopesDocumentation.solution = scopesDocumentationSolution;
+        scopesDocumentation.effects = { "benefits": "", "limitations": "" };
 
         return {
-            sortedGroupedSequenceScopes: sortedGroupedSequenceScopes,
-            sortedScopesDocumentation: sortedScopesDocumentation
+            groupedSequenceScopes: groupedSequenceScopes,
+            scopesDocumentation: scopesDocumentation
         }
     }
 
@@ -1054,11 +1124,55 @@ export function ProjectStore(scopesSample = []) {
         return text;
     }
 
+    function setClassificationIndispensableToObject(scope, item, toggle) {
+        setClassificationToObject(scope, item, 'indispensable', toggle);
+    }
+
+    function setClassificationRiskyToObject(scope, item, toggle) {
+        setClassificationToObject(scope, item, 'risky', toggle);
+    }
+    function setClassificationUnclearToObject(scope, item, toggle) {
+        setClassificationToObject(scope, item, 'unclear', toggle);
+    }
+    function setClassificationAutomatableToObject(scope, item, toggle) {
+        setClassificationToObject(scope, item, 'automatable', toggle);
+    }
+    function setClassificationDelegableToObject(scope, item, toggle) {
+        setClassificationToObject(scope, item, 'delegable', toggle);
+    }
+    function setClassificationTediousToObject(scope, item, toggle) {
+        setClassificationToObject(scope, item, 'tedious', toggle);
+    }
+
+    function setClassificationToScope(scope, classification, toggle) {
+        setClassificationToObject(scope, null, classification, toggle);
+    }
+
+    function setClassificationToItem(scope, item, classification, toggle) {
+        setClassificationToObject(scope, item, classification, toggle);
+    }
+
+    function setClassificationToObject(scope, item, classification, toggle) {
+        // object = deepCopy(object);
+        let validClassifications = ['indispensable', 'risky', 'unclear', 'automatable', 'delegable', 'tedious'];
+        if (validClassifications.includes(classification.toLowerCase())) {
+            // object[classification.toLowerCase()] = toggle;
+
+            objectUpdate(scope, item, (object) => {
+                object[classification.toLowerCase()] = toggle
+            })
+            if (item && classification === "risky") {
+                setClassificationToScope(scope, 'risky', scope.items.some((item) => item.risky));
+            }
+        }
+        // return object;
+    }
+
     return {
         set,
         update,
         subscribe,
-        length: get(store).length,
+        length: get(store)['scopes'].length,
         reset: reset,
         createInitialData: createInitialData,
         addScope,
@@ -1069,11 +1183,17 @@ export function ProjectStore(scopesSample = []) {
         scopeRemoveItem,
         scopeUpdateRisky,
         scopeUpdateIndispensable,
+        scopeUpdateAutomatable,
+        scopeUpdateDelegable,
+        scopeUpdateUnclear,
+        scopeUpdateTedious,
         scopeFilterItems,
-        itemUpdateIndispensable,
         sortItemsByIndispensable,
         updateDependencies,
         scopeAddItem,
+        itemAddMitigator,
+        itemAddAutomatableDescription,
+        itemAddDelegableDescription,
         sortScopesByPriority,
         generateSequence,
         filterScopes,
@@ -1081,7 +1201,16 @@ export function ProjectStore(scopesSample = []) {
         filterScopesWithItemsExcludingBucket,
         filterScopesWithItemsExcludingThisAndBucket,
         sequenceToText,
-        documentationToText
+        documentationToText,
+        setClassificationToObject,
+        setClassificationToScope,
+        setClassificationToItem,
+        setClassificationIndispensableToObject,
+        setClassificationRiskyToObject,
+        setClassificationUnclearToObject,
+        setClassificationTediousToObject,
+        setClassificationAutomatableToObject,
+        setClassificationDelegableToObject
     }
 };
 
