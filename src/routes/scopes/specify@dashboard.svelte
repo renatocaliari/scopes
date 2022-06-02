@@ -22,9 +22,9 @@
 	$: checkList = {
 		items: [
 			{
-				name: 'detail',
+				name: 'specify',
 				optional: false,
-				text: 'Detail every risky, automatable or delegable task',
+				text: 'Specify every risky, automatable or delegable task',
 				checked: sortedScopes.some((scope) =>
 					scope.items.some(
 						(item) =>
@@ -46,12 +46,12 @@
 	}
 </script>
 
-<NavigationScopes stepId="detail" optional={true} />
+<NavigationScopes stepId="specify" optional={true} {checkList} />
 
 <div
 	class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 grid-flow-row gap-4 place-content-around"
 >
-	{#each $projectStore['scopes'].filter((scope) => scope.id !== 'bucket' && scope.items.length > 0 && scope.items.some((item) => item.risky || item.automate || item.delegate)) as scope, idx}
+	{#each $projectStore['scopes'].filter((scope) => scope.id !== 'bucket' && scope.items.length > 0 && scope.items.some((item) => item.risky || item.automatable || item.delegable)) as scope, idx}
 		<div id={'scope' + idx} class="w-full justify-between items-center">
 			<div class="flex flex-row justify-center items-center align-middle gap-2">
 				<Scope bind:scope itemsScopeModal={scope.items} width="w-96" editTitle>

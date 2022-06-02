@@ -48,7 +48,7 @@
 
 <div
 	name="scope-{scope.i}"
-	class="rounded-md border-[0.1em] border-slate-300 shadow-xl {width} max-h-screen h-full {classColor}"
+	class="rounded-md border-[0.1em] border-slate-300 shadow-xl {width}  {classColor}"
 >
 	<div class:collapse={collapsable} class:collapse-arrow={collapsable}>
 		<input type="checkbox" class:hidden={!collapsable} />

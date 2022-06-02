@@ -25,7 +25,8 @@ import { convertToNumberingScheme } from "$lib/utils/general";
 let store = writable("project", { scopes: [] });
 
 export let projectStore = ProjectStore();
-export let storeSortedGroupedSequenceScopes = writable('storeGroupedSequenceScopes', []);
+export let storeSortedGroupedSequenceScopes = writable('storeGroupedSequenceScopes', { discovery: { indispensable: [], niceToHave: [] }, delivery: { indispensable: [], niceToHave: [] } });
+
 export let storeScopesDocumentation = writable('storeScopesDocumentation', []);
 
 /**
@@ -86,7 +87,8 @@ export function ProjectStore(scopesSample = []) {
 
     function reset() {
         set({ scopes: [] });
-        storeSortedGroupedSequenceScopes = writable('sortedGroupedSequenceScopes', []);
+
+        storeSortedGroupedSequenceScopes = writable('storeGroupedSequenceScopes', { discovery: { indispensable: [], niceToHave: [] }, delivery: { indispensable: [], niceToHave: [] } });
         storeScopesDocumentation = writable('sortedstoreScopesDocumentation', []);
     }
 
@@ -624,6 +626,21 @@ export function ProjectStore(scopesSample = []) {
         return forkedScope;
     }
 
+    function reduceScopesAndItems(scopes, fnValidateScope, fnValidadeItem) {
+        return scopes.reduce((scopes, scope) => {
+            if (fnValidateScope(scope)) {
+                scope.items = scope.items.reduce((items, item) => {
+                    if (fnValidadeItem(item)) {
+                        items.push(item);
+                    }
+                    return items;
+                }, []);
+                scopes.push(scope);
+            }
+            return scopes;
+        }, []);
+    }
+
     function sortScopesByPriority() {
         // it needed to copy elements from store instead of assign directly
         // based on this idea: https://svelte.dev/repl/44f170d0cd43440ca8dd8e2bff341bda?version=3.17.1
@@ -633,8 +650,61 @@ export function ProjectStore(scopesSample = []) {
         let groupedScopes = groupScopes(copyFilteredStore);
         let groupedSortedScopes = mergeSort(mergeGroupScopes, groupedScopes);
 
-        let groupedSequenceScopes = sortScopesinGroupForking(groupedSortedScopes);
-        groupedSequenceScopes = generateSequence([...groupedSequenceScopes.indispensable, ...groupedSequenceScopes.niceToHave]);
+        let groupScopesIndispensableTasksIndispensableRisky = groupScopes(
+            reduceScopesAndItems(copyFilteredStore,
+                (scope) => (scope.indispensable && scope.items.filter((item) => item.indispensable && item.risky && item.mitigators.length).length),
+                (item) => (item.indispensable && item.risky && item.mitigators.length))
+        );
+
+        let groupScopesIndispensableTasksNiceToHaveRisky = groupScopes(
+            reduceScopesAndItems(copyFilteredStore,
+                (scope) => (scope.indispensable && scope.items.filter((item) => item.indispensable && item.risky && item.mitigators.length).length),
+                (item) => (!item.indispensable && item.risky && item.mitigators.length))
+        );
+
+        let groupScopesNiceToHaveTasksIndispensableRisky = groupScopes(
+            reduceScopesAndItems(copyFilteredStore,
+                (scope) => (!scope.indispensable && scope.items.filter((item) => item.indispensable && item.risky && item.mitigators.length).length),
+                (item) => (item.indispensable && item.risky && item.mitigators.length))
+        );
+
+
+        let groupScopesNiceToHaveTasksNiceToHaveRisky = groupScopes(
+            reduceScopesAndItems(copyFilteredStore,
+                (scope) => (!scope.indispensable && scope.items.filter((item) => item.indispensable && item.risky && item.mitigators.length).length),
+                (item) => (!item.indispensable && item.risky && item.mitigators.length))
+        );
+
+        let groupedSequenceScopesDiscoveryIndispensable = generateSequence([...groupScopesIndispensableTasksIndispensableRisky, ...groupScopesIndispensableTasksNiceToHaveRisky]);
+        let groupedSequenceScopesDiscoveryNiceToHave = generateSequence([...groupScopesNiceToHaveTasksIndispensableRisky, ...groupScopesNiceToHaveTasksNiceToHaveRisky]);
+
+        let groupedSequenceScopesDelivery = sortScopesinGroupForking(groupedSortedScopes);
+
+        let groupedSequenceScopes = {
+            discovery: {
+                indispensable: groupedSequenceScopesDiscoveryIndispensable,
+                niceToHave: groupedSequenceScopesDiscoveryNiceToHave
+            },
+            delivery: {
+                indispensable: generateSequence(groupedSequenceScopesDelivery.indispensable),
+                niceToHave: generateSequence(groupedSequenceScopesDelivery.niceToHave)
+            }
+
+        };
+
+        // groupedSequenceScopes = generateSequence([...groupedSequenceScopes.indispensable, ...groupedSequenceScopes.niceToHave]);
+
+        console.log('groupedSequenceScopes:', groupedSequenceScopes);
+
+        let forkedScopes = [...groupedSequenceScopes.delivery.indispensable, ...groupedSequenceScopes.delivery.niceToHave].reduce((acc, group) => {
+            group.items.forEach((scope) => {
+                if (scope.forkedScopeId) {
+                    acc.push(scope);
+                }
+            });
+            return acc;
+        }, []);
+
 
         let scopesDocumentationSolution = mergeSort(mergeScopesForDocumentation, copyFilteredStore).map((s, idx) => { s.orderDocumentation = idx + 1; return s; });
 
@@ -646,10 +716,24 @@ export function ProjectStore(scopesSample = []) {
         scopesDocumentation.effects = { "benefits": "", "limitations": "" };
 
         return {
-            groupedSequenceScopes: groupedSequenceScopes,
+            groupedSequenceScopes,
+            forkedScopes: forkedScopes,
+            // groupedSequenceScopes: groupedSequenceScopes,
             scopesDocumentation: scopesDocumentation
         }
     }
+
+    function saveObjToStore(store, sequenceObj) {
+        store.set(sequenceObj);
+    }
+
+    function saveSequenceToStore(store, sequenceIndispensable, sequenceNiceToHave) {
+        saveObjToStore(store, {
+            indispensable: sequenceIndispensable,
+            niceToHave: sequenceNiceToHave,
+        });
+    }
+
 
     function updateDependenciesOfScopesGeneratedByFork(scopes) {
         let arrScopes = deepCopy(scopes);
@@ -706,7 +790,7 @@ export function ProjectStore(scopesSample = []) {
      * @returns {GroupScopes[]}
      */
     function groupScopes(scopes) {
-        // copied from: https://stackoverflow.com/questions/41669281/group-array-by-nested-dependent-array-element
+        // adapted from: https://stackoverflow.com/questions/41669281/group-array-by-nested-dependent-array-element
         // make matrix graph
         scopes = deepCopy(scopes);
         var map = {};
@@ -795,34 +879,23 @@ export function ProjectStore(scopesSample = []) {
         let sortedArr = []; // the sorted elements will go here
 
         while (left.length && right.length) {
-
-            // console.log('>>>>>>>>>>>>>>>>>>>>>>>>> mergeGroupScopes right[0]:', right[0]);
-            // console.log('>>>>>>>>>>>>>>>>>>>>>> mergeGroupScopes left[0]:', left[0]);
-
             if (left[0].items.filter((scope) => scope.risky).length > right[0].items.filter((scope) => scope.risky).length) {
                 sortedArr.push(left.shift());
-                // console.log('} else if (left[0].risky && !right[0].risky) {');
             } else if (right[0].items.filter((scope) => scope.risky).length > left[0].items.filter((scope) => scope.risky).length) {
                 sortedArr.push(right.shift());
-                // console.log('} else if (!left[0].risky && right[0].risky) {');
             } else if (left[0].hasForks && !right[0].hasForks) {
                 sortedArr.push(left.shift());
             } else if (right[0].hasForks && !left[0].hasForks) {
                 sortedArr.push(right.shift());
             } else if (left[0].items.length > right[0].items.length) {
                 sortedArr.push(left.shift());
-                // console.log('} else if (left[0].risky && !right[0].risky) {');
             } else if (right[0].items.length > left[0].items.length) {
                 sortedArr.push(right.shift());
-                // console.log('} else if (!left[0].risky && right[0].risky) {');
             } else {
                 sortedArr.push(left.shift());
             }
-            // console.log('...:', deepCopy(sortedArr));
-
         }
 
-        // console.log('sortedArr:', deepCopy(sortedArr));
         // use spread operator and create a new array, combining the three arrays
         return [...sortedArr, ...left, ...right];
     }
@@ -830,9 +903,6 @@ export function ProjectStore(scopesSample = []) {
     function mergeScopes(left, right, originalArr) {
         let sortedArr = []; // the sorted elements will go here
         while (left.length && right.length) {
-
-            // console.log('>>>>>>>>>>>>>>>>>>>>>>>>> mergeScopes right[0]:', right[0]);
-            // console.log('>>>>>>>>>>>>>>>>>>>>>>>>> mergeScopes left[0]:', left[0]);
 
             if (left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id)) {
                 sortedArr.push(right.shift());
@@ -842,68 +912,11 @@ export function ProjectStore(scopesSample = []) {
                 sortedArr.push(left.shift());
             } else if (right[0].hasForks && !left[0].hasForks) {
                 sortedArr.push(right.shift());
-            }
-            // else if (left[0].indispensable && !right[0].indispensable) {
-            //     sortedArr.push(left.shift());
-            //     // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
-            // }
-            // else if (right[0].indispensable && !left[0].indispensable) {
-            //     sortedArr.push(right.shift());
-            // }
-            // else if (left[0].risky && !right[0].risky) {
-            //     sortedArr.push(left.shift());
-            //     // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
-            // } else if (right[0].risky && !left[0].risky) {
-            //     sortedArr.push(right.shift());
-
-            // }
-            // else if ((left[0].indispensable && left[0].risky) && (!right[0].indispensable && !right[0].risky)) {
-            //         sortedArr.push(left.shift());
-            //         // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
-            //     }
-            //     else if ((right[0].indispensable && right[0].risky) && (!left[0].indispensable && !left[0].risky)) {
-            //         sortedArr.push(right.shift());
-            //         // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
-            //     }
-            //     else if ((left[0].indispensable && !left[0].risky) && (!right[0].indispensable && !right[0].risky)) {
-            //         sortedArr.push(left.shift());
-            //         // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
-            //     }
-            //     else if ((right[0].indispensable && right[0].risky) && (!left[0].indispensable && !left[0].risky)) {
-            //         sortedArr.push(right.shift());
-            //         // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
-            //     }
-
-
-            // console.log('} else if (right[0].dependsOn?.includes(left[0].id) && !left[0].dependsOn?.includes(right[0].id)) {');
-            // } else if (left[0].risky && !right[0].risky) {
-            //     sortedArr.push(left.shift());
-            //     // console.log('} else if (left[0].risky && !right[0].risky) {');
-            // } else if (!left[0].risky && right[0].risky) {
-            //     sortedArr.push(right.shift());
-            //     //     // console.log('} else if (!left[0].risky && right[0].risky) {');
-            // } else if (left[0].dependsOn?.length > right[0].dependsOn?.length) {
-            //     sortedArr.push(left.shift());
-            //     // console.log('} else if (left[0].dependsOn?.length > right[0].dependsOn?.length) {');
-            // } else if (left[0].dependsOn?.length < right[0].dependsOn?.length) {
-            //     sortedArr.push(right.shift());
-            //     // console.log('} else if (left[0].dependsOn?.length < right[0].dependsOn?.length) {');
-            // } else if (originalArr.filter((scope) => scope.dependsOn.includes(left[0].id)).length > originalArr.filter((scope) => scope.dependsOn.includes(right[0].id)).length) {
-            //     sortedArr.push(left.shift());
-            // } else if (originalArr.filter((scope) => scope.dependsOn.includes(left[0].id)).length < originalArr.filter((scope) => scope.dependsOn.includes(right[0].id)).length) {
-            //     sortedArr.push(right.shift());
-            // } else if (left[0].order > right[0].order) {
-            //     sortedArr.push(right.shift());
-            // } else if (right[0].order > left[0].order) {
-            //     sortedArr.push(left.shift());
-            else {
+            } else {
                 sortedArr.push(left.shift());
             }
-            // console.log('...:', deepCopy(sortedArr));
-
         }
 
-        // console.log('sortedArr:', deepCopy(sortedArr));
         // use spread operator and create a new array, combining the three arrays
         return [...sortedArr, ...left, ...right];
     }
@@ -916,55 +929,22 @@ export function ProjectStore(scopesSample = []) {
 
             if (left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id)) {
                 sortedArr.push(right.shift());
-                // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
             } else if (right[0].dependsOn?.includes(left[0].id) && !left[0].dependsOn?.includes(right[0].id)) {
                 sortedArr.push(left.shift());
             } else if (left[0].indispensable && !right[0].indispensable) {
                 sortedArr.push(left.shift());
-                // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
-            }
-            else if (right[0].indispensable && !left[0].indispensable) {
+            } else if (right[0].indispensable && !left[0].indispensable) {
                 sortedArr.push(right.shift());
-            }
-            else if (left[0].risky && !right[0].risky) {
+            } else if (left[0].risky && !right[0].risky) {
                 sortedArr.push(left.shift());
-                // console.log('(left[0].dependsOn?.includes(right[0].id) && !right[0].dependsOn?.includes(left[0].id))');
             } else if (right[0].risky && !left[0].risky) {
                 sortedArr.push(right.shift());
-
-
-                // } else if (left[0].risky && !right[0].risky) {
-                //     sortedArr.push(left.shift());
-                //     // console.log('} else if (left[0].risky && !right[0].risky) {');
-                // } else if (!left[0].risky && right[0].risky) {
-                //     sortedArr.push(right.shift());
-
-
-
-
-                //     // console.log('} else if (!left[0].risky && right[0].risky) {');
-                // } else if (left[0].dependsOn?.length > right[0].dependsOn?.length) {
-                //     sortedArr.push(left.shift());
-                //     // console.log('} else if (left[0].dependsOn?.length > right[0].dependsOn?.length) {');
-                // } else if (left[0].dependsOn?.length < right[0].dependsOn?.length) {
-                //     sortedArr.push(right.shift());
-                //     // console.log('} else if (left[0].dependsOn?.length < right[0].dependsOn?.length) {');
-                // } else if (originalArr.filter((scope) => scope.dependsOn.includes(left[0].id)).length > originalArr.filter((scope) => scope.dependsOn.includes(right[0].id)).length) {
-                //     sortedArr.push(left.shift());
-                // } else if (originalArr.filter((scope) => scope.dependsOn.includes(left[0].id)).length < originalArr.filter((scope) => scope.dependsOn.includes(right[0].id)).length) {
-                //     sortedArr.push(right.shift());
-                // } else if (left[0].order > right[0].order) {
-                //     sortedArr.push(right.shift());
-                // } else if (right[0].order > left[0].order) {
-                //     sortedArr.push(left.shift());
             } else {
                 sortedArr.push(left.shift());
             }
-            // console.log('...:', deepCopy(sortedArr));
 
         }
 
-        // console.log('sortedArr:', deepCopy(sortedArr));
         // use spread operator and create a new array, combining the three arrays
         return [...sortedArr, ...left, ...right];
     }
@@ -1210,7 +1190,8 @@ export function ProjectStore(scopesSample = []) {
         setClassificationUnclearToObject,
         setClassificationTediousToObject,
         setClassificationAutomatableToObject,
-        setClassificationDelegableToObject
+        setClassificationDelegableToObject,
+        saveSequenceToStore
     }
 };
 

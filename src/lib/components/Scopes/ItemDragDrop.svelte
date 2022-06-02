@@ -4,7 +4,7 @@
 	import configClassification from '$lib/data/classification';
 	const dispatch = createEventDispatcher();
 
-	export let scope;
+	export let scope = undefined;
 	export let item;
 	export let itemsModal = [];
 	export let classesCSS = '';

@@ -7,11 +7,6 @@
 	let mixpanel = {
 		track: () => {}
 	};
-
-	let activeStep = $stepsCompleted.find((step) => step.active)?.step;
-	// if (activeStep) {
-	// 	goto(stepsStore[activeStep].link);
-	// }
 </script>
 
 <svelte:head>

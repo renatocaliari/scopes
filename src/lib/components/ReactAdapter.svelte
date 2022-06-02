@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 	import React from 'react';
 	import ReactDOM from 'react-dom';
 	import { onDestroy, onMount } from 'svelte';
@@ -25,4 +25,4 @@
 	});
 </script>
 
-<div bind:this={container} class={$$props.class} />
+<div bind:this={container} class={$$props.class} /> -->

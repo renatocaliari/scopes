@@ -13,7 +13,7 @@ export function normalizeId(id) {
  * so, it's important to normalize when you want to compare
  * @param {GroupScopes[]} groups 
  */
-export function normalizeScopesToCompare(groups) {
+export function normalizeGroupsScopesToCompare(groups) {
     return deepCopy(groups).map((group) => {
         group.items = group.items.map((scope) => {
             scope.id = normalizeId(scope.id);

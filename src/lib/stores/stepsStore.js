@@ -16,7 +16,7 @@ export const stepsCompleted = writableLocal('steps',
             active: false,
             completed: false
         },
-        "detail": {
+        "specify": {
             active: false,
             completed: false
         },
@@ -112,12 +112,12 @@ export let steps = writable([
     },
     {
         step: 3,
-        id: 'detail',
-        linkText: 'Detail',
-        h1: 'Detail',
-        link: '/scopes/detail',
-        active: storeSteps["detail"].active,
-        completed: storeSteps["detail"].completed
+        id: 'specify',
+        linkText: 'Specify',
+        h1: 'Specify',
+        link: '/scopes/specify',
+        active: storeSteps["specify"].active,
+        completed: storeSteps["specify"].completed
 
     },
     {

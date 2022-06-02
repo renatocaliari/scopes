@@ -1,7 +1,4 @@
 <script>
-	// import ToolEraser from '$lib/components/Scopes/ToolEraser.svelte';
-	import { Tldraw, TldrawApp } from '@tldraw/tldraw';
-
 	import ReactAdapter from '$lib/components/ReactAdapter.svelte';
 	import NavigationScopes from '$lib/components/Scopes/NavigationScopes.svelte';
 	import { projectStore, storeScopesDocumentation } from '$lib/stores/projectStore';
@@ -9,8 +6,7 @@
 
 <NavigationScopes stepId="workspace" />
 
-<div class="w-full h-[calc(100vh-250px)]">
-	<!-- <ToolEraser content={projectStore.documentationToText($storeScopesDocumentation)} /> -->
+<!-- <div class="w-full h-[calc(100vh-250px)]">
 	<ReactAdapter
 		el={Button}
 		class="mui-btn"
@@ -36,7 +32,6 @@
 		{meta}
 		{theme}
 	/>
-</div>
-
+</div> -->
 <style>
 </style>
