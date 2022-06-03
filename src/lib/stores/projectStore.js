@@ -287,8 +287,6 @@ export function ProjectStore(scopesSample = []) {
     }
 
     function addScopeAutoId(name, items = [], dependsOn = [], risky = false, indispensable = false, order = 0, automatable = false, delegable = false, unclear = false, tedious = false) {
-        console.log('get(store)', get(store));
-        console.log('get(store)scopes', get(store)['scopes']);
         let scope = {
             id: "scope-" + get(store)['scopes'].length,
             title: "",
