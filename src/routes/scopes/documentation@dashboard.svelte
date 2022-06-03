@@ -20,8 +20,7 @@
 	// 	}
 	// );
 
-	let sortedstoreScopesDocumentation;
-
+	let scopesDocumentation;
 	({ scopesDocumentation } = projectStore.sortScopesByPriority());
 	$storeScopesDocumentation = scopesDocumentation;
 
@@ -73,7 +72,7 @@
 	}
 
 	function saveDataIntoOriginalStore() {
-		$storeScopesDocumentation.map((s) => {
+		$storeScopesDocumentation['solution'].map((s) => {
 			let scopeOriginal = $projectStore['scopes'].find((s2) => s2.id === s.id);
 			scopeOriginal.title = s.title;
 			scopeOriginal.description = s.description;
@@ -87,7 +86,11 @@
 		<label
 			for="modal-export"
 			class="btn btn-outline modal-button mr-2"
-			on:click={() => projectStore.documentationToText($storeScopesDocumentation, autoNumber)}
+			on:click={() =>
+				(exportText = projectStore.documentationToText(
+					$storeScopesDocumentation['solution'],
+					autoNumber
+				))}
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="w-4 h-4 mr-1"
 				><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
@@ -110,7 +113,7 @@
 		<section
 			class="sm:flex sm:flex-col md:flex md:flex-col w-full content-center items-center justify-center"
 			use:proxyDndzone={{
-				items: $storeScopesDocumentation,
+				items: $storeScopesDocumentation['solution'],
 				flipDurationMs,
 				morphDisabled: false,
 				dropTargetClasses: ['bg-green-50']
@@ -118,7 +121,7 @@
 			on:consider={(e) => handleDndConsider(e)}
 			on:finalize={(e) => handleDndFinalize(e)}
 		>
-			{#each $storeScopesDocumentation as scope, idx (scope.id)}
+			{#each $storeScopesDocumentation['solution'] as scope, idx (scope.id)}
 				<div class="m-2 flex justify-center mb-8" animate:flip={{ duration: flipDurationMs }}>
 					<Scope bind:scope itemsScopeModal={scope.items} width="w-full">
 						<div slot="badge" class="w-full inline-flex items-center align-middle">
@@ -126,11 +129,9 @@
 							<div class="move cursor-grab align-middle content-center justify-items-center" />
 						</div>
 						<div slot="header" class="w-full">
-							<div class="badge badge-outline" class:hidden={scope.indispensable}>Nice-to-have</div>
-							<div class="badge badge-primary text-white" class:hidden={!scope.indispensable}>
-								Indispensable
-							</div>
-							<div class="badge badge-accent text-white" class:hidden={!scope.risky}>Risky</div>
+							<div class="badge " class:hidden={scope.indispensable}>Nice-to-have</div>
+							<div class="badge " class:hidden={!scope.indispensable}>Indispensable</div>
+							<div class="badge " class:hidden={!scope.risky}>Risky</div>
 							<h2
 								class="mt-2 border-dashed border-2 border-gray-300"
 								contenteditable
@@ -222,7 +223,11 @@
 			id="auto-number"
 			class="toggle align-middle content-center items-center mr-2"
 			bind:checked={autoNumber}
-			on:change={() => scopesToText($projectStore)}
+			on:change={() =>
+				(exportText = projectStore.documentationToText(
+					$storeScopesDocumentation['solution'],
+					autoNumber
+				))}
 		/><label for="auto-number">Auto-number each line</label>
 		<div class="divider" />
 		<div style="white-space: pre-wrap;" class="w-fit h-96 overflow-auto">

@@ -7,7 +7,7 @@
 <div class="navbar navbar-center bg-base-100">
 	<div class="flex-1">
 		<a class="btn btn-ghost normal-case text-xl" href="/" sveltekit:prefetch>Scopefully</a>
-		<span class="text-sm">(beta v0.0.4)</span>
+		<span class="text-sm ml-2 badge badge-primary">beta v0.0.5</span>
 	</div>
 	<div class="flex-none" />
 	<ul class="menu menu-horizontal p-0">

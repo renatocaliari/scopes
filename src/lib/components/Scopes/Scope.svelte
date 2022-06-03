@@ -52,7 +52,7 @@
 >
 	<div class:collapse={collapsable} class:collapse-arrow={collapsable}>
 		<input type="checkbox" class:hidden={!collapsable} />
-		<div class:collapse-title={collapsable} class="mb-2 w-full bg-slate-200">
+		<div class:collapse-title={collapsable} class="mb-2 w-full">
 			<div class="flex flex-col w-full">
 				<div class="inline-flex w-full" class:px-4={!collapsable} class:pt-4={!collapsable}>
 					{#if editTitle}
@@ -70,10 +70,9 @@
 								contenteditable
 								placeholder={textPlaceholder}
 								bind:textContent={scope.name}
-								class="w-full min-h-8 border-2 border-slate-400 inline"
+								class="w-full min-h-8 border-2 border-white  inline p-1"
 								class:border-dashed={!scope.name || mouseIsOver}
 								class:border-slate-400={!scope.name || mouseIsOver}
-								class:border-slate-200={scope.name || !mouseIsOver}
 							/>
 						</div>
 						{#if $$slots.badge}
@@ -102,7 +101,7 @@
 					{/if}
 				</div>
 				{#if $$slots.header}
-					<div class="px-4">
+					<div class="px-4 mb-2">
 						<slot name="header" />
 					</div>
 				{/if}

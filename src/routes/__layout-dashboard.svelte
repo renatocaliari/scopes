@@ -54,10 +54,12 @@
 					>
 				</label>
 			</div>
-			<div class="flex-1 px-2 mx-2 lg:hidden"><a href="/">Scopefully</a></div>
+			<div class="flex-1 px-2 mx-2 lg:hidden">
+				<a href="/">Scopefully</a><span class="text-sm ml-2 badge">beta v0.0.5</span>
+			</div>
 			<div class="flex-none block lg:hidden">
 				<ul class="menu menu-horizontal">
-					<li><a class="btn btn-outline" href="/about" sveltekit:prefetch>About</a></li>
+					<li><a class="btn btn-outline " href="/about" sveltekit:prefetch>About</a></li>
 				</ul>
 			</div>
 		</div>
@@ -69,17 +71,26 @@
 	</div>
 	<div class="drawer-side flex">
 		<label for="drawer-menu" class="drawer-overlay " />
-		<div class="overflow-y-auto w-80 bg-primary justify-between flex flex-col text-white">
+		<div class="overflow-y-auto w-80 bg-base-100 justify-between flex flex-col text-white">
 			<div>
-				<span class="menu p-8 text-base-content"><a href="/">Scopefully</a></span>
+				<div
+					class="flex flex-row menu p-8 text-base-content align-middle content-center items-center "
+				>
+					<a href="/">Scopefully</a><span class="text-sm ml-2 badge">beta v0.0.5</span>
+				</div>
+
 				<div class="divider" />
 
 				<ul class="p-4 text-base-content gap-2">
 					<!-- Sidebar content here -->
 					{#each $steps as step, idx}
 						<div class="w-full">
-							<a class="link link-hover" href={step.link}>
-								<div class="p-3 rounded-md" class:bg-primary={step.active}>
+							<a href={step.link}>
+								<div
+									class="p-3 rounded-md  "
+									class:bg-primary={step.link === $page.url.pathname}
+									class:text-white={step.link === $page.url.pathname}
+								>
 									{step.linkText}
 									{#if step.id === 'deadline' && $projectStore.deadline}
 										<span class="badge">{moment($projectStore.deadline).fromNow()}</span>

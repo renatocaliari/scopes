@@ -1,4 +1,5 @@
 <script context="module">
+	import moment from 'moment';
 	import CopyToClipboard from '$lib/components/CopyToClipboard.svelte';
 	import BadgeDependencies from '$lib/components/Scopes/BadgeDependencies.svelte';
 	import Sequence from '$lib/components/Scopes/Sequence.svelte';
@@ -32,9 +33,6 @@
 	({ groupedSequenceScopes, forkedScopes, scopesDocumentation } =
 		projectStore.sortScopesByPriority());
 
-	console.log('$storeSortedGroupedSequenceScopes:', $storeSortedGroupedSequenceScopes);
-	console.log('groupedSequenceScopes:', groupedSequenceScopes);
-
 	$: {
 		$storeSortedGroupedSequenceScopes;
 		if (!moving) {
@@ -66,8 +64,6 @@
 		}
 	}
 
-	console.log('groupedSequenceScopes:', groupedSequenceScopes);
-
 	$: checkList = {
 		name: 'Tasks',
 		items: [
@@ -98,8 +94,9 @@
 			for="modal-export"
 			class="btn btn-outline modal-button"
 			on:click={() =>
-				(exportText = projectStore.sequenceToText(
+				(exportText = projectStore.sequencesToText(
 					$storeSortedGroupedSequenceScopes,
+					scopes,
 					toggleAddInfo,
 					toggleAutoTodo
 				))}
@@ -121,17 +118,20 @@
 	>
 		<h1 class="flex flex-row align-middle content-center items-center text-center">
 			Sequence for execution
-			<label for="modal-about-sequence" class="cursor-pointer">
+			<br />{#if $projectStore.deadline}
+				due {moment($projectStore.deadline).fromNow()}
+			{/if}
+			<!-- <label for="modal-about-sequence" class="cursor-pointer">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0
 	512 512"
 					class="w-5 h-5 ml-2"
-					><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
+					><path
 						d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM256 400c-18 0-32-14-32-32s13.1-32 32-32c17.1 0 32 14 32 32S273.1 400 256 400zM325.1 258L280 286V288c0 13-11 24-24 24S232 301 232 288V272c0-8 4-16 12-21l57-34C308 213 312 206 312 198C312 186 301.1 176 289.1 176h-51.1C225.1 176 216 186 216 198c0 13-11 24-24 24s-24-11-24-24C168 159 199 128 237.1 128h51.1C329 128 360 159 360 198C360 222 347 245 325.1 258z"
 					/></svg
 				></label
-			>
+			> -->
 		</h1>
 
 		{#if updatedSequence}
@@ -215,7 +215,12 @@
 			class="toggle align-middle content-center items-center mr-2"
 			bind:checked={toggleAddInfo}
 			on:change={() => {
-				projectStore.sequenceToText($storeSortedGroupedSequenceScopes);
+				exportText = projectStore.sequencesToText(
+					$storeSortedGroupedSequenceScopes,
+					scopes,
+					toggleAddInfo,
+					toggleAutoTodo
+				);
 			}}
 		/><label for="auto-number" class="mr-2"
 			>Add info about each scope (dependencies, riskies, etc)</label
@@ -226,7 +231,12 @@
 			class="toggle align-middle content-center items-center mr-2"
 			bind:checked={toggleAutoTodo}
 			on:change={() => {
-				projectStore.scopesToText($storeSortedGroupedSequenceScopes);
+				exportText = projectStore.sequencesToText(
+					$storeSortedGroupedSequenceScopes,
+					scopes,
+					toggleAddInfo,
+					toggleAutoTodo
+				);
 			}}
 		/><label for="auto-number" class="mr-2">Put LATER* at the beginning of the tasks</label>
 		<span class="flex label-text-alt"

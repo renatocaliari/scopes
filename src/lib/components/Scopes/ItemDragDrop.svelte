@@ -86,8 +86,8 @@
 		{/if}
 		{#if allowEditItem}<div class="w-full flex align-middle items-center content-center">
 				<div
-					class="w-full break-words border-2 {classesCSS}"
-					class:border-slate-300={mouseIsOver}
+					class="w-full break-words border-2 {classesCSS} p-1"
+					class:border-slate-400={mouseIsOver}
 					class:border-white={!mouseIsOver}
 					class:border-dashed={mouseIsOver}
 					class:line-clamp-2={!mouseIsOver}

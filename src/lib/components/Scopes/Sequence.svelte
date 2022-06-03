@@ -103,12 +103,12 @@
 									</div>
 									<div class="flex flex-row gap-2">
 										{#if !scope.indispensable}
-											<span class="badge badge-outline break-normal">Nice-to-have</span>
+											<span class="badge  break-normal">Nice-to-have</span>
 										{:else}
-											<span class="badge badge-primary text-white break-normal">Indispensable</span>
+											<span class="badge  break-normal">Indispensable</span>
 										{/if}
 										{#if scope.risky}
-											<span class="badge badge-accent text-white break-normal">Risky</span>
+											<span class="badge  break-normal">Risky</span>
 										{/if}
 									</div>
 								</div>
@@ -139,7 +139,7 @@
 												{item.name}
 											</div>
 											<div class="flex flex-col align-middle">
-												Actions to mitigate the risks of this task:
+												Actions to mitigate the risks of the above task:
 												{#each item.mitigators as mitigator}
 													<div class="flex align-middle">
 														<input type="checkbox" class="checkbox mr-2" />
@@ -171,13 +171,13 @@
 												</div>
 												{#if item.automatable && item.automatableDescription && showNotificationAboutAutomatableTasks}
 													<div class="flex flex-col bg-yellow-50 my-2 p-2 border-[1px]">
-														Try to automate it:
+														Try to automate the above task:
 														<div class="text-xs">{item.automatableDescription}</div>
 													</div>
 												{/if}
 												{#if item.delegable && item.delegableDescription && showNotificationAboutDelegableTasks}
 													<div class="flex flex-col bg-yellow-50 my-2 p-2 border-[1px]">
-														Try to delegate it to:
+														Try to delegate the above task to:
 														<div class="text-xs">{item.delegableDescription}</div>
 													</div>
 												{/if}

@@ -50,7 +50,7 @@
 </NavigationScopes>
 
 <div
-	class={'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 grid-flow-row gap-4 place-content-around'}
+	class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 grid-flow-row gap-4 place-content-around"
 >
 	{#each sortedScopes as scope}
 		<div>
@@ -59,10 +59,8 @@
 					<BadgeDependencies project={projectStore} bind:scope />
 				</div>
 				<div slot="header">
-					<div class="badge badge-accent text-white" class:hidden={!scope.risky}>Risky</div>
-					<div class="badge badge-success text-white" class:hidden={scope.indispensable}>
-						Nice-to-have
-					</div>
+					<div class="badge " class:hidden={!scope.risky}>Risky</div>
+					<div class="badge " class:hidden={scope.indispensable}>Nice-to-have</div>
 				</div>
 
 				<div slot="subTitle">

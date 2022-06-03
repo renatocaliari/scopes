@@ -27,7 +27,7 @@ let store = writable("project", { scopes: [] });
 export let projectStore = ProjectStore();
 export let storeSortedGroupedSequenceScopes = writable('storeGroupedSequenceScopes', { discovery: { indispensable: [], niceToHave: [] }, delivery: { indispensable: [], niceToHave: [] } });
 
-export let storeScopesDocumentation = writable('storeScopesDocumentation', []);
+export let storeScopesDocumentation = writable('storeScopesDocumentation', {});
 
 /**
  * @typedef {Object} Item
@@ -89,7 +89,7 @@ export function ProjectStore(scopesSample = []) {
         set({ scopes: [] });
 
         storeSortedGroupedSequenceScopes = writable('storeGroupedSequenceScopes', { discovery: { indispensable: [], niceToHave: [] }, delivery: { indispensable: [], niceToHave: [] } });
-        storeScopesDocumentation = writable('sortedstoreScopesDocumentation', []);
+        storeScopesDocumentation = writable('sortedstoreScopesDocumentation', {});
     }
 
     if (scopesSample.length) {
@@ -627,7 +627,7 @@ export function ProjectStore(scopesSample = []) {
     }
 
     function reduceScopesAndItems(scopes, fnValidateScope, fnValidadeItem) {
-        return scopes.reduce((scopes, scope) => {
+        return deepCopy(scopes).reduce((scopes, scope) => {
             if (fnValidateScope(scope)) {
                 scope.items = scope.items.reduce((items, item) => {
                     if (fnValidadeItem(item)) {
@@ -647,6 +647,7 @@ export function ProjectStore(scopesSample = []) {
         // another idea with slice: https://github.com/sveltejs/svelte/issues/6071
 
         let copyFilteredStore = deepCopy(get(store)['scopes'].filter((scope) => scope.id !== 'bucket' && scope.items.length > 0));
+
         let groupedScopes = groupScopes(copyFilteredStore);
         let groupedSortedScopes = mergeSort(mergeGroupScopes, groupedScopes);
 
@@ -692,9 +693,8 @@ export function ProjectStore(scopesSample = []) {
 
         };
 
-        // groupedSequenceScopes = generateSequence([...groupedSequenceScopes.indispensable, ...groupedSequenceScopes.niceToHave]);
 
-        console.log('groupedSequenceScopes:', groupedSequenceScopes);
+        // groupedSequenceScopes = generateSequence([...groupedSequenceScopes.indispensable, ...groupedSequenceScopes.niceToHave]);
 
         let forkedScopes = [...groupedSequenceScopes.delivery.indispensable, ...groupedSequenceScopes.delivery.niceToHave].reduce((acc, group) => {
             group.items.forEach((scope) => {
@@ -704,7 +704,6 @@ export function ProjectStore(scopesSample = []) {
             });
             return acc;
         }, []);
-
 
         let scopesDocumentationSolution = mergeSort(mergeScopesForDocumentation, copyFilteredStore).map((s, idx) => { s.orderDocumentation = idx + 1; return s; });
 
@@ -966,16 +965,18 @@ export function ProjectStore(scopesSample = []) {
         return merger(mergeSort(merger, left, originalArr), mergeSort(merger, right, originalArr), originalArr);
     }
 
-
-    function sequenceToText(groups, toggleAddInfo, toggleAutoTodo) {
+    function sequenceToText(idxGlobal, sequence, scopes, toggleAddInfo = false, toggleAutoTodo = false, showNotificationAboutForkedScopes = false,
+        showMitigatorsForRiskyTasks = false,
+        showNotificationAboutAutomatableTasks = true,
+        showNotificationAboutDelegableTasks = true
+    ) {
         let text = '';
-        let idxGlobal = 0;
 
         let priorities = ['#A', '#B', '#C'];
         let idxPriority = 0;
 
-        groups.forEach((group, idxGroup) => {
-            group.items.forEach((scope, idxScope) => {
+        sequence.forEach((group) => {
+            group.items?.forEach((scope, idxScope) => {
                 idxGlobal++;
 
                 if (idxGlobal > 1) {
@@ -991,10 +992,9 @@ export function ProjectStore(scopesSample = []) {
                     (scope.indispensable ? 'Indispensable' : 'Nice-to-have')
                 );
 
-                let unlockDependencies = projectStore
-                    .scopeUnlocksDependenciesOf(scope, scopes);
+                let unlockDependencies = scopeUnlocksDependenciesOf(scope, scopes);
 
-                let dependsOn = projectStore.dependsOn(scope, scopes);
+                let dependsOn = scopeDependsOn(scope, scopes);
 
                 if (toggleAddInfo) {
                     if (
@@ -1005,7 +1005,7 @@ export function ProjectStore(scopesSample = []) {
                     ) {
                         text = text.concat('\n\t- Info:');
 
-                        if (scope.forkedScopeId) {
+                        if (scope.forkedScopeId && showNotificationAboutForkedScopes) {
                             text = text.concat(
                                 '\n\t\t- WARNING: The sole intention at this step is allowing the execution of the tasks of the next step.' +
                                 '\n\t\t- Think about affordances or simulated ways to mimic the real behavior of the tasks here.' +
@@ -1034,7 +1034,35 @@ export function ProjectStore(scopesSample = []) {
                     }
                 }
 
-                if (!scope.forkedScopeId) {
+
+                if (scope.forkedScopeId && showNotificationAboutForkedScopes) {
+                    text = text.concat(
+                        '\n\t\t- ' +
+                        (toggleAutoTodo
+                            ? scope.indispensable && group.indispensableTasks
+                                ? 'LATER' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
+                                : 'LATER '
+                            : '') +
+                        ' ' +
+                        'At this step, do as little as possible, only what is needed, to enable doing the tasks of the next step.'
+                    );
+                } else if (scope.risky && showMitigatorsForRiskyTasks) {
+                    if (scope.items.length) {
+                        scope.items.forEach((item) => {
+                            text = text.concat(
+                                '\n\t- Actions to mitigate the risks of the task: ' + item.name);
+                            item.mitigators.forEach((mitigator) => {
+                                text = text.concat(
+                                    '\n\t\t- ' + (toggleAutoTodo
+                                        ? scope.indispensable && group.indispensableTasks
+                                            ? 'LATER' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
+                                            : 'LATER'
+                                        : '') +
+                                    ' ' + mitigator.name);
+                            })
+                        });
+                    }
+                } else {
                     if (group.indispensableTasks) {
                         text = text.concat('\n\t- Indispensable tasks:');
                     } else {
@@ -1045,43 +1073,67 @@ export function ProjectStore(scopesSample = []) {
                             text = text.concat(
                                 '\n\t\t- ' +
                                 (toggleAutoTodo
-                                    ? group.indispensableTasks
+                                    ? scope.indispensable && group.indispensableTasks
                                         ? 'LATER' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
                                         : 'LATER'
                                     : '') +
                                 ' ' +
                                 item.name
                             );
+                            if (item.automatable && item.automatableDescription && showNotificationAboutAutomatableTasks) {
+                                text = text.concat(
+                                    '\n\t\t\t- Try to automate the above task:');
+                                text = text.concat(
+                                    '\n\t\t\t\t- ' + item.automatableDescription);
+                            }
+                            if (item.delegable && item.delegableDescription && showNotificationAboutDelegableTasks) {
+                                text = text.concat(
+                                    '\n\t\t\t- Try to delegate the above task:');
+                                text = text.concat(
+                                    '\n\t\t\t\t- ' + item.delegableDescription);
+                            }
+
                         });
                     } else {
                         text = text.concat('\n\t\t- No item added');
                     }
-                } else {
-                    text = text.concat(
-                        '\n\t\t- ' +
-                        (toggleAutoTodo
-                            ? group.indispensableTasks
-                                ? 'LATER' + (idxPriority <= 3 ? ' [' + priorities[idxPriority] + '] ' : '')
-                                : 'LATER'
-                            : '') +
-                        'At this step, do as little as possible, only what is needed, to enable doing the tasks of the next step.'
-                    );
                 }
             });
         });
+        return text + "\n";
+    }
 
+
+
+    function sequencesToText(sequences, scopes, toggleAddInfo = false, toggleAutoTodo = false) {
+        let idxGlobal = 0;
+        let text = '';
+
+        if (sequences['discovery']['indispensable'].length) {
+            text = text + "- ## Discovery - Indispensable\n" + sequenceToText(idxGlobal, sequences['discovery']['indispensable'], scopes, toggleAddInfo, toggleAutoTodo, false, true, false, false);
+        }
+        if (sequences['delivery']['indispensable'].length) {
+            text = text + "- ## Delivery - Indispensable\n" + sequenceToText(idxGlobal, sequences['delivery']['indispensable'], scopes, toggleAddInfo, toggleAutoTodo, true, false, true, true);
+        }
+        if (sequences['discovery']['niceToHave'].length) {
+            text = text + "- ## Discovery - Nice-to-have\n" + sequenceToText(idxGlobal, sequences['discovery']['niceToHave'], scopes, toggleAddInfo, toggleAutoTodo, false, true, false, false);
+        }
+        if (sequences['delivery']['niceToHave'].length) {
+            text = text + "- ## Delivery - Nice-to-have\n" + sequenceToText(idxGlobal, sequences['delivery']['niceToHave'], scopes, toggleAddInfo, toggleAutoTodo, true, false, true, true);
+        }
         return text;
     }
 
     function documentationToText(scopes, autoNumber) {
         let text = '';
         let textNumberTitle = 1;
+
         scopes.forEach((scope, idx) => {
             if ((scope.title || scope.name) && scope.id !== 'bucket') {
                 text = text.concat(
                     '- ### ' +
                     (autoNumber ? textNumberTitle + '. ' : '') +
-                    (scope.title ? scope.title.trim() : scope.name ? 'Scope ' + scope.name : '') +
+                    (scope.title ? scope.title.trim() : scope.name ? scope.name : '') +
                     '\n'
                 );
 
@@ -1137,7 +1189,7 @@ export function ProjectStore(scopesSample = []) {
         let validClassifications = ['indispensable', 'risky', 'unclear', 'automatable', 'delegable', 'tedious'];
         if (validClassifications.includes(classification.toLowerCase())) {
             // object[classification.toLowerCase()] = toggle;
-
+            console.log('toggle:', toggle);
             objectUpdate(scope, item, (object) => {
                 object[classification.toLowerCase()] = toggle
             })
@@ -1180,7 +1232,7 @@ export function ProjectStore(scopesSample = []) {
         filterScopesButBucket,
         filterScopesWithItemsExcludingBucket,
         filterScopesWithItemsExcludingThisAndBucket,
-        sequenceToText,
+        sequencesToText,
         documentationToText,
         setClassificationToObject,
         setClassificationToScope,

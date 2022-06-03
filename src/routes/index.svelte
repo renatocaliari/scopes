@@ -21,7 +21,7 @@
 					You don't need to be a productivity ninja to get things done.
 				</h1>
 				<h2 class="text-xl sm:text-2xl font-normal">
-					The tool to help you structure
+					The tool to structure
 					<Typewriter scramble loop interval="80" unwriteInterval="10">
 						<span>the next cycle of your product</span>
 						<span>your project</span>
@@ -77,7 +77,7 @@
 
 						<!-- viewBox="0 0 512 512" -->
 					</div>
-					<h4 class="text-xl font-medium text-gray-700">Discover scopes</h4>
+					<h4 class="text-xl font-medium text-gray-700">Map scopes</h4>
 					<p class="grow text-base text-center text-gray-500">
 						Freely, dump all you think is needed to do or solve and cluster the items in scopes.
 					</p>
@@ -102,11 +102,9 @@
 							/></svg
 						>
 					</div>
-					<h4 class="text-xl font-medium text-gray-700 text-center">
-						Indispensable or Nice-to-have
-					</h4>
+					<h4 class="text-xl font-medium text-gray-700 text-center">Classify</h4>
 					<p class="grow text-base text-center text-gray-500">
-						Separate the indispensable scopes and tasks from the nice-to-have ones.
+						Classify items nice-to-have, risky, automatable or delagable.
 					</p>
 				</div>
 
@@ -128,9 +126,10 @@
 							/></svg
 						>
 					</div>
-					<h4 class="text-xl font-medium text-gray-700">Classification</h4>
+					<h4 class="text-xl font-medium text-gray-700">Specify</h4>
 					<p class="grow text-base text-center text-gray-500">
-						Classify scopes and tasks to get awareness and tips
+						What actions could mitigate the risky tasks? How could you try to automate it? Who could
+						you try to delegate the task to?
 					</p>
 				</div>
 
@@ -152,8 +151,8 @@
 							/></svg
 						>
 					</div>
-					<h4 class="text-xl font-medium text-gray-700">Dependencies</h4>
-					<p class="grow text-base text-center text-gray-500">Set dependencies among the scopes.</p>
+					<h4 class="text-xl font-medium text-gray-700">Set dependencies</h4>
+					<p class="grow text-base text-center text-gray-500">Which scopes depend on others?</p>
 				</div>
 
 				<div
@@ -174,10 +173,10 @@
 							/></svg
 						>
 					</div>
-					<h4 class="text-xl font-medium text-gray-700">Sequence of execution</h4>
+					<h4 class="text-xl font-medium text-gray-700">Get a sequence</h4>
 					<p class="grow text-base text-center text-gray-500">
-						Discover an optimal sequence to execute your scopes based on previous steps. Scopefully
-						do that automatically. You can export to text in markdown format.
+						Discover an optimal sequence to execute your scopes. Scopefully do that automatically.
+						You can export to text in markdown format.
 					</p>
 				</div>
 
@@ -215,13 +214,21 @@
 			Scopefully helps you speed up execution of a project, slowing down the moment of structuring
 			how it will be carried out.
 		</h2>
-		<div>
-			Accelerating or skipping the mapping of a project to be executed causes many obstacles to be
-			discovered only later, blocking execution, or many tasks needing to be re-planned or redone.
-			That is, you end up delaying the entire project or not being able to complete it in the
-			desired period.
+		<div class="flex flex-col gap-4 ">
+			<div>
+				Accelerating or skipping the understanding and mapping of a project to be executed causes
+				many obstacles to be discovered only later, blocking execution, or many tasks needing to be
+				re-planned or redone.
+			</div>
+			<div>
+				That is, you end up delaying the entire project or not being able to complete it in the
+				desired period.
+			</div>
+			<div>Does this sound normal to you?</div>
+			<div>
+				It's such a waste of time starting a project without knowing a good sequence to execute it.
+			</div>
 		</div>
-
 		<h2 class="text-4xl font-bold tracking-tight text-center">
 			For which cases can you use Scopefully?
 		</h2>
@@ -280,27 +287,16 @@
 			</ul>
 		</div>
 		<h2 class="text-4xl font-bold tracking-tight text-center">Export to Text [Markdown]</h2>
-		<div>
-			Export the results of sequence and documentation to text in markdown format. So, you can paste
-			it on your note taking tool like <a href="https://logseq.com/" target="_blank">Logseq</a>,
-			<a href="https://obsidian.md/" target="_blank">Obsidian</a>
-			or <a href="https://roamresearch.com/" target="_blank">Roam</a>.
-		</div>
+		<div>Export the results of sequence and documentation to text in markdown format.</div>
 
 		<h2 class="text-4xl font-bold tracking-tight text-center">What Scopefully is not about?</h2>
 		<div>
-			Scopefully is not a tool to manage continuous & infinite backlog and tasks. For it you can use
-			many other tools like Fibery.io, Clickup, Jira, Trello, etc.
+			Scopefully is not a tool to manage infinite backlog and tasks. It pushs you to choose what to
+			do for the next project or cycle and discovery the best sequence to execute it.
 		</div>
 		<div class="mt-4">
-			At the same time, Scopefully is an add-on. It fits in your workflow precisely by pushing you
-			to choose what to do for the next project or cycle and discovery the best sequence to execute
-			it.
-		</div>
-		<div class="mt-4">
-			In the case you use other tool to manage all your tasks, instead of dump the items from you
-			brain, you can copy the name of items in text format from the tool you use and import in the
-			Scopefully. And, after you follow the steps on Scopefully, you can export the result.
+			You can use Scopefully as an add-on to your process using other tools like Fibery.io, Clickup,
+			Jira, Trello, etc.
 		</div>
 	</div>
 </div>

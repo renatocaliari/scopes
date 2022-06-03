@@ -1,7 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 
-	import { steps, getStepById, setStepActive, setStepCompleted } from '$lib/stores/stepsStore';
+	import { steps, getStepById, setStepCompleted } from '$lib/stores/stepsStore';
 
 	export let linkPreviousStep = undefined;
 	export let linkNextStep = undefined;
@@ -23,7 +23,6 @@
 	}
 
 	currentStep = getStepById(stepId);
-	setStepActive(stepId);
 
 	if (currentStep.step > 0) {
 		// if (!getStepById('dump').completed) {
@@ -31,7 +30,7 @@
 		// }
 		linkPreviousStep = $steps[currentStep.step - 1].link;
 	}
-	if (currentStep.step < $steps.length) {
+	if (currentStep.step + 1 < $steps.length) {
 		linkNextStep = $steps[currentStep.step + 1].link;
 	}
 </script>
@@ -139,6 +138,6 @@
 	</div>
 
 	{#if currentStep.h2}
-		<h2>{currentStep.h2}</h2>
+		<h2 class="text-center items-center">{currentStep.h2}</h2>
 	{/if}
 </div>
