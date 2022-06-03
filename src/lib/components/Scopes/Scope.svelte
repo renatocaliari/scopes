@@ -1,13 +1,10 @@
 <script>
-	import Icon from 'svelte-awesome';
 	import { prevent_default } from 'svelte/internal';
 
 	export let scope;
 	export let itemsScopeModal = [];
 	export let editTitle = false;
-	export let icon = undefined;
 	export let classColor = '';
-	export let headerHighlighted = false;
 	export let width = '';
 	export let collapsable = false;
 
@@ -51,19 +48,15 @@
 
 <div
 	name="scope-{scope.i}"
-	class="rounded-md border-[0.1em] border-slate-300 shadow-xl {width} max-h-screen h-full {classColor}"
+	class="rounded-md border-[0.1em] border-slate-300 shadow-xl {width}  {classColor}"
 >
 	<div class:collapse={collapsable} class:collapse-arrow={collapsable}>
 		<input type="checkbox" class:hidden={!collapsable} />
-		<div
-			class:collapse-title={collapsable}
-			class="mb-2 w-full"
-			class:bg-slate-200={headerHighlighted}
-		>
+		<div class:collapse-title={collapsable} class="mb-2 w-full">
 			<div class="flex flex-col w-full">
 				<div class="inline-flex w-full" class:px-4={!collapsable} class:pt-4={!collapsable}>
 					{#if editTitle}
-						<div class="w-full flex flex-wrap break-words">
+						<div class="w-full flex flex-wrap break-words mr-2 mt-0 mb-2 prose-h3:my-0">
 							<svelte:element
 								this="h3"
 								on:paste|preventDefault|stopPropagation={handlePaste}
@@ -77,13 +70,13 @@
 								contenteditable
 								placeholder={textPlaceholder}
 								bind:textContent={scope.name}
-								class="mr-2 mt-0 mb-0 w-full min-h-8  border-slate-200 inline"
-								class:border-2={!scope.name || mouseIsOver}
+								class="w-full min-h-8 border-2 border-white  inline p-1"
 								class:border-dashed={!scope.name || mouseIsOver}
+								class:border-slate-400={!scope.name || mouseIsOver}
 							/>
 						</div>
 						{#if $$slots.badge}
-							<div class="pb-2">
+							<div>
 								<slot name="badge" />
 							</div>
 						{/if}
@@ -91,9 +84,6 @@
 						<div class="card-title w-full min-h-8 flex flex-wrap break-words">
 							<label for="modal-{scope.id}" class="mr-2 link link-hover prose"
 								><h2 class="align-middle content-center items-center break-words">
-									{#if icon}
-										<Icon data={icon} class=" mr-2" />
-									{/if}
 									<!-- {!scope?.name || scope?.name?.replace('<br>', '').trim().length === 0
 										? 'Scope ' + scope?.id?.split('-')[1]
 										: scope?.name?.replace('<br>', '')} -->
@@ -111,7 +101,7 @@
 					{/if}
 				</div>
 				{#if $$slots.header}
-					<div class="px-4">
+					<div class="px-4 mb-2">
 						<slot name="header" />
 					</div>
 				{/if}

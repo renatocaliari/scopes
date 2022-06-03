@@ -11,7 +11,9 @@
 	export let dragAndDrop = false;
 	export let allowRemoveItem = false;
 	export let allowAddItem = false;
-	export let focusAdd = false;
+	export let placeholderAddItem = 'type new task here and press ENTER';
+	export let classesCSSItem = '';
+	export let showOptions = false;
 	export let allowEditItem = false;
 	export let checkbox = false;
 	export let badgeNiceToHave = false;
@@ -36,10 +38,10 @@
 	const flipDurationMs = 300;
 
 	function handleDndConsider(e) {
-		scope.items = e.detail.items;
+		items = e.detail.items;
 	}
 	function handleDndFinalize(e) {
-		scope.items = e.detail.items;
+		items = e.detail.items;
 	}
 
 	function checkItem(e, scope, item, checked) {
@@ -47,7 +49,7 @@
 	}
 
 	function removeItem(itemId) {
-		scope.items = scope.items.filter((node) => node.id !== itemId);
+		items = items.filter((node) => node.id !== itemId);
 	}
 
 	const handleSubmit = (event) => {
@@ -78,15 +80,9 @@
 		}
 	};
 
-	function autoFocus(node, focus) {
-		if (focus) {
-			node.focus();
-		}
-	}
-
 	function proxyDndzone() {
 		if (dragAndDrop) {
-			return dndzone.apply(null, arguments);
+			return dndzone(...arguments); // dndzone.apply(null, arguments);
 		}
 	}
 </script>
@@ -98,34 +94,16 @@
 			bind:this={fieldAddText}
 			id="task"
 			name="task"
-			placeholder="type new task here and press ENTER"
+			placeholder={placeholderAddItem}
 			on:keypress={handleKeyPress}
 		/>
 	</form>
 {/if}
-<!-- 
-{#if items?.length == 0}
-	<section
-		class:h-52={forceMinHeight}
-		class:overflow-scroll={forceMinHeight}
-		use:proxyDndzone={{
-			items: items,
-			flipDurationMs,
-			type: 'items',
-			dropTargetClasses: ['bg-green-50']
-		}}
-		on:consider={handleDndConsider}
-		on:finalize={handleDndFinalize}
-	>
-		<div class="m-2 p-2 w-auto min-h-8 border-2 text-xs h-40">
-			{emptyState}
-		</div>
-	</section> -->
-<!-- {:else} -->
+
 <section
 	class="overflow-y-scroll {minHeight} {maxHeight}"
 	use:proxyDndzone={{
-		items: items.filter((i) => i.name || i.placeholder),
+		items: items, //.filter((i) => i.name || i.placeholder),
 		flipDurationMs,
 		type: 'items',
 		dropTargetClasses: ['bg-green-50']
@@ -133,7 +111,8 @@
 	on:consider={handleDndConsider}
 	on:finalize={handleDndFinalize}
 >
-	{#each items.filter((i) => i.name || i.placeholder) as item (item.id)}
+	<!-- .filter((i) => i.name || i.placeholder) -->
+	{#each items as item (item.id)}
 		<div
 			class="w-auto text-xs min-h-8 p-2 my-2 "
 			class:border-b-2={item.name || item.placeholder}
@@ -141,12 +120,15 @@
 		>
 			<ItemDragDrop
 				bind:item
+				{scope}
 				{dragAndDrop}
 				{checkbox}
 				{fnDisableCheckbox}
 				checked={fnSetChecked(item)}
+				classesCSS={classesCSSItem}
 				{allowEditItem}
 				{allowRemoveItem}
+				{showOptions}
 				itemsModal={fnItemsModal(item)}
 				on:checkItem={(event) => {
 					checkItem(event.detail.event, scope, event.detail.item, event.detail.checked);

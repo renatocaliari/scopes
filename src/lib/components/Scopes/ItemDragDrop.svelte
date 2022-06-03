@@ -1,18 +1,21 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
-	import { add_classes } from 'svelte/internal';
+	import { projectStore } from '$lib/stores/projectStore';
+	import configClassification from '$lib/data/classification';
 	const dispatch = createEventDispatcher();
 
+	export let scope = undefined;
 	export let item;
 	export let itemsModal = [];
+	export let classesCSS = '';
 	export let readOnly = false;
 	export let dragAndDrop = false;
 	export let checkbox = false;
-	export let toggleTitle = 'indispensable';
 	export let fnDisableCheckbox = undefined;
 	export let checked = false;
 	export let allowRemoveItem = false;
 	export let allowEditItem = false;
+	export let showOptions = false;
 
 	function checkItem(e, checked) {
 		dispatch('checkItem', {
@@ -20,6 +23,10 @@
 			item: item,
 			checked: checked
 		});
+	}
+
+	function checkClassification(scope, item, classification, toggle) {
+		projectStore.setClassificationToObject(scope, item, classification.toLowerCase(), toggle);
 	}
 
 	function removeItem(item) {
@@ -39,7 +46,7 @@
 	}
 </script>
 
-<div class="task inline-flex items-center w-full min-h-8 align-middle break-words">
+<div class="task inline-flex w-full min-h-8 break-words ">
 	{#if readOnly}
 		<div
 			class="w-full"
@@ -51,7 +58,7 @@
 		</div>
 	{:else}
 		{#if dragAndDrop}
-			<div>
+			<div class="mt-2">
 				<svg viewBox="0 0 100 80" width="20" height="20">
 					<rect width="70" height="12" />
 					<rect y="20" width="70" height="12" />
@@ -77,24 +84,22 @@
 				/>
 			{/if}
 		{/if}
-		{#if allowEditItem}
-			<span
-				class="w-full items-center m-1 break-words"
-				class:border-2={mouseIsOver}
-				class:border-dashed={mouseIsOver}
-				class:line-clamp-2={!mouseIsOver}
-				on:mouseenter={mouseOver}
-				on:mouseout={mouseOut}
-				contenteditable
-				bind:textContent={item.name}
-			>
-				<label for="modal-item-{item.id}" class="mr-2 w-full link link-hover prose">
-					{item.name}
-				</label>
-			</span>
+		{#if allowEditItem}<div class="w-full flex align-middle items-center content-center">
+				<div
+					class="w-full break-words border-2 {classesCSS} p-1"
+					class:border-slate-400={mouseIsOver}
+					class:border-white={!mouseIsOver}
+					class:border-dashed={mouseIsOver}
+					class:line-clamp-2={!mouseIsOver}
+					on:mouseenter={mouseOver}
+					on:mouseout={mouseOut}
+					contenteditable
+					bind:textContent={item.name}
+				/>
+			</div>
 		{:else if itemsModal.length > 0}
 			<div
-				class="items-center break-words"
+				class="items-center break-words {classesCSS}"
 				class:line-clamp-2={!mouseIsOver}
 				on:mouseenter={mouseOver}
 				on:mouseout={mouseOut}
@@ -105,7 +110,7 @@
 			</div>
 		{:else}
 			<div
-				class="items-center"
+				class="items-center {classesCSS}"
 				class:line-clamp-2={!mouseIsOver}
 				on:mouseenter={mouseOver}
 				on:mouseout={mouseOut}
@@ -127,6 +132,59 @@
 	{/if}
 	<slot name="badges" />
 </div>
+{#if showOptions}
+	<div
+		class="grid grid-cols-1 xl	:grid-cols-2 grid-rows-4 xl:grid-rows-2 gap-2 ml-2  border-l-4 p-4 border-slate-300 text-sm"
+	>
+		<div class="flex align-middle items-center">
+			<input
+				type="checkbox"
+				class="checkbox"
+				id="chkNiceToHave"
+				checked={!item.indispensable}
+				on:change={(e) =>
+					checkClassification(scope, item, 'indispensable', !e.currentTarget.checked)}
+			/><label for="chkNiceToHave" class="items-start content-start justify-start pl-2"
+				>Nice-to-have</label
+			>
+			<label for="modal-about-classification-indispensable" class="cursor-pointer ml-2">[?]</label>
+		</div>
+		<div class="flex align-middle items-center">
+			<input
+				type="checkbox"
+				class="checkbox"
+				id="chkRisky"
+				checked={item.risky}
+				on:change={(e) => checkClassification(scope, item, 'risky', e.currentTarget.checked)}
+			/><label for="chkRisky" class="items-start content-start justify-start pl-2">Risky</label>
+			<label for="modal-about-classification-risky" class="cursor-pointer ml-2">[?]</label>
+		</div>
+		<div class="flex align-middle items-center">
+			<input
+				type="checkbox"
+				class="checkbox"
+				id="chkAutomatable"
+				checked={item.automatable}
+				on:change={(e) => checkClassification(scope, item, 'automatable', e.currentTarget.checked)}
+			/><label for="chkAutomatable" class="items-start content-start justify-start pl-2"
+				>Automatable</label
+			>
+			<label for="modal-about-classification-automatable" class="cursor-pointer ml-2">[?]</label>
+		</div>
+		<div class="flex align-middle items-center">
+			<input
+				type="checkbox"
+				class="checkbox"
+				id="chkDelegable"
+				checked={item.delegable}
+				on:change={(e) => checkClassification(scope, item, 'delegable', e.currentTarget.checked)}
+			/><label for="chkDelegable" class="items-start content-start justify-start pl-2"
+				>Delegable</label
+			>
+			<label for="modal-about-classification-delegable" class="cursor-pointer ml-2">[?]</label>
+		</div>
+	</div>
+{/if}
 
 <input type="checkbox" id="modal-item-{item.id}" class="modal-toggle" />
 <div class="modal">
@@ -147,6 +205,57 @@
 				{/if}
 			{/each}
 		{/if}
+	</div>
+</div>
+
+<input type="checkbox" id="modal-about-classification-risky" class="modal-toggle" />
+<div class="modal modal-bottom sm:modal-middle">
+	<div class="modal-box">
+		<h3 class="font-bold text-lg">What does "{configClassification['risky'].text}" mean?</h3>
+		<div class="max-h-96 overflow-y-auto">
+			{configClassification['risky'].description}<br />
+		</div>
+		<div class="modal-action">
+			<label for="modal-about-classification-risky" class="btn btn-primary">ok</label>
+		</div>
+	</div>
+</div>
+<input type="checkbox" id="modal-about-classification-automatable" class="modal-toggle" />
+<div class="modal modal-bottom sm:modal-middle">
+	<div class="modal-box">
+		<h3 class="font-bold text-lg">What does "{configClassification['automatable'].text}" mean?</h3>
+		<div class="max-h-96 overflow-y-auto">
+			{configClassification['automatable'].description}<br />
+		</div>
+		<div class="modal-action">
+			<label for="modal-about-classification-automatable" class="btn btn-primary">ok</label>
+		</div>
+	</div>
+</div>
+<input type="checkbox" id="modal-about-classification-delegable" class="modal-toggle" />
+<div class="modal modal-bottom sm:modal-middle">
+	<div class="modal-box">
+		<h3 class="font-bold text-lg">What does "{configClassification['delegable'].text}" mean?</h3>
+		<div class="max-h-96 overflow-y-auto">
+			{configClassification['delegable'].description}<br />
+		</div>
+		<div class="modal-action">
+			<label for="modal-about-classification-delegable" class="btn btn-primary">ok</label>
+		</div>
+	</div>
+</div>
+<input type="checkbox" id="modal-about-classification-indispensable" class="modal-toggle" />
+<div class="modal modal-bottom sm:modal-middle">
+	<div class="modal-box">
+		<h3 class="font-bold text-lg">
+			What does "{configClassification['indispensable'].text}" mean?
+		</h3>
+		<div class="max-h-96 overflow-y-auto">
+			{configClassification['indispensable'].description}<br />
+		</div>
+		<div class="modal-action">
+			<label for="modal-about-classification-indispensable" class="btn btn-primary">ok</label>
+		</div>
 	</div>
 </div>
 

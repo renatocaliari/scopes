@@ -36,10 +36,30 @@
 		</ul>
 
 		<h2 class="mt-4 mb-4">Inspiration and credit</h2>
-		This product was inspired by
-		<a href="https://world.hey.com/rjs/. ">Ryan Singer</a>'s (kudos!) material on digital product
-		development. You can consult his texts here:
-		<a href="https://world.hey.com/rjs/">https://world.hey.com/rjs/</a>.
+		This product was inspired by:
+		<ul>
+			<li>
+				Scopes and Sequence - <a href="https://world.hey.com/rjs/">Ryan Singer</a>'s material on
+				digital product development.
+			</li>
+			<li>
+				<a href="https://www.businessinsider.com/tim-ferriss-disss-system-to-learn-anything-2015-3"
+					>DiSSS (Deconstruction, Selection, Sequencing and Stakes)</a
+				>: a framework created by Tim Ferris, devised to help people master new information-based
+				topics
+			</li>
+			<li>
+				<a href="https://nesslabs.com/dust-procrastination"
+					>DUST (Difficult, Unclear, Scary and Tedious)
+				</a>: a simple method created by Graham Allcott that identifies why you are procrastinating.
+			</li>
+			<li>
+				<a href="https://productivephysician.com/procrastinate-on-purpose/"
+					>Procrastinate on Purpose</a
+				> by Rory Vaden
+			</li>
+		</ul>
+
 		<h2 class="mt-8 mb-4">Potential for the future</h2>
 		<ul>
 			<li>allow share a url for current project with other people</li>

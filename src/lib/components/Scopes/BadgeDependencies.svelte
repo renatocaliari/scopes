@@ -12,7 +12,7 @@
 
 	// console.log('badge dep scopes', scopes);
 	if (!scopes.length) {
-		scopes = $project;
+		scopes = $project['scopes'];
 	}
 
 	let unlockDependencies = [];
