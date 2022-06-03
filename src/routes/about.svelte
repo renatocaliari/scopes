@@ -39,8 +39,8 @@
 		This product was inspired by:
 		<ul>
 			<li>
-				Scopes and Sequence - <a href="https://world.hey.com/rjs/">Ryan Singer</a>'s material on
-				digital product development.
+				<a href="https://world.hey.com/rjs/">Ryan Singer</a>'s material on digital product
+				development.
 			</li>
 			<li>
 				<a href="https://www.businessinsider.com/tim-ferriss-disss-system-to-learn-anything-2015-3"
