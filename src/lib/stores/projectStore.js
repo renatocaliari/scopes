@@ -1198,6 +1198,7 @@ export function ProjectStore(scopesSample = []) {
         // return object;
     }
 
+
     return {
         set,
         update,

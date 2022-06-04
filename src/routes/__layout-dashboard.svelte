@@ -1,5 +1,6 @@
 <script>
 	import moment from 'moment';
+	import Header from '$lib/components/Header.svelte';
 	import { page, session, navigating } from '$app/stores';
 	import { prefetchRoutes } from '$app/navigation';
 	import LoadingPageProgressBar from '$lib/components/LoadingPageProgressBar.svelte';
@@ -37,32 +38,8 @@
 <div class="drawer drawer-mobile">
 	<input id="drawer-menu" type="checkbox" class="drawer-toggle" />
 	<div class="drawer-content w-full">
-		<div class="w-full navbar lg:hidden">
-			<div class="flex-none lg:hidden">
-				<label for="drawer-menu" class="btn btn-square btn-ghost">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						class="inline-block w-6 h-6 stroke-current"
-						><path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M4 6h16M4 12h16M4 18h16"
-						/></svg
-					>
-				</label>
-			</div>
-			<div class="flex-1 px-2 mx-2 lg:hidden">
-				<a href="/">Scopefully</a><span class="text-sm ml-2 badge">beta v0.0.5</span>
-			</div>
-			<div class="flex-none block lg:hidden">
-				<ul class="menu menu-horizontal">
-					<li><a class="btn btn-outline " href="/about" sveltekit:prefetch>About</a></li>
-				</ul>
-			</div>
-		</div>
+		<Header showDrawer={true} />
+
 		<div class="w-full p-4">
 			{#if $navigating}Loading...
 			{:else}<div class=" prose max-w-full"><slot /></div>

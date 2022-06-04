@@ -1,0 +1,34 @@
+<div class="flex flex-col gap-4 p-4">
+	<div>
+		Scopes are parts of the project that can be done or built independently of the rest of the
+		project. They represent a complete demonstrable piece of value.
+	</div>
+	<div>
+		The above approach of breaking the overall project into scopes is called <span class="font-bold"
+			>'vertical break-down'.
+		</span>
+	</div>
+	<div>
+		The opposite would be <span class="font-bold">'horizontal break-down'</span>, in which you would
+		break a group of tasks by person, role, by kind of work that needs to be done, layers or
+		components that are involved.
+	</div>
+	<div>
+		<span class="font-bold">Avoid it.</span> Groups of tasks would not result in working and demonstrable
+		value.
+	</div>
+	<br />
+	<div>If you want to understand better about it, please, read the links below:</div>
+	<div>
+		To better understand the strategies to break down tasks in scopes, read the following link:
+	</div>
+	<div>
+		<ul>
+			<li>
+				<a href="https://basecamp.com/shapeup/3.3-chapter-12" target="_blank"
+					>ShapeUp - Map the Scopes - Organize by structure, not by person</a
+				>
+			</li>
+		</ul>
+	</div>
+</div>

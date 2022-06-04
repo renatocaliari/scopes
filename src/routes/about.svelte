@@ -1,5 +1,6 @@
-<script>
-</script>
+<svelte:head>
+	<title>About | Scopefully</title>
+</svelte:head>
 
 <div class="flex flex-col justify-center items-center">
 	<h1>About</h1>
@@ -40,7 +41,7 @@
 		<ul>
 			<li>
 				<a href="https://world.hey.com/rjs/">Ryan Singer</a>'s material on digital product
-				development.
+				development and <a href="https://basecamp.com/shapeup/3.3-chapter-12">Shape Up</a>.
 			</li>
 			<li>
 				<a href="https://www.businessinsider.com/tim-ferriss-disss-system-to-learn-anything-2015-3"
