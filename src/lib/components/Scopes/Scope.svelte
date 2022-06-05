@@ -71,9 +71,9 @@
 								class="w-full min-h-8 border-2 border-white  inline p-1"
 								on:mouseenter={mouseOver}
 								on:mouseout={mouseOut}
-								class:border-slate-400={mouseIsOver}
-								class:border-white={!mouseIsOver}
-								class:border-dashed={mouseIsOver}
+								class:border-white={!mouseIsOver && scope.name}
+								class:border-slate-400={mouseIsOver || !scope.name}
+								class:border-dashed={mouseIsOver || !scope.name}
 							/>
 						</div>
 
