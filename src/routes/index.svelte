@@ -210,6 +210,29 @@
 
 		<div class="flex flex-col justify-start w-full ">
 			<div class="text-2xl leading-relaxed p-4">
+				<h2 class="text-4xl font-bold tracking-tight">
+					{import.meta.env.VITE_APP_NAME} helps you speed up execution of a project, slowing down the
+					moment of understanding it.
+				</h2>
+				<div class="flex flex-col gap-4 ">
+					<div>
+						Accelerating or skipping the understanding of a project causes serious disasters.
+					</div>
+					<div>
+						Many obstacles to be discovered only later, blocking execution, or many tasks needing to
+						be re-planned or redone.
+					</div>
+					<div>
+						That is, you end up delaying the entire project or not being able to complete it in the
+						desired period.
+					</div>
+					<div>Does this sound normal to you?</div>
+					<div>
+						It's such a waste of time starting a project without knowing a good sequence to execute
+						it.
+					</div>
+				</div>
+
 				<h2>Fundamental Concept: Scopes</h2>
 				<div class="flex flex-col gap-4 ">
 					<div>
@@ -228,33 +251,6 @@
 					<div>
 						It's the opposite of break a group of tasks by person, role, by kind of work that needs
 						to be done, layers or components that are involved.
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="flex flex-col justify-start w-full ">
-			<div class="text-2xl leading-relaxed p-4">
-				<h2 class="text-4xl font-bold tracking-tight">
-					{import.meta.env.VITE_APP_NAME} helps you speed up execution of a project, slowing down the
-					moment of understanding it.
-				</h2>
-				<div class="flex flex-col gap-4 ">
-					<div>
-						Accelerating or skipping the understanding step of a project causes serious disasters.
-					</div>
-					<div>
-						Many obstacles to be discovered only later, blocking execution, or many tasks needing to
-						be re-planned or redone.
-					</div>
-					<div>
-						That is, you end up delaying the entire project or not being able to complete it in the
-						desired period.
-					</div>
-					<div>Does this sound normal to you?</div>
-					<div>
-						It's such a waste of time starting a project without knowing a good sequence to execute
-						it.
 					</div>
 				</div>
 

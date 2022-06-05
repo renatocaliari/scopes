@@ -9,7 +9,12 @@ const config = {
 	preprocess: preprocess(),
 
 	kit: {
-		adapter: adapter({ edge: true })
+		adapter: adapter({ edge: true }),
+		vite: {
+			define: {
+				'process.env': process.env,
+			},
+		},
 	}
 };
 
