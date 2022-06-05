@@ -3,23 +3,24 @@
 </script>
 
 <svelte:head>
-	<title>How it works? | Scopefully</title>
+	<title>How it works? | {import.meta.env.VITE_APP_NAME}</title>
 </svelte:head>
 
 <h1>How it works?</h1>
 <h2>Single Person or Multidisciplinary team</h2>
 <div>
-	Scopefully expects the people necessary for the execution and completion of the project to be
-	available and focused on it.
+	{import.meta.env.VITE_APP_NAME} expects the people necessary for the execution and completion of the
+	project to be available and focused on it.
 </div>
 <div>It could be a single person executing all scopes or a single multidisciplinary team.</div>
 
 <h2>First step: Dump & Cluster</h2>
-<div>Scopefully has 7 steps, 1 steps mandatory and the others recommended.</div>
-<div>The first step is mandatory.</div>
 <div>
-	You need to dump all tasks you think is necessary to complete a project. After that, you need to
-	cluster the tasks in scopes.
+	{import.meta.env.VITE_APP_NAME} has 7 steps, the first step mandatory and the others recommended.
+</div>
+<div>
+	At that step, you need to dump all tasks you think is necessary to complete a project. After that,
+	you need to cluster the tasks in scopes.
 </div>
 
 <h3>What are Scopes?</h3>

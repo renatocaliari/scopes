@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>About | Scopefully</title>
+	<title>About | {import.meta.env.VITE_APP_NAME}</title>
 </svelte:head>
 
 <div class="flex flex-col justify-center items-center">
@@ -8,8 +8,8 @@
 		<span>
 			Hi! I'm Cali (Renato Caliari) from Brazil.
 			<span
-				>I created <span class="font-bold">Scopefully</span> with the intention of making our projects
-				planning and execution more intentional.
+				>I created <span class="font-bold">{import.meta.env.VITE_APP_NAME}</span> with the intention
+				of making our projects planning and execution more intentional.
 			</span>
 		</span>
 		<p>You can:</p>

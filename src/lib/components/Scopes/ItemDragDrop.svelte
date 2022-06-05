@@ -171,7 +171,7 @@
 			>
 			<label for="modal-about-classification-automatable" class="cursor-pointer ml-2">[?]</label>
 		</div>
-		<div class="flex align-middle items-center">
+		<!-- <div class="flex align-middle items-center">
 			<input
 				type="checkbox"
 				class="checkbox"
@@ -182,7 +182,7 @@
 				>Delegable</label
 			>
 			<label for="modal-about-classification-delegable" class="cursor-pointer ml-2">[?]</label>
-		</div>
+		</div> -->
 	</div>
 {/if}
 

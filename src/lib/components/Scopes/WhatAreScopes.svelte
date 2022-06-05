@@ -14,11 +14,10 @@
 		components that are involved.
 	</div>
 	<div>
-		<span class="font-bold">Avoid it.</span> Groups of tasks would not result in working and demonstrable
-		value.
+		<span class="font-bold">Avoid it.</span> It would only result in group of disconnected tasks, would
+		increase complexity and would hardly be able to accomplish one independently of the other.
 	</div>
 	<br />
-	<div>If you want to understand better about it, please, read the links below:</div>
 	<div>
 		To better understand the strategies to break down tasks in scopes, read the following link:
 	</div>

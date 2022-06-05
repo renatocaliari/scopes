@@ -46,17 +46,19 @@
 			{/if}
 		</div>
 	</div>
-	<div class="drawer-side flex">
+	<div class="drawer-side flex shadow-md">
 		<label for="drawer-menu" class="drawer-overlay " />
 		<div class="overflow-y-auto w-80 bg-base-100 justify-between flex flex-col text-white">
 			<div>
 				<div
 					class="flex flex-row menu p-8 text-base-content align-middle content-center items-center "
 				>
-					<a href="/">Scopefully</a><span class="text-sm ml-2 badge">beta v0.0.5</span>
+					<a href="/"
+						>{import.meta.env.VITE_APP_NAME}<span class="text-sm ml-2 badge"
+							>beta {import.meta.env.VITE_APP_VERSION}</span
+						></a
+					>
 				</div>
-
-				<div class="divider" />
 
 				<ul class="p-4 text-base-content gap-2">
 					<!-- Sidebar content here -->
@@ -78,7 +80,7 @@
 					{/each}
 				</ul>
 			</div>
-			<div class="menu p-8 text-base-content">
+			<div class="menu p-8 text-base-content gap-4">
 				<a href="/about" sveltekit:prefetch>About</a>
 			</div>
 		</div>

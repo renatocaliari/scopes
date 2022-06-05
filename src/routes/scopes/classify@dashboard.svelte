@@ -43,13 +43,13 @@
 				optional: true,
 				text: 'Set which tasks could be automated',
 				checked: sortedScopes.some((scope) => scope.items.some((item) => item.automatable))
-			},
-			{
-				name: 'delegate',
-				optional: true,
-				text: 'Set which tasks could be delegated',
-				checked: sortedScopes.some((scope) => scope.items.some((item) => item.delegable))
 			}
+			// {
+			// 	name: 'delegate',
+			// 	optional: true,
+			// 	text: 'Set which tasks could be delegated',
+			// 	checked: sortedScopes.some((scope) => scope.items.some((item) => item.delegable))
+			// }
 		]
 	};
 
@@ -85,6 +85,8 @@
 						>[?]</label
 					>
 				</div>
+			</div>
+			<div slot="badge">
 				<div class="badge " class:hidden={!scope.risky}>Risky</div>
 			</div>
 			<div slot="body">

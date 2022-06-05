@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	// import { themeToggle } from '$lib/utils/themeChange';
 	import { page, session } from '$app/stores';
+
 	export let showDrawer = false;
 </script>
 
@@ -25,13 +26,14 @@
 		</div>
 	{/if}
 	<div class="flex-1" class:lg:hidden={showDrawer}>
-		<a class="btn btn-ghost normal-case text-xl" href="/">Scopefully</a><span
-			class="text-sm ml-2 badge">beta v0.0.5</span
+		<a class="btn btn-ghost normal-case text-xl" href="/"
+			>{import.meta.env.VITE_APP_NAME}<span class="text-sm ml-2 badge"
+				>{import.meta.env.VITE_APP_VERSION}</span
+			></a
 		>
 	</div>
-	<div class="flex-none block" class:lg:hidden={showDrawer}>
+	<div class="flex-none block" class:hidden={showDrawer}>
 		<ul class="menu menu-horizontal p-0 gap-2">
-			<li><a class="btn btn-outline " href="/howitworks" sveltekit:prefetch>How it works</a></li>
 			<li><a class="btn btn-outline " href="/about" sveltekit:prefetch>About</a></li>
 		</ul>
 	</div>
