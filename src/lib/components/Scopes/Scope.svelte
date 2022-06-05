@@ -60,8 +60,6 @@
 							<svelte:element
 								this="h3"
 								on:paste|preventDefault|stopPropagation={handlePaste}
-								on:mouseenter={mouseOver}
-								on:mouseout={mouseOut}
 								on:keypress={(e) => {
 									if (e.code === 'Enter') {
 										e.preventDefault();
@@ -71,10 +69,14 @@
 								placeholder={textPlaceholder}
 								bind:textContent={scope.name}
 								class="w-full min-h-8 border-2 border-white  inline p-1"
-								class:border-dashed={!scope.name || mouseIsOver}
-								class:border-slate-400={!scope.name || mouseIsOver}
+								on:mouseenter={mouseOver}
+								on:mouseout={mouseOut}
+								class:border-slate-400={mouseIsOver}
+								class:border-white={!mouseIsOver}
+								class:border-dashed={mouseIsOver}
 							/>
 						</div>
+
 						{#if $$slots.badge}
 							<div>
 								<slot name="badge" />
