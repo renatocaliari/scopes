@@ -24,7 +24,7 @@
 			{
 				name: 'specify',
 				optional: false,
-				text: 'Specify every risky, automatable or delegable task',
+				text: 'Specify every risky or automatable',
 				checked: sortedScopes.some((scope) =>
 					scope.items.some(
 						(item) =>
@@ -59,7 +59,7 @@
 			</div>
 
 			<div slot="body">
-				{#each scope.items.filter((item) => item.risky || item.automatable || item.delegable) as item}
+				{#each scope.items.filter((item) => item.risky || item.automatable) as item}
 					<div class="flex min-h-12 align-middle items-center">👉 {item.name}</div>
 					<div class="ml-2 pl-2 border-l-4 border-slate-300 text-sm">
 						{#if item.risky}
@@ -105,7 +105,7 @@
 								/>
 							</div>
 						{/if}
-						{#if item.delegable}
+						<!-- {#if item.delegable}
 							<div class="flex w-full justify-center badge">Delegable</div>
 
 							<div class="p-2">
@@ -117,7 +117,7 @@
 									bind:value={item.delegableDescription}
 								/>
 							</div>
-						{/if}
+						{/if} -->
 					</div>
 				{/each}
 			</div>

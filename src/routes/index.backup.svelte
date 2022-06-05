@@ -1,12 +1,12 @@
 <svelte:head>
-	<title>Scopefully</title>
+	<title>{import.meta.env.VITE_APP_NAME}</title>
 </svelte:head>
 
 <header class="center">
 	<div class="container">
 		<hgroup>
 			<sub>beta v0.0.2</sub>
-			<h1>Scopefully</h1>
+			<h1>{import.meta.env.VITE_APP_NAME}</h1>
 			<h3>The tool to help you understand the execution of your next project before start it.</h3>
 		</hgroup>
 		<p>
@@ -22,7 +22,7 @@
 <section style="padding-bottom: 100px;" />
 
 <div class="container center">
-	<h2>How Scopefully helps you</h2>
+	<h2>How {import.meta.env.VITE_APP_NAME} helps you</h2>
 </div>
 
 <!-- <p class="mt-2 text-lg text-center text-gray-600">

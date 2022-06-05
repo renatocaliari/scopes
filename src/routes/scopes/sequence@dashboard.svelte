@@ -117,7 +117,7 @@
 		class="flex flex-col align-middle justify-center content-center items-center md:w-2/3 w-full p-2 "
 	>
 		<h1 class="flex flex-row align-middle content-center items-center text-center">
-			Sequence for execution
+			Optimized execution sequence
 			<br />{#if $projectStore.deadline}
 				due {moment($projectStore.deadline).fromNow()}
 			{/if}

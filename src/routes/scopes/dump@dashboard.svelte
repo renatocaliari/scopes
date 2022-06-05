@@ -1,4 +1,5 @@
 <script context="module">
+	import WhatAreScopes from '$lib/components/Scopes/WhatAreScopes.svelte';
 	import Scope from '$lib/components/Scopes/Scope.svelte';
 	import Items from '$lib/components/Scopes/Items.svelte';
 	import { projectStore } from '$lib/stores/projectStore';
@@ -27,7 +28,7 @@
 				},
 				{
 					name: 'group',
-					text: 'Group those items in the scopes on the right side asking: what items can be completed together in isolation of the other items?',
+					text: 'Group those items into <label for="modal-about-scopes" class="cursor-pointer ml-2 bg-yellow-200 hover:underline p-1">scopes [?]</label>&nbsp;on the right side asking: what items can be completed together in isolation of the other items?',
 					checked: $projectStore['scopes'].some(
 						(scope) => scope.id !== 'bucket' && scope.items?.length > 0
 					)
@@ -152,6 +153,19 @@
 				>
 			</div>
 		{/each}
+	</div>
+</div>
+
+<input type="checkbox" id="modal-about-scopes" class="modal-toggle" />
+<div class="modal modal-bottom sm:modal-middle">
+	<div class="modal-box">
+		<h3 class="font-bold text-lg">What does scope mean and how to break down tasks in scopes?</h3>
+		<div class="max-h-96 overflow-y-auto">
+			<WhatAreScopes />
+		</div>
+		<div class="modal-action">
+			<label for="modal-about-scopes" class="btn btn-primary">ok</label>
+		</div>
 	</div>
 </div>
 

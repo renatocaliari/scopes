@@ -1,4 +1,5 @@
 
+
 import { get } from "svelte/store"
 import ScopeItem from "$lib/classes/ScopeItem";
 import { dev } from '$app/env';
@@ -8,11 +9,7 @@ import { deepCopy, deepFreeze } from '$lib/utils/general.js'
 
 let mixpanel = { track: (arg) => { } };
 
-//do
-// import { persistentWritable } from "$lib/stores/persistentStore";
 import { v4 as uuidv4 } from 'uuid';
-
-// import { localStorageStore } from 'fractils'
 import { convertToNumberingScheme } from "$lib/utils/general";
 
 // based on:
@@ -22,7 +19,8 @@ import { convertToNumberingScheme } from "$lib/utils/general";
 // let store = localStorageStore("scopes", []);
 // let store = writable([]);
 
-let store = writable("project", { scopes: [] });
+
+let store = writable("project", { version: import.meta.env.VITE_APP_VERSION, scopes: [] });
 
 export let projectStore = ProjectStore();
 export let storeSortedGroupedSequenceScopes = writable('storeGroupedSequenceScopes', { discovery: { indispensable: [], niceToHave: [] }, delivery: { indispensable: [], niceToHave: [] } });
@@ -86,7 +84,7 @@ export function ProjectStore(scopesSample = []) {
     const { set, subscribe, update } = store;
 
     function reset() {
-        set({ scopes: [] });
+        set({ version: import.meta.env.VITE_APP_VERSION, scopes: [] });
 
         storeSortedGroupedSequenceScopes = writable('storeGroupedSequenceScopes', { discovery: { indispensable: [], niceToHave: [] }, delivery: { indispensable: [], niceToHave: [] } });
         storeScopesDocumentation = writable('sortedstoreScopesDocumentation', {});
@@ -1197,6 +1195,7 @@ export function ProjectStore(scopesSample = []) {
         }
         // return object;
     }
+
 
     return {
         set,

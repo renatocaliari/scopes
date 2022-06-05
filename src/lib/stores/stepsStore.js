@@ -105,7 +105,7 @@ export let steps = writable([
         step: 5,
         id: 'sequence',
         linkText: 'Get Sequence',
-        h1: 'Sequence',
+        h1: 'Get Sequence',
         link: '/scopes/sequence',
         completed: storeSteps["sequence"].completed
     },
