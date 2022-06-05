@@ -233,27 +233,24 @@
 					</div>
 				</div>
 
-				<h2>Fundamental Concept: Scopes</h2>
+				<h2>Fundamental concept: Scopes</h2>
 				<div class="flex flex-col gap-4 ">
 					<div>
 						{import.meta.env.VITE_APP_NAME} works with the fundamental concept called
-						<strong>scopes</strong>. So much so that your first step will be to map the scopes of
+						<strong>Scopes</strong>. So much so that your first step will be to map the scopes of
 						your project.
 					</div>
 					<h3>So, what are Scopes?</h3>
 					<div>
 						Scopes are parts of the project that can be done or built independently of the rest.
-					</div>
-					<div>
-						They represent a complete demonstrable piece of value. It enables to discovery important
-						dependencies, what are risky and an optimal sequence for execution.
+						They represent a demonstrable piece of value.
 					</div>
 					<div>
 						It's the opposite of break a group of tasks by person, role, by kind of work that needs
 						to be done, layers or components that are involved.
 					</div>
 				</div>
-
+				<!-- 
 				<h2 class="text-4xl font-bold tracking-tight">
 					For which cases can you use {import.meta.env.VITE_APP_NAME}?
 				</h2>
@@ -318,7 +315,7 @@
 							> you want :)
 						</li>
 					</ul>
-				</div>
+				</div> -->
 				<h2 class="text-4xl font-bold tracking-tight">Export to Text [Markdown]</h2>
 				<div>Export the results of sequence and documentation to text in markdown format.</div>
 
@@ -327,12 +324,12 @@
 				</h2>
 				<div>
 					{import.meta.env.VITE_APP_NAME} is not a tool to manage infinite backlog and tasks. It pushs
-					you to choose what to do for the next project or cycle and discovery the best sequence to execute
-					it.
+					you to choose what to do for the next project or cycle and discovery an optimized execution
+					sequence.
 				</div>
 				<div class="mt-4">
-					You can use {import.meta.env.VITE_APP_NAME} as an add-on to your process using other tools
-					like Fibery.io, Clickup, Jira, Trello, etc.
+					You can use {import.meta.env.VITE_APP_NAME} as an add-on to your current process and set of
+					tools.
 				</div>
 			</div>
 		</div>
