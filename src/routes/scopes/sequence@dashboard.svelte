@@ -146,22 +146,22 @@
 		{/if}
 
 		<Sequence
-			groupsScopes={groupedSequenceScopes['discovery']['indispensable']}
+			bind:groupsScopes={$storeSortedGroupedSequenceScopes['discovery']['indispensable']}
 			title="Discovery Indispensable"
 			showMitigatorsForRiskyTasks
 		/>
 		<Sequence
-			groupsScopes={groupedSequenceScopes['delivery']['indispensable']}
+			bind:groupsScopes={$storeSortedGroupedSequenceScopes['delivery']['indispensable']}
 			title="Delivery Indispensable"
 			showNotificationAboutForkedScopes
 		/>
 		<Sequence
-			groupsScopes={groupedSequenceScopes['discovery']['niceToHave']}
+			bind:groupsScopes={$storeSortedGroupedSequenceScopes['discovery']['niceToHave']}
 			title="Discovery Nice-To-Have"
 			showMitigatorsForRiskyTasks
 		/>
 		<Sequence
-			groupsScopes={groupedSequenceScopes['delivery']['niceToHave']}
+			bind:groupsScopes={$storeSortedGroupedSequenceScopes['delivery']['niceToHave']}
 			title="Delivery Nice-To-Have"
 			showNotificationAboutForkedScopes
 		/>

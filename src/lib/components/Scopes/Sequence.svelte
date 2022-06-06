@@ -53,6 +53,13 @@
 		}
 		return emoji;
 	}
+
+	function checkItem(item, checked) {
+		projectStore.updateItemOnScope(scope, item, (item) => {
+			item.done = checked;
+		});
+		// $projectStore = $projectStore;
+	}
 </script>
 
 <div class="w-full">
@@ -103,12 +110,12 @@
 									</div>
 									<div class="flex flex-row gap-2">
 										{#if !scope.indispensable}
-											<span class="badge  break-normal">Nice-to-have</span>
+											<span class="badge badge-outline break-normal">Nice-to-have</span>
 										{:else}
-											<span class="badge  break-normal">Indispensable</span>
+											<span class="badge badge-outline break-normal">Indispensable</span>
 										{/if}
 										{#if scope.risky}
-											<span class="badge  break-normal">Risky</span>
+											<span class="badge badge-outline break-normal">Risky</span>
 										{/if}
 									</div>
 								</div>
@@ -142,7 +149,11 @@
 												Actions to mitigate the risks of the above task:
 												{#each item.mitigators as mitigator}
 													<div class="flex align-middle">
-														<input type="checkbox" class="checkbox mr-2" />
+														<input
+															bind:checked={mitigator.done}
+															type="checkbox"
+															class="checkbox mr-2"
+														/>
 														{mitigator.name}
 													</div>
 												{/each}
@@ -163,7 +174,7 @@
 										{#each scope.items as item}
 											<div class="flex flex-col">
 												<div class="flex ">
-													<input type="checkbox" class="checkbox mr-2" />
+													<input bind:checked={item.done} type="checkbox" class="checkbox mr-2" />
 													{#if item.risky}
 														🚨
 													{/if}

@@ -23,6 +23,8 @@ export default class ScopeItem {
         this.automatableDescription = '';
         this.delegableDescription = '';
 
+        this.done = false;
+
     }
 
     static createItem(name, indispensable, description) {
