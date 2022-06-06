@@ -62,7 +62,7 @@ export let steps = writable([
     {
         step: 0,
         id: 'dump',
-        linkText: 'Dump & Cluster',
+        linkText: '1. Dump & Cluster',
         h1: 'Dump & Cluster',
         link: '/scopes/dump',
         completed: storeSteps["dump"].completed
@@ -70,7 +70,7 @@ export let steps = writable([
     {
         step: 1,
         id: 'deadline',
-        linkText: 'Deadline',
+        linkText: '2. Deadline',
         h1: 'Set a deadline',
         link: '/scopes/deadline',
         completed: storeSteps["deadline"].completed
@@ -79,7 +79,7 @@ export let steps = writable([
     {
         step: 2,
         id: 'classify',
-        linkText: 'Classify',
+        linkText: '3. Classify',
         h1: 'Classify',
         link: '/scopes/classify',
         completed: storeSteps["classify"].completed
@@ -87,7 +87,7 @@ export let steps = writable([
     {
         step: 3,
         id: 'specify',
-        linkText: 'Specify',
+        linkText: '4. Specify',
         h1: 'Specify',
         link: '/scopes/specify',
         completed: storeSteps["specify"].completed
@@ -96,7 +96,7 @@ export let steps = writable([
     {
         step: 4,
         id: 'dependencies',
-        linkText: 'Set Dependencies',
+        linkText: '5. Set Dependencies',
         h1: 'Set Dependencies',
         link: '/scopes/dependencies',
         completed: storeSteps["dependencies"].completed
@@ -104,18 +104,18 @@ export let steps = writable([
     {
         step: 5,
         id: 'sequence',
-        linkText: 'Get Sequence',
+        linkText: '6. Get Sequence',
         h1: 'Get Sequence',
         link: '/scopes/sequence',
         completed: storeSteps["sequence"].completed
     },
-    {
-        step: 6,
-        id: 'documentation',
-        linkText: 'Create Documentation',
-        h1: 'Documentation',
-        h2: 'Create documentation to other people that will execute it',
-        link: '/scopes/documentation',
-        completed: storeSteps["documentation"].completed
-    }
+    // {
+    //     step: 6,
+    //     id: 'documentation',
+    //     linkText: 'Create Documentation',
+    //     h1: 'Documentation',
+    //     h2: 'Create documentation to other people that will execute it',
+    //     link: '/scopes/documentation',
+    //     completed: storeSteps["documentation"].completed
+    // }
 ]);

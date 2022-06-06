@@ -6,6 +6,7 @@
 
 	export let title;
 	export let groupsScopes;
+	export let reordered_steps = false;
 	export let showNotificationAboutForkedScopes = false;
 	export let showMitigatorsForRiskyTasks = false;
 	export let showNotificationAboutAutomatableTasks = true;
@@ -20,21 +21,20 @@
 	import { cubicIn } from 'svelte/easing';
 
 	const flipDurationMs = 300;
-	let moving = false;
-	let reordered = false;
+	export let moving = false;
 
 	function handleDndConsider(e) {
 		groupsScopes = e.detail.items;
-		reordered = true;
+		reordered_steps = true;
 		moving = true;
 	}
 	function handleDndFinalize(e) {
 		groupsScopes = projectStore.generateSequence(e.detail.items);
-		reordered = true;
+		reordered_steps = true;
 		moving = false;
 	}
-	function proxyDndzone() {
-		if (arguments[1]['items'].length > 1) {
+	function proxyDndzone(isGroupScopes = true, dragAndDrop = true) {
+		if (proxyDndzone && (!isGroupScopes || (isGroupScopes && arguments[1]['items'].length > 1))) {
 			return dndzone.apply(null, arguments);
 		}
 		return;
@@ -52,6 +52,13 @@
 			emoji = emoji + '';
 		}
 		return emoji;
+	}
+
+	function checkItem(item, checked) {
+		projectStore.updateItemOnScope(scope, item, (item) => {
+			item.done = checked;
+		});
+		// $projectStore = $projectStore;
 	}
 </script>
 
@@ -103,12 +110,12 @@
 									</div>
 									<div class="flex flex-row gap-2">
 										{#if !scope.indispensable}
-											<span class="badge  break-normal">Nice-to-have</span>
+											<span class="badge badge-outline break-normal">Nice-to-have</span>
 										{:else}
-											<span class="badge  break-normal">Indispensable</span>
+											<span class="badge badge-outline break-normal">Indispensable</span>
 										{/if}
 										{#if scope.risky}
-											<span class="badge  break-normal">Risky</span>
+											<span class="badge badge-outline break-normal">Risky</span>
 										{/if}
 									</div>
 								</div>
@@ -119,8 +126,11 @@
 							<div class="flex flex-col gap-0 p-0 m-0">
 								{#if scope.forkedScopeId && showNotificationAboutForkedScopes}
 									<div class="flex flex-col m-0 bg-yellow-50 mt-2 p-2 border-[1px]">
-										At this step, do only what is needed and as little as possible, to enable doing
-										the tasks of the next step.
+										<div class="flex align-middle">
+											<input type="checkbox" class="checkbox mr-2" />At this step, do only what is
+											needed from this scope to enable doing the tasks of the next step. Do as
+											little as possible.
+										</div>
 										<div class="text-xs">
 											Think about affordances or simulated ways to mimic the real behavior of the
 											tasks.
@@ -142,7 +152,11 @@
 												Actions to mitigate the risks of the above task:
 												{#each item.mitigators as mitigator}
 													<div class="flex align-middle">
-														<input type="checkbox" class="checkbox mr-2" />
+														<input
+															bind:checked={mitigator.done}
+															type="checkbox"
+															class="checkbox mr-2"
+														/>
 														{mitigator.name}
 													</div>
 												{/each}
@@ -160,10 +174,10 @@
 										</div>
 									{/if}
 									<div class="pb-2">
-										{#each scope.items as item}
+										{#each scope.items as item (item.id)}
 											<div class="flex flex-col">
 												<div class="flex ">
-													<input type="checkbox" class="checkbox mr-2" />
+													<input bind:checked={item.done} type="checkbox" class="checkbox mr-2" />
 													{#if item.risky}
 														🚨
 													{/if}
