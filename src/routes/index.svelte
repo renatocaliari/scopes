@@ -130,8 +130,7 @@
 						</div>
 						<h4 class="text-xl font-medium text-gray-700">Specify</h4>
 						<p class="grow text-base text-center text-gray-500">
-							What actions could mitigate the risky tasks? How could you try to automate or delegate
-							it?
+							What actions could mitigate the risky tasks? How could you try to automate it?
 						</p>
 					</div>
 
