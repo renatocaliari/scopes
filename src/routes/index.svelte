@@ -216,11 +216,11 @@
 				</h2>
 				<div class="flex flex-col gap-4 ">
 					<div>
-						Accelerating or skipping the understanding of a project causes serious disasters.
+						Accelerating or skipping the understanding of a project can causes some disasters.
 					</div>
 					<div>
-						Many obstacles to be discovered only later, blocking execution, or many tasks needing to
-						be re-planned or redone.
+						Many obstacles can be discovered only later, blocking execution, or many tasks needing
+						to be re-planned or redone.
 					</div>
 					<div>
 						That is, you end up delaying the entire project or not being able to complete it in the
