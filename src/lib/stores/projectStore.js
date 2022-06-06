@@ -1001,13 +1001,6 @@ export function ProjectStore(scopesSample = []) {
                     ) {
                         text = text.concat('\n\t- Info:');
 
-                        if (scope.forkedScopeId && showNotificationAboutForkedScopes) {
-                            text = text.concat(
-                                '\n\t\t- WARNING: The sole intention at this step is allowing the execution of the tasks of the next step.' +
-                                '\n\t\t- Think about affordances or simulated ways to mimic the real behavior of the tasks here.' +
-                                '\n\t\t- In the world of software development you can think about dummy objects, fake objects, stubs and mocks.'
-                            );
-                        }
                         if (scope.risky) {
                             text = text.concat(
                                 scope.risky ? '\n\t- WARNING: This scope is RISKY because it has UNKNOWNS' : ''
@@ -1040,7 +1033,10 @@ export function ProjectStore(scopesSample = []) {
                                 : 'LATER '
                             : '') +
                         ' ' +
-                        'At this step, do as little as possible, only what is needed, to enable doing the tasks of the next step.'
+                        'At this step, do only what is needed from this scope to enable doing the tasks of the next step.Do as little as possible.' +
+                        '\n\t\t\t- Think about affordances or simulated ways to mimic the real behavior of the tasks here.' +
+                        '\n\t\t\t- In the world of software development you can think about dummy objects, fake objects, stubs and mocks.'
+
                     );
                 } else if (scope.risky && showMitigatorsForRiskyTasks) {
                     if (scope.items.length) {

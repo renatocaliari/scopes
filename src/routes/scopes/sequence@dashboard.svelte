@@ -21,8 +21,9 @@
 
 	let exportText;
 	const flipDurationMs = 300;
+
 	let moving = false;
-	let reordered = false;
+	let reordered_steps = false;
 	let updatedSequence = false;
 	let confirmUpdateStoreSequence = false;
 
@@ -34,8 +35,7 @@
 		projectStore.sortScopesByPriority());
 
 	$: {
-		$storeSortedGroupedSequenceScopes;
-		if (!moving) {
+		if ($storeSortedGroupedSequenceScopes && !moving) {
 			updatedSequence =
 				!deepEqual(
 					normalizeGroupsScopesToCompare($storeSortedGroupedSequenceScopes.discovery.indispensable),
@@ -46,8 +46,8 @@
 					normalizeGroupsScopesToCompare(groupedSequenceScopes.discovery.niceToHave)
 				) ||
 				!deepEqual(
-					normalizeGroupsScopesToCompare($storeSortedGroupedSequenceScopes.delivery.niceToHave),
-					normalizeGroupsScopesToCompare(groupedSequenceScopes.delivery.niceToHave)
+					normalizeGroupsScopesToCompare($storeSortedGroupedSequenceScopes.delivery.indispensable),
+					normalizeGroupsScopesToCompare(groupedSequenceScopes.delivery.indispensable)
 				) ||
 				!deepEqual(
 					normalizeGroupsScopesToCompare($storeSortedGroupedSequenceScopes.delivery.niceToHave),
@@ -55,7 +55,10 @@
 				);
 		}
 		if (
-			!$storeSortedGroupedSequenceScopes.length ||
+			(!$storeSortedGroupedSequenceScopes['discovery']['indispensable'].length &&
+				!$storeSortedGroupedSequenceScopes['discovery']['niceToHave'].length &&
+				!$storeSortedGroupedSequenceScopes['delivery']['indispensable'].length &&
+				!$storeSortedGroupedSequenceScopes['delivery']['niceToHave'].length) ||
 			(!moving && updatedSequence && confirmUpdateStoreSequence)
 		) {
 			$storeSortedGroupedSequenceScopes = groupedSequenceScopes;
@@ -68,10 +71,10 @@
 		name: 'Tasks',
 		items: [
 			{
-				name: 'sequence',
+				name: 'steps_sequence',
 				optional: true,
-				text: 'You can re-order the sequence. But remember, you may lose the benefits of the generated sequence',
-				checked: reordered
+				text: 'You can re-order the steps of the sequence',
+				checked: reordered_steps
 			}
 		]
 	};
@@ -135,33 +138,41 @@
 		</h1>
 
 		{#if updatedSequence}
-			<div class="rounded-md outline outline-2  outline-black bg-yellow-50 p-2">
-				<p>
-					The sequence below or the scope information in that sequence is different from the updated
-					version.
-				</p>
-				<label for="modal-update" class="btn btn-accent modal-button"> Generate new sequence</label>
-				<div><sub /></div>
+			<div class="w-full rounded-md outline outline-2 outline-black bg-yellow-50 p-2">
+				<div class="text-lg p-2">
+					The sequence or the scope information below are different from the generated sequence.
+				</div>
+				<div class="flex justify-end">
+					<label for="modal-update" class="btn btn-primary modal-button"> Update sequence</label>
+				</div>
 			</div>
 		{/if}
 
 		<Sequence
 			bind:groupsScopes={$storeSortedGroupedSequenceScopes['discovery']['indispensable']}
+			bind:reordered_steps
+			bind:moving
 			title="Discovery Indispensable"
 			showMitigatorsForRiskyTasks
 		/>
 		<Sequence
 			bind:groupsScopes={$storeSortedGroupedSequenceScopes['delivery']['indispensable']}
+			bind:reordered_steps
+			bind:moving
 			title="Delivery Indispensable"
 			showNotificationAboutForkedScopes
 		/>
 		<Sequence
 			bind:groupsScopes={$storeSortedGroupedSequenceScopes['discovery']['niceToHave']}
+			bind:reordered_steps
+			bind:moving
 			title="Discovery Nice-To-Have"
 			showMitigatorsForRiskyTasks
 		/>
 		<Sequence
 			bind:groupsScopes={$storeSortedGroupedSequenceScopes['delivery']['niceToHave']}
+			bind:reordered_steps
+			bind:moving
 			title="Delivery Nice-To-Have"
 			showNotificationAboutForkedScopes
 		/>
