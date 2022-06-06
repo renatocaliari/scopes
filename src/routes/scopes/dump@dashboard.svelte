@@ -28,7 +28,7 @@
 				},
 				{
 					name: 'group',
-					text: 'Group those items into <label for="modal-about-scopes" class="cursor-pointer ml-2 bg-yellow-200 hover:underline p-1">scopes [?]</label>&nbsp;on the right side asking: what items can be completed together in isolation of the other items?',
+					text: 'Group those items into <label for="modal-about-scopes" class="cursor-pointer bg-yellow-200 hover:underline p-1">scopes [?]</label>&nbsp;on the right side asking: what items can be completed together in isolation of the other items?',
 					checked: $projectStore['scopes'].some(
 						(scope) => scope.id !== 'bucket' && scope.items?.length > 0
 					)

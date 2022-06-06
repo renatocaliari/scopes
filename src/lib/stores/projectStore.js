@@ -80,6 +80,7 @@ export function ProjectStore(scopesSample = []) {
     // let store = persistentWritable("scopes", []);
     // let store = localStorageStore("scopes", []);
     // console.log('store:', JSON.stringify(get(store)));
+    console.log('antes');
 
     const { set, subscribe, update } = store;
 
@@ -96,7 +97,7 @@ export function ProjectStore(scopesSample = []) {
             addScope(scope);
         });
     }
-    else if (get(store)['scopes'].length === 0) {
+    else if (!get(store)['version'] || get(store)['scopes'].length === 0) {
         createInitialData(true, 9);
     }
 

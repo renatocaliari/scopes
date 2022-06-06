@@ -75,7 +75,8 @@
 										>{/if}
 								</div>
 								<!-- <Icon data={item.checked ? check : uncheck} class="mr-2" />{item.text} -->
-								{item.optional ? '(Optional) ' : ''}{@html item.text}
+								{item.optional ? '(Optional) ' : ''}
+								<div>{@html item.text}</div>
 							</div>
 						</li>
 					{/each}
