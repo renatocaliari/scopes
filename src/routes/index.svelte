@@ -69,9 +69,9 @@
 						<!-- <p class="mt-2 text-lg text-center text-gray-600">
 				Check out our list of awesome features below.
 			</p> -->
-						<div class="grid grid-cols-4 grid-flow-col gap-8 mt-10 sm:px-8 xl:px-0">
+						<div class="grid grid-cols-4 grid-flow-col gap-4 mt-10">
 							<div
-								class="relative flex flex-col items-center justify-between px-8 py-12 space-y-4 overflow-hidden bg-gray-100 sm:rounded-xl"
+								class="relative flex flex-col items-center justify-between px-4 py-8 overflow-hidden bg-gray-100 sm:rounded-xl"
 							>
 								<div class="p-3 text-white bg-primary rounded-full">
 									<svg
@@ -100,7 +100,7 @@
 							</div>
 
 							<div
-								class="flex flex-col items-center justify-between px-8 py-12 space-y-4 bg-gray-100 sm:rounded-xl"
+								class="flex flex-col items-center justify-between px-4 py-8 bg-gray-100 sm:rounded-xl"
 							>
 								<div class="p-3 text-white bg-primary rounded-full">
 									<svg
@@ -125,7 +125,7 @@
 							</div>
 
 							<div
-								class="flex flex-col items-center justify-between px-8 py-12 space-y-4 bg-gray-100 sm:rounded-xl"
+								class="flex flex-col items-center justify-between px-4 py-8 bg-gray-100 sm:rounded-xl"
 							>
 								<div class="p-3 text-white bg-primary rounded-full">
 									<svg
@@ -149,7 +149,7 @@
 							</div>
 
 							<div
-								class="flex flex-col items-center justify-between px-8 py-12 space-y-4 bg-gray-100 sm:rounded-xl"
+								class="flex flex-col items-center justify-between px-4 py-8 bg-gray-100 sm:rounded-xl"
 							>
 								<div class="p-3 text-white bg-primary rounded-full">
 									<svg
@@ -173,7 +173,7 @@
 							</div>
 
 							<!-- <div
-						class="flex flex-col items-center justify-between px-8 py-12 space-y-4 bg-gray-100 sm:rounded-xl"
+						class="flex flex-col items-center justify-between px-4 py-8 bg-gray-100 sm:rounded-xl"
 					>
 						<div class="p-3 text-white bg-primary rounded-full">
 							<svg
@@ -197,7 +197,7 @@
 					</div>
  -->
 							<!-- <div
-						class="flex flex-col items-center justify-between px-8 py-12 space-y-4 bg-gray-100 sm:rounded-xl"
+						class="flex flex-col items-center justify-between px-4 py-8 bg-gray-100 sm:rounded-xl"
 					>
 						<div class="p-3 text-white bg-primary rounded-full">
 							<svg
@@ -332,7 +332,7 @@
 				<h2 class="text-4xl font-bold tracking-tight">Export to Text [Markdown]</h2>
 				<div>Export the results of sequence to text in markdown format.</div>
 
-				<h2 class="text-4xl font-bold tracking-tight
+				<h2 class="text-4xl font-bold tracking-tight">
 					What {import.meta.env.VITE_APP_NAME} is not about?
 				</h2>
 				<div>
