@@ -13,7 +13,7 @@
 </svelte:head>
 
 <div class="flex flex-col justify-center items-center content-center  ">
-	<div class="flex flex-col sm:w-3/5 justify-center content-center items-center">
+	<div class="flex flex-col 2xl:w-3/5 justify-center content-center items-center">
 		<div class="hero min-h-fit sm:mt-24">
 			<div class="hero-content text-center">
 				<div class="flex flex-col text-center max-w-2xl">
@@ -69,7 +69,7 @@
 						<!-- <p class="mt-2 text-lg text-center text-gray-600">
 				Check out our list of awesome features below.
 			</p> -->
-						<div class="grid grid-cols-4 grid-flow-col gap-4 mt-10">
+						<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 grid-flow-row gap-4 mt-10">
 							<div
 								class="relative flex flex-col items-center justify-between px-4 py-8 overflow-hidden bg-gray-100 sm:rounded-xl"
 							>
