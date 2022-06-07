@@ -330,9 +330,9 @@
 					</ul>
 				</div> -->
 				<h2 class="text-4xl font-bold tracking-tight">Export to Text [Markdown]</h2>
-				<div>Export the results of sequence and documentation to text in markdown format.</div>
+				<div>Export the results of sequence to text in markdown format.</div>
 
-				<h2 class="text-4xl font-bold tracking-tight">
+				<h2 class="text-4xl font-bold tracking-tight
 					What {import.meta.env.VITE_APP_NAME} is not about?
 				</h2>
 				<div>
