@@ -117,7 +117,7 @@
 	class="sm:flex sm:flex-col md:flex md:flex-col w-full content-center items-center justify-center"
 >
 	<div
-		class="flex flex-col align-middle justify-center content-center items-center md:w-2/3 w-full p-2 "
+		class="flex flex-col align-middle justify-center content-center items-center xl:w-2/3 w-full p-2 "
 	>
 		<h1 class="flex flex-row align-middle content-center items-center text-center">
 			Optimized execution sequence
