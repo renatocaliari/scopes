@@ -86,7 +86,7 @@
 			> anything.
 		</p> -->
 		<h2 class="mt-8 mb-4">Context and learning</h2>
-		<p>To develop this product I'm using Svelte + SvelteKit.</p>
+		<p>To develop this tool I'm using Svelte + SvelteKit.</p>
 		<p>
 			I made this first version while relearning how to develop software and at the same time
 			learning Svelte and SvelteKit, after many years without developing.
