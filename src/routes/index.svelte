@@ -18,7 +18,8 @@
 			<div class="hero-content text-center">
 				<div class="flex flex-col text-center max-w-2xl">
 					<h1 class="text-4xl sm:text-6xl font-bold mt-6 mb-0 leading-10">
-						Slow down when understanding <div>
+						Slow down when understanding
+						<div>
 							to get
 							<span class="text-primary">agility</span>
 							on execution

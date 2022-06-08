@@ -24,7 +24,7 @@
 			{
 				name: 'specify',
 				optional: false,
-				text: 'Specify every risky or automatable',
+				text: 'Specify every risky or automatable task',
 				checked: sortedScopes.some((scope) =>
 					scope.items.some(
 						(item) =>
