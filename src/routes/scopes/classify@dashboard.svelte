@@ -35,7 +35,7 @@
 			{
 				name: 'risky',
 				optional: true,
-				text: 'Set which tasks are risky. Its scopes automatically will become risky too.',
+				text: 'Set which tasks are risky. Their scopes automatically will become risky too.',
 				checked: sortedScopes.some((scope) => scope.items.some((item) => item.risky))
 			},
 			{
