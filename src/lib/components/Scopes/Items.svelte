@@ -62,7 +62,7 @@
 		if (event.target.value.trim() !== '') {
 			dispatch('addItem', {
 				value: event.target.value,
-				indispensable: false
+				indispensable: true
 			});
 		}
 
