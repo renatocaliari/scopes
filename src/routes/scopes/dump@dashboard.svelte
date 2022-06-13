@@ -63,7 +63,7 @@
 	function importToBucket(text, bucket) {
 		var lines = text.split('\n');
 		for (let i = lines.length - 1; i >= 0; i--) {
-			projectStore.scopeAddItem(bucket, lines[i], false);
+			projectStore.scopeAddItem(bucket, lines[i], true);
 		}
 		fieldImportText.value = '';
 
