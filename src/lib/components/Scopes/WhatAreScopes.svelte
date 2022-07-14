@@ -1,10 +1,11 @@
 <div class="flex flex-col gap-4 p-4">
 	<div>
-		Scopes are parts of the project that can be done or built independently of the rest of the
-		project. They represent a complete demonstrable piece of value.
+		Scopes are meaningful parts of the problem that can be completed independently and in a short
+		period of time. They represent a demonstrable piece of value. They are bigger than tasks but
+		much smaller than the overall project.
 	</div>
 	<div>
-		The above approach of breaking the overall project into scopes is called <span class="font-bold"
+		This approach of breaking the overall project into scopes is called <span class="font-bold"
 			>'vertical break-down'.
 		</span>
 	</div>
