@@ -256,8 +256,9 @@
 					</div>
 					<h3>So, what are Scopes?</h3>
 					<div>
-						Scopes are parts of the project that can be done or built independently of the rest.
-						They represent a demonstrable piece of value.
+						Scopes are meaningful parts of the problem that can be completed independently and in a
+						short period of time. They represent a demonstrable piece of value. They are bigger than
+						tasks but much smaller than the overall project.
 					</div>
 					<div>
 						It's the opposite of break a group of tasks by person, role, by kind of work that needs
