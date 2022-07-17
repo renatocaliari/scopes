@@ -109,13 +109,13 @@ export let steps = writable([
         link: '/scopes/sequence',
         completed: storeSteps["sequence"].completed
     },
-    // {
-    //     step: 6,
-    //     id: 'documentation',
-    //     linkText: 'Create Documentation',
-    //     h1: 'Documentation',
-    //     h2: 'Create documentation to other people that will execute it',
-    //     link: '/scopes/documentation',
-    //     completed: storeSteps["documentation"].completed
-    // }
+    {
+        step: 6,
+        id: 'documentation',
+        linkText: '7. (optional) Create Document',
+        h1: 'Requirements Documentation',
+        h2: 'Create requirements documentation',
+        link: '/scopes/documentation',
+        completed: storeSteps["documentation"].completed
+    }
 ]);
